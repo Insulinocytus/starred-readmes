@@ -1,0 +1,160 @@
+# Docker images for ComfyUI
+
+English | 🀄 *link:README.zh.adoc[中文说明]*
+
+This repo is for 
+https://hub.docker.com/r/yanwk/comfyui-boot[Docker images] 
+that runs 
+https://github.com/Comfy-Org/ComfyUI[ComfyUI] - 
+an AIGC GUI powering node-based workflow.
+
+## Quick Start - NVIDIA GPU
+
+```sh
+mkdir -p \
+  storage-cache/dot-cache \
+  storage-cache/dot-config \
+  storage-nodes/dot-local \
+  storage-nodes/custom_nodes \
+  storage-models/models \
+  storage-models/hf-hub \
+  storage-models/torch-hub \
+  storage-user/input \
+  storage-user/output \
+  storage-user/user-profile \
+  storage-user/user-scripts
+
+# Add sudo if needed
+docker run -it --rm \
+  --name comfyui-cu130 \
+  --pull=always \
+  --runtime=nvidia \
+  --gpus all \
+  -p 8188:8188 \
+  -v "$(pwd)"/storage-cache/dot-cache:/root/.cache \
+  -v "$(pwd)"/storage-cache/dot-config:/root/.config \
+  -v "$(pwd)"/storage-nodes/dot-local:/root/.local \
+  -v "$(pwd)"/storage-nodes/custom_nodes:/root/ComfyUI/custom_nodes \
+  -v "$(pwd)"/storage-models/models:/root/ComfyUI/models \
+  -v "$(pwd)"/storage-models/hf-hub:/root/.cache/huggingface/hub \
+  -v "$(pwd)"/storage-models/torch-hub:/root/.cache/torch/hub \
+  -v "$(pwd)"/storage-user/input:/root/ComfyUI/input \
+  -v "$(pwd)"/storage-user/output:/root/ComfyUI/output \
+  -v "$(pwd)"/storage-user/user-profile:/root/ComfyUI/user \
+  -v "$(pwd)"/storage-user/user-scripts:/root/user-scripts \
+  -e CLI_ARGS="" \
+  yanwk/comfyui-boot:cu130-slim-v2
+```
+
+## CUDA Compatibility
+
+The supported CUDA versions for each GPU architecture are shown in the table below:
+
+[cols="1,1,1,1,1,1,1,1,1", options="header"]
+|===
+| GPU Architecture
+| Blackwell | Hopper | Ada Lovelace | Ampere | Turing | Volta | Pascal | Maxwell
+
+| Example GPU
+| RTX 5090 | H100 | RTX 4090 | RTX 3090 
+| RTX 2080 +
+GTX 1660 
+| TITAN V | GTX 1080 | GTX 980
+
+| cu132
+| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌
+
+| cu130 ⭐
+| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌
+
+| cu126
+| ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️
+
+|===
+
+* **CUDA 13.0 images are currently recommended**.
+
+** ComfyUI's
+https://github.com/Comfy-Org/comfy-kitchen[performance library]
+is currently developed based on CUDA 13.0,
+which is also considered one of the stable versions of
+https://github.com/pytorch/pytorch/issues/172663[PyTorch].
+
+* If you are unsure about your NVIDIA GPU architecture, see
+https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/[this article].
+
+NOTE: __These CUDA compatibility limitations are due to the
+https://github.com/pytorch/pytorch/releases/tag/v2.8.0[PyTorch] toolchain,
+not the NVIDIA CUDA Toolkit.
+For more information, refer to the 
+https://github.com/pytorch/pytorch/blob/v2.12.0/.ci/manywheel/build_cuda.sh[PyTorch build script].__
+
+
+## CUDA Image Tags
+
+### Slim
+
+The `slim` images start with only ComfyUI and ComfyUI-Manager, yet include many dependencies to make future Custom Node installation easier. Recommended for beginners.
+
+* link:cu130-slim-v2/README.adoc[`cu130-slim-v2`] ⭐
+** CUDA 13.0, Python 3.13 (with GIL), No xFormers
+
+* link:cu126-slim/README.adoc[`cu126-slim`]
+** CUDA 12.6, Python 3.12
+
+### MEGAPAK
+
+The `megapak` images are all-in-one bundles, including development kits and dozens of Custom Nodes for ComfyUI.
+
+* link:cu130-megapak-pt211/README.adoc[`cu130-megapak-pt211`] ⭐
+** CUDA 13.0, Python 3.13 (with GIL), GCC 14, PyTorch 2.11.0
+
+* link:cu126-megapak/README.adoc[`cu126-megapak`]
+** CUDA 12.6, Python 3.12, GCC 13, PyTorch 2.9.1
+
+### Testing
+
+* link:nightly/README.adoc[`nightly`]
+** Using development version of PyTorch. For testing latest features.
+
+
+## ROCm Image Tags
+
+* link:rocm/README.adoc[`rocm`]
+
+** For AMD GPUs with ROCm 7.
+** Based on PyTorch's builds (faster release).
+
+* link:rocm7/README.adoc[`rocm7`]
+
+** For AMD GPUs with ROCm 7.
+** Based on AMD's builds (comprehensive functionality).
+
+* link:rocm6/README.adoc[`rocm6`]
+
+** For AMD GPUs with ROCm 6 (stable version).
+
+
+## XPU Image Tags
+
+* link:xpu/[`xpu`]
+
+** For Intel GPUs with XPU.
+
+
+## More Image Tags
+
+* link:cpu/[`cpu`]
+
+** A smaller image for CPU only.
+
+* link:archived/[archived]
+
+** Archived Dockerfiles of retired image tags.
+
+
+## License
+
+link:LICENSE[Mulan Public License，Version 2]
+
+This open source license is written and valid both in Chinese and English, how good is that!
