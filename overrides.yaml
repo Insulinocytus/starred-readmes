@@ -1,0 +1,11 @@
+# Per-repo exceptions. Key: github.com/<owner>/<repo>
+# Fields (all optional):
+#   ref:  branch / tag / commit (default: default branch)
+#   path: file to fetch (default: README.md); output is always <key>.md
+#   skip: true to exclude the repo
+#
+# github.com/foo/bar:
+#   ref: docs
+#   path: docs/index.md
+# github.com/baz/qux:
+#   skip: true
