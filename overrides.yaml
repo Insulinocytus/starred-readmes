@@ -9,3 +9,165 @@
 #   path: docs/index.md
 # github.com/baz/qux:
 #   skip: true
+
+# README not named exactly README.md at root; path = what GitHub itself renders (GET /repos/{o}/{r}/readme).
+github.com/Aikoyori/ProgrammingVTuberLogos:
+  path: READMe.md
+github.com/Alia5/GlosSI:
+  path: Readme.md
+github.com/amadvance/snapraid:
+  path: README
+github.com/apache/guacamole-server:
+  path: README
+github.com/aria2/aria2:
+  path: README.rst
+github.com/AvaloniaUI/Avalonia:
+  path: readme.md
+github.com/aws/aws-cli:
+  path: README.rst
+github.com/azerothcore/azerothcore-wotlk:
+  path: .github/README.md
+github.com/betalgo/openai:
+  path: Readme.md
+github.com/BookStackApp/BookStack:
+  path: readme.md
+github.com/borgbackup/borg:
+  path: README.rst
+github.com/chenshuo/muduo:
+  path: README
+github.com/clsid2/mpc-hc:
+  path: Readme.md
+github.com/coder/code-server:
+  path: docs/README.md
+github.com/Courseplay/courseplay:
+  path: readme.md
+github.com/cryptpad/cryptpad:
+  path: readme.md
+github.com/czy0729/Bangumi:
+  path: README.MD
+github.com/Darktide-Mod-Framework/Darktide-Mod-Framework:
+  path: README.MD
+github.com/dockur/windows:
+  path: readme.md
+github.com/dylanpdx/BetterTwitFix:
+  path: readme.md
+github.com/ehForwarderBot/efb-qq-slave:
+  path: README.rst
+github.com/ehForwarderBot/ehForwarderBot:
+  path: README.rst
+github.com/element-hq/synapse:
+  path: README.rst
+github.com/FEX-Emu/FEX:
+  path: Readme.md
+github.com/files-community/Files:
+  path: .github/README.md
+github.com/Flexget/Flexget:
+  path: README.rst
+github.com/fmhy/edit:
+  path: .github/README.md
+github.com/Fody/PropertyChanged:
+  path: readme.md
+github.com/fonttools/fonttools:
+  path: README.rst
+github.com/geovens/gInk:
+  path: readme.md
+github.com/getsops/sops:
+  path: README.rst
+github.com/gogf/gf:
+  path: README.MD
+github.com/haiwen/seafile:
+  path: README.markdown
+github.com/HandBrake/HandBrake:
+  path: README.markdown
+github.com/HIllya51/LunaTranslator:
+  path: .github/README.md
+github.com/jelmer/xandikos:
+  path: README.rst
+github.com/ledccn/IYUUAutoReseed:
+  path: readme.md
+github.com/LineageOS/android:
+  path: README.mkdn
+github.com/linuxserver/Heimdall:
+  path: readme.md
+github.com/love2d/love:
+  path: readme.md
+github.com/LSPosed/MagiskOnWSALocal:
+  path: docs/README.md
+github.com/lygyue/Books:
+  path: Readme.txt
+github.com/matrix-org/synapse:
+  path: README.rst
+github.com/MCModderAnchor/TACZ:
+  path: readme.md
+github.com/microsoft/VFSForGit:
+  path: Readme.md
+github.com/mikf/gallery-dl:
+  path: README.rst
+github.com/moghtech/komodo:
+  path: readme.md
+github.com/NaiboWang/EasySpider:
+  path: Readme.md
+github.com/NebuTech/NBMiner:
+  path: readme.md
+github.com/neoforged/NeoForge:
+  path: docs/README.md
+github.com/nextcloud/all-in-one:
+  path: readme.md
+github.com/nilbuild/developer-roadmap:
+  path: readme.md
+github.com/ocornut/imgui:
+  path: docs/README.md
+github.com/ONLYOFFICE/DocumentServer:
+  path: Readme.md
+github.com/Pathoschild/SMAPI:
+  path: docs/README.md
+github.com/Physton/sd-webui-prompt-all-in-one:
+  path: README.MD
+github.com/pubpub-zz/ppInk:
+  path: readme.md
+github.com/pymumu/smartdns:
+  path: ReadMe.md
+github.com/pypa/pipx:
+  path: docs/README.md
+github.com/renpy/renpy:
+  path: README.rst
+github.com/ryanoasis/nerd-fonts:
+  path: readme.md
+github.com/sabrogden/Ditto:
+  path: ReadMe.md
+github.com/searxng/searxng:
+  path: README.rst
+github.com/sherlock-project/sherlock:
+  path: docs/README.md
+github.com/TartaricAcid/TouhouLittleMaid:
+  path: readme.md
+github.com/TavernAI/TavernAI-v1:
+  path: readme.md
+github.com/TheOfficialFloW/NoNpDrm:
+  path: readme.md
+github.com/theonedev/onedev:
+  path: readme.md
+github.com/tiann/KernelSU:
+  path: docs/README.md
+github.com/tmux/tmux:
+  path: .github/README.md
+github.com/topjohnwu/Magisk:
+  path: README.MD
+github.com/TransformerOptimus/SuperAGI:
+  path: README.MD
+github.com/usebruno/bruno:
+  path: readme.md
+github.com/vastsa/FileCodeBox:
+  path: readme.md
+github.com/VueTubeApp/VueTube:
+  path: readme.md
+github.com/YanWenKun/ComfyUI-Docker:
+  path: README.adoc
+github.com/YomikoR/VapourSynth-Editor:
+  path: README
+
+# No README anywhere on the default branch; GitHub renders none either.
+github.com/hotio/cloudflareddns:
+  skip: true
+github.com/hotio/qbittorrent:
+  skip: true
