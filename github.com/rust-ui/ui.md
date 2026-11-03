@@ -1,0 +1,103 @@
+# Rust/UI — Dioxus
+
+Inspired by shadcn/ui, built for Rust fullstack apps. A component registry for Dioxus — Tailwind CSS, copy-paste ready.
+
+[![Rust/UI](https://www.rust-ui.com/og-image.png)](https://www.rust-ui.com)
+
+> **Early stage, experimental** — expect breaking changes. Open to contributors.
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) before opening an issue or pull request.
+
+> **Not affiliated with or endorsed by the Dioxus team.** This is an independent personal project.
+
+## Why Rust/UI?
+
+Rust/UI is not a component library you install as a crate. It is a collection of reusable components that you copy into your Dioxus applications.
+
+- **Full control:** The code is yours.
+- **Styling:** Built with Tailwind CSS v4.
+- **Framework:** Designed for the Dioxus fullstack ecosystem.
+- **Type safe:** Uses Rust's type system for component props.
+
+## Stack
+
+| Tool | Role |
+|------|------|
+| [Dioxus](https://dioxuslabs.com/) 0.7 | Fullstack Rust UI framework |
+| [Tailwind CSS](https://tailwindcss.com/) v4 | Styling |
+| [`tw_merge`](https://crates.io/crates/tw_merge) | Tailwind class merging |
+| [`icons`](https://crates.io/crates/icons) | Lucide icons for Dioxus |
+
+## Getting Started
+
+Visit [rust-ui.com](https://www.rust-ui.com) to browse components and get install commands.
+
+### Prerequisites
+
+- [Rust](https://www.rust-lang.org/tools/install)
+- [Node.js](https://nodejs.org/) and [pnpm](https://pnpm.io/installation) for Tailwind tooling
+- [Dioxus CLI](https://dioxuslabs.com/learn/0.7/getting_started/)
+
+Install the Dioxus CLI:
+
+```bash
+cargo install dioxus-cli
+```
+
+### Use a component
+
+Browse the [registry](https://www.rust-ui.com/), find a component, and copy its source into your project's `components/` directory.
+
+## Development
+
+Clone the repository, install JavaScript dependencies, then start Dioxus:
+
+```bash
+git clone https://github.com/rust-ui/dioxus-ui.git
+cd dioxus-ui
+pnpm install
+dx serve
+```
+
+`dx serve` automatically starts the Tailwind watcher and generates `assets/tailwind.css` from the root `tailwind.css` file. No second CSS process needed.
+
+Useful targets:
+
+```bash
+dx serve --web --fullstack
+dx serve --platform desktop
+dx serve --platform ios
+```
+
+Open [http://127.0.0.1:8080](http://127.0.0.1:8080).
+
+### Git hooks
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The pre-commit hook needs [`typos-cli`](https://github.com/crate-ci/typos) and the nightly rustfmt component (build toolchain stays stable, only formatting uses nightly):
+
+```bash
+cargo install typos-cli
+rustup toolchain install nightly --profile minimal --component rustfmt
+```
+
+### iOS simulator
+
+`dx serve --platform ios` targets whatever simulator is currently booted. To pick a specific device, use one of the helper scripts (they shut down other simulators, boot the right one, uninstall the old build, then run `dx serve`):
+
+```bash
+./run_ios_dioxus.sh       # uses whatever simulator is already booted
+./run_ios_iphone_pro.sh   # boots iPhone 16 Pro (18.6)
+./run_ios_ipad_pro.sh     # boots iPad Pro (12.9-inch, 3rd gen)
+```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=rust-ui/ui&type=Date)](https://star-history.com/#rust-ui/ui&Date)
+
+## License
+
+MIT — see [LICENSE](./LICENSE).

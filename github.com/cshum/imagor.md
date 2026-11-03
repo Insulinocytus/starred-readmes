@@ -1,0 +1,76 @@
+# imagor
+
+[![Test Status](https://github.com/cshum/imagor/workflows/test/badge.svg)](https://github.com/cshum/imagor/actions/workflows/test.yml)
+[![Codecov](https://img.shields.io/codecov/c/github/cshum/imagor
+)](https://codecov.io/gh/cshum/imagor)
+[![Docker Hub](https://img.shields.io/badge/docker-shumc/imagor-blue.svg)](https://hub.docker.com/r/shumc/imagor/)
+[![Docs](https://img.shields.io/badge/docs-docs.imagor.net-white)](https://docs.imagor.net)
+
+imagor is a fast, secure image processing server and Go library.
+
+imagor uses one of the most efficient image processing libraries,
+[libvips](https://github.com/libvips/libvips) with the Go binding [vipsgen](https://github.com/cshum/vipsgen). It is typically 4-8x [faster](https://github.com/libvips/libvips/wiki/Speed-and-memory-use) than using the quickest ImageMagick settings.
+imagor implements libvips [streaming](https://www.libvips.org/2019/11/29/True-streaming-for-libvips.html) to facilitate parallel processing pipelines and achieve high network throughput.
+[Benchmarks](https://docs.imagor.net/benchmarks) show imagor is one of the fastest image processing servers.
+
+imagor supports a wide range of image-processing use cases, available as a HTTP server with first-class Docker support. It adopts the thumbor URL syntax representing a high-performance drop-in replacement.
+
+imagor is built with speed, security and extensibility in mind. Alongside there is [imagorvideo](https://docs.imagor.net/imagorvideo) bringing video thumbnail capability through ffmpeg C bindings, and [Imagor MCP](https://docs.imagor.net/mcp) bringing template composition to agents.
+
+### Quick Start
+
+```bash
+docker run -p 8000:8000 shumc/imagor -imagor-unsafe -imagor-auto-webp
+```
+
+[![Deploy on Elestio](https://elest.io/images/logos/deploy-to-elestio-btn.png)](https://dash.elest.io/deploy?soft=Imagor&id=203)
+
+Original images:
+
+```
+https://raw.githubusercontent.com/cshum/imagor/master/testdata/gopher.png
+https://raw.githubusercontent.com/cshum/imagor/master/testdata/dancing-banana.gif
+https://raw.githubusercontent.com/cshum/imagor/master/testdata/gopher-front.png
+```
+
+<img src="https://raw.githubusercontent.com/cshum/imagor/master/testdata/gopher.png" height="100" /> <img src="https://raw.githubusercontent.com/cshum/imagor/master/testdata/dancing-banana.gif" height="100" /> <img src="https://raw.githubusercontent.com/cshum/imagor/master/testdata/gopher-front.png" height="100" />
+
+Try out the following image URLs:
+
+```
+http://localhost:8000/unsafe/fit-in/200x200/filters:fill(white)/https://raw.githubusercontent.com/cshum/imagor/master/testdata/gopher.png
+http://localhost:8000/unsafe/200x200/smart/filters:fill(white):format(jpeg):quality(80)/https://raw.githubusercontent.com/cshum/imagor/master/testdata/gopher.png
+http://localhost:8000/unsafe/fit-in/-180x180/10x10/filters:hue(290):saturation(100):fill(yellow)/raw.githubusercontent.com/cshum/imagor/master/testdata/gopher.png
+http://localhost:8000/unsafe/30x40:100x150/filters:fill(cyan)/raw.githubusercontent.com/cshum/imagor/master/testdata/dancing-banana.gif
+http://localhost:8000/unsafe/fit-in/200x150/filters:fill(yellow):watermark(raw.githubusercontent.com/cshum/imagor/master/testdata/gopher-front.png,repeat,bottom,0,40,40)/raw.githubusercontent.com/cshum/imagor/master/testdata/dancing-banana.gif
+```
+
+<img src="https://raw.githubusercontent.com/cshum/imagor/master/testdata/demo1.jpg" height="100" /> <img src="https://raw.githubusercontent.com/cshum/imagor/master/testdata/demo2.jpg" height="100" /> <img src="https://raw.githubusercontent.com/cshum/imagor/master/testdata/demo4.jpg" height="100" /> <img src="https://raw.githubusercontent.com/cshum/imagor/master/testdata/demo3.gif" height="100" /> <img src="https://raw.githubusercontent.com/cshum/imagor/master/testdata/demo5.gif" height="100" />
+
+## Documentation
+
+Full documentation is available at [docs.imagor.net](https://docs.imagor.net).
+
+- [Image Endpoint](https://docs.imagor.net/image-endpoint)
+- [Filters](https://docs.imagor.net/filters)
+- [Storage](https://docs.imagor.net/storage)
+- [Security](https://docs.imagor.net/security)
+- [Configuration](https://docs.imagor.net/configuration)
+
+## Templates
+
+**[Imagor MCP](https://docs.imagor.net/mcp)** — an MCP server and a skill that add a template layer to imagor. An agent writes a layout: OG cards, product grids, quotes, testimonials, and it compiles to one imagor URL.
+
+<a href="https://github.com/cshum/imagor-mcp/blob/main/docs/cookbook.md"><img src="https://raw.githubusercontent.com/cshum/imagor-mcp/main/docs/gallery/avatar-card.png" height="100" /></a> <a href="https://github.com/cshum/imagor-mcp/blob/main/docs/cookbook.md"><img src="https://raw.githubusercontent.com/cshum/imagor-mcp/main/docs/gallery/circles.png" height="100" /></a> <a href="https://github.com/cshum/imagor-mcp/blob/main/docs/cookbook.md"><img src="https://raw.githubusercontent.com/cshum/imagor-mcp/main/docs/gallery/product-grid.png" height="100" /></a> <a href="https://github.com/cshum/imagor-mcp/blob/main/docs/cookbook.md"><img src="https://raw.githubusercontent.com/cshum/imagor-mcp/main/docs/gallery/tip.png" height="100" /></a>
+
+**[See the recipes »](https://github.com/cshum/imagor-mcp/blob/main/docs/cookbook.md)**
+
+## Consulting
+
+If your team is running imagor in production and needs help with architecture, custom
+imagor components, multi-tenant setups, loaders/storage backends, migration planning,
+or performance tuning, commercial support and consulting are available.
+See the [Consulting](https://docs.imagor.net/consulting) page for details.
+
+For bugs and feature requests, please continue to use [GitHub Issues](https://github.com/cshum/imagor/issues).
+For consulting inquiries, contact [imagor@cshum.com](mailto:imagor@cshum.com).

@@ -1,0 +1,158 @@
+<p align="center">
+  <a href="https://www.bsbsb.top"><img src="public/icons/LogoSponsorBlocker.svg" width="256" height="256" alt="Logo"></img></a>
+
+  <br/>
+  <sub>Logo by <a href="https://github.com/munadikieh">@munadikieh</a>. Modified by Yaodong</sub>
+</p>
+
+<h1 align="center">小电视空降助手</h1>
+
+<div align="center">
+
+[![Star History Rank](https://api.star-history.com/badge?repo=hanydd/BilibiliSponsorBlock&type=rank)](https://www.star-history.com/hanydd/bilibilisponsorblock) [![GitHub Trending Repository of the Day](https://api.star-history.com/badge?repo=hanydd/BilibiliSponsorBlock&type=trending)](https://www.star-history.com/hanydd/bilibilisponsorblock)
+
+
+[![LICENSE](https://img.shields.io/github/license/hanydd/BilibiliSponsorBlock)](LICENSE)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/hanydd/BilibiliSponsorBlock/ci.yml)](https://github.com/hanydd/BilibiliSponsorBlock/actions/workflows/ci.yml)
+[![用户数量](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fwww.bsbsb.top%2Fapi%2FgetTotalStats&query=activeUsers&suffix=人&label=用户&color=green&cacheSeconds=3600)](https://www.bsbsb.top/stats/)
+[![片段数量](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fwww.bsbsb.top%2Fapi%2FgetTotalStats&query=totalSubmissions&label=共提交了&suffix=个片段&color=red&cacheSeconds=3600)](https://www.bsbsb.top/stats/)
+[![节省时间](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fwww.bsbsb.top%2Fapi%2FgetTotalStats&query=minutesSaved&suffix=%E5%88%86%E9%92%9F&label=%E5%85%B1%E8%8A%82%E7%9C%81&color=orange&cacheSeconds=3600)](https://www.bsbsb.top/stats/)
+
+
+| Chrome | Edge | FireFox | 讨论群 |
+|---------|----------|----------|----------|
+| [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/eaoelafamejbnggahofapllmfhlhajdd?label=Chrome插件商店)](https://chrome.google.com/webstore/detail/eaoelafamejbnggahofapllmfhlhajdd) | [![Microsoft Edge Add-ons](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fmicrosoftedge.microsoft.com%2Faddons%2Fgetproductdetailsbycrxid%2Fkhkeolgobhdoloioehjgfpobjnmagfha&query=%24.version&prefix=v&label=Edge%E6%8F%92%E4%BB%B6%E5%95%86%E5%BA%97&color=orange)](https://microsoftedge.microsoft.com/addons/detail/khkeolgobhdoloioehjgfpobjnmagfha) | [![Firefox](https://img.shields.io/amo/v/bilisponsorblock?label=Mozilla插件商店)](https://addons.mozilla.org/addon/bilisponsorblock/) | [![Group](https://img.shields.io/badge/Telegram-2CA5E0?style=flat-squeare&logo=telegram&logoColor=white)](https://t.me/bsbsb_top) |
+
+
+</div>
+
+
+受够了视频中无处不在的赞助广告了吗？受够了看了一半才发现的软广视频了吗？小电视空降助手是一款帮你精准空降到广告之后的浏览器插件。插件自动获取并跳过广告片段，让你的视频体验毫无中断！
+
+除了广告之外，插件还支持跳过其他类别的片段，例如开场结尾的动画、一键三连提示，或者直接空降到视频封面的位置。插件中所有的标注片段都来自网友标注，您也可以提交自己的片段来为空降指挥部添砖加瓦。
+
+想知道大佬们提交了多少片段？在[排行榜](https://www.bsbsb.top/stats/)看看吧。
+
+目前本项目由我个人在业余时间维护，如果你想支持我，欢迎查看[赞助](https://www.bsbsb.top/donate/)。
+
+本插件移植自插件[SponsorBlock](https://github.com/ajayyy/SponsorBlock)，保留了大部分的 UI 和使用方法，加入了一些小电视特色的功能。
+
+# 安装
+
+- Chrome、Edge 及其他 Chromium 浏览器需要 102 或更新的内核版本。
+
+- 目前上架了 [Chrome 应用商店](https://chromewebstore.google.com/detail/eaoelafamejbnggahofapllmfhlhajdd)、[Edge 应用商店](https://microsoftedge.microsoft.com/addons/detail/khkeolgobhdoloioehjgfpobjnmagfha)和[火狐应用商店](https://addons.mozilla.org/en-US/firefox/addon/bilisponsorblock/)。如果你知道更多流行的浏览器插件商店，欢迎留言~
+
+- 如果你无法打开上面的商店，可以尝试从 [GitHub Release](https://github.com/hanydd/BilibiliSponsorBlock/releases/latest) 页面获取未打包的插件。
+
+    1. 根据您浏览器的类型下载适合的版本，Chrome、Edge、360 和基于 Chromium 的国产浏览器下载 `ChromiumExtension.zip`；火狐浏览器下载`FirefoxExtension.zip`。并解压缩。
+
+    1. 打开浏览器的插件管理页面，启用“开发者模式”，点击`加载已解压的扩展程序`，选择刚刚下载解压的插件文件夹，就可以完成安装。
+
+## macOS Safari 安装（开发测试包或源码构建）
+
+### GitHub Actions 测试应用
+
+新版本发布时，Release 工作流会从该版本 tag 自动构建并上传 `Safari-macOS-universal.zip`，
+解压后可获得包含扩展的 macOS 应用。原有 `SafariExtension.zip` 仍保留，它仅包含网页扩展资源，不是 macOS 应用。
+下面的签名限制和启用步骤同时适用于 Release 和 Actions 中的测试应用。
+
+仓库的 **Actions → Safari macOS** 工作流会在 push、PR 时构建，也支持手动运行。
+运行成功后，登录 GitHub，在该次运行的 Artifacts 中下载 `Safari-macOS-universal`，
+解压其中的 `Safari-macOS-universal.zip` 即可得到包含扩展的 `.app`，同时支持 Intel 和 Apple Silicon。
+
+这是采用 ad-hoc 签名、未经 Apple 公证的开发测试包，不是 App Store 安装包。
+macOS 可能阻止打开；仅在确认来源可信后按系统提示允许打开。
+测试时还需要在 Safari 开发设置中启用“允许未签名的扩展”，然后在“设置 → 扩展”中启用扩展并授予网站权限。
+Safari 重启后可能需要重新允许未签名扩展。请只启用一个同名扩展副本。
+CI 构建成功仅代表编译、签名完整性和双架构检查通过，不代表 Safari 功能测试通过。
+
+本机构建同样的测试包（需要完整 Xcode、Node.js 22 和已安装的 npm 依赖及 `config.json`）：
+
+```bash
+npm run build:safari:app
+```
+
+输出位于 `safari/artifacts/Safari-macOS-universal.zip`。
+正式面向普通用户分发仍需 Developer ID 签名及公证，或通过 App Store 发布。
+
+### 自行生成 Xcode 工程
+
+Safari 版本通过 Safari Web Extension 打包。项目已提供一键脚本：
+
+```bash
+# 先准备配置文件和依赖
+cp config.json.example config.json
+npm ci
+
+# 构建 Safari 扩展并生成 macOS Xcode 工程
+npm run build:safari:macos
+```
+
+默认会在项目根目录生成 `safari/` Xcode 工程。然后：
+
+1. 使用 Xcode 打开 `safari/` 工程并编译运行。
+1. 打开 Safari -> 设置 -> 扩展，启用对应扩展。
+
+可选环境变量（用于自定义工程信息）：
+
+```bash
+BSB_SAFARI_APP_NAME="小电视空降助手" \
+BSB_SAFARI_BUNDLE_ID="top.bsbsb.safari" \
+BSB_SAFARI_PROJECT_DIR="safari" \
+npm run build:safari:macos
+```
+
+# 功能
+
+## 使用说明
+
+如果你使用过原插件，你会发现在核心功能和交互上，本插件基本没有做出大的改动。可以先参照原插件的使用方法尝试使用。
+
+可以先在这个[示例视频](https://www.bilibili.com/video/BV1bY4y1v7Mb/)上试一试精准空降的快乐！
+
+视频使用说明正在计划制作中。
+
+## 相比[原插件](https://github.com/ajayyy/SponsorBlock)变化
+
+- 放弃了多语言支持，只支持简体和繁体中文。
+
+- 放弃了移动端H5网页支持。
+
+- 放弃了第三方镜像站支持。如果有使用人数多的镜像站，欢迎讨论添加支持。
+
+- 加入了绑定搬运视频的功能。绑定的视频可以自动从 SponsorBlock 数据库中获取片段信息。
+
+- 更新 UI。
+
+## 功能更新计划
+
+参考 [Github Project](https://github.com/users/hanydd/projects/2/)
+
+# 服务端及数据
+
+为了方便大家二次开发，所有片段的数据现在开放下载：https://download.bsbsb.top/database.zip
+
+# API
+
+API文档：https://github.com/hanydd/BilibiliSponsorBlock/wiki/API
+
+测试视频 [BV14741127BN](https://www.bilibili.com/video/BV14741127BN)
+
+本项目对 API 改动不大，也可以先参考[原项目文档](https://wiki.sponsor.ajay.app/w/API_Docs)。
+
+# 搭建项目
+
+详见 [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## 维护者发布
+
+Chrome、Firefox 和 Edge 商店可以通过 GitHub Actions 一次提交，首次使用前需要配置商店 API 凭据。参见 [发布浏览器扩展](docs/publishing.md)。
+
+# 致谢
+
+感谢[ajayyy](https://github.com/ajayyy)创造的[SponsorBlock](https://github.com/ajayyy/SponsorBlock)给我的启发！
+
+### 开源协议
+
+本项目遵循 GNU GPL v3 开源协议。

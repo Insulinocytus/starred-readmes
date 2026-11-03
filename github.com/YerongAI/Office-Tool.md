@@ -1,0 +1,81 @@
+#
+
+<p align="center">
+<img alt="Office Tool Plus Logo" src="https://otp.landian.vip/assets/images/logo.webp"/>
+</p>
+
+<p align="center">
+<a href="https://blog.yerong.org/" target="_blank"><img alt="Author" src="https://img.shields.io/badge/Author-Yerong-blue?style=flat-square"/></a>
+<img alt="Language" src="https://img.shields.io/badge/Language-C%23-green?style=flat-square"/>
+<a href="https://otp.landian.vip/" target="_blank"><img alt="Release"
+src="https://img.shields.io/github/v/release/YerongAI/Office-Tool?style=flat-square"/></a>
+<img alt="License" src="https://img.shields.io/github/license/YerongAI/Office-Tool?style=flat-square"/>
+</p>
+
+> A powerful and useful tool for Office deployments.
+
+Supports custom deployment and activation of the following products:
+
+- Microsoft 365.
+- Office 2016, 2019, 2021, 2024.
+- Visio 2016, 2019, 2021, 2024 & Online Plan 2.
+- Project 2016, 2019, 2021, 2024 & Online Desktop Client.
+
+Functions and Features:
+
+- Create, import or export Office installation configuration.
+- Download Office in any language, and from any update channel.
+- Install Office in just a few steps, choose the product, language, and apps you want.
+- Modify Office installation, easy to add or remove anything at once.
+- Create Office ISO, supports default installation config and silent installation config.
+- Activate Office, support online activation, phone activation and KMS activation.
+- Support Office activation management, including license management, key management and KMS management.
+- Change Office update channel, support upgrading/downgrading Office without reinstalling Office.
+- Force remove Office while it can’t be uninstalled in normal way, supports from Office 2003 to the latest Office version.
+- Fast and stable to convert Office documents, based on Office COM.
+- Integrated Office tools, including resetting settings, fixing Office problems.
+- Personalize theme, build your special Office Tool Plus.
+
+## Download and quick start
+
+- [Download](https://otp.landian.vip/)
+- [Documentation](https://otp.landian.vip/help/)
+
+Or download Office Tool Plus using PowerShell:
+
+```powershell
+
+irm https://officetool.plus | iex
+
+```
+
+## Thanks to the Translators
+
+| Culture | Name | Translators |
+| :-- | :-- | :-- |
+| ar-ly | العربية (ليبيا) | Abdul Salam Bin Ali |
+| de-de | Deutsch (Deutschland) | [Berny23](https://steamcommunity.com/id/Berny23) |
+| en-gb | English (United Kingdom) | [Mcforwin](https://github.com/Mcforwin) |
+| en-us | English (United States) | [Yerong](https://www.officetool.plus/) |
+| hu-hu | magyar (Magyarország) | [John Fowler](https://github.com/JohnFowler58) |
+| id-id | Bahasa Indonesia (Indonesia) | [Ida Bagus Anom Sanjaya](https://fb.me/Anom.Sanjaya17), [Reno Sifana Paksi](https://linktr.ee/renosifana.paksi) |
+| it-it | italiano (Italia) | [garf02](https://github.com/garf02), [bovirus](https://github.com/bovirus) |
+| ja-jp | 日本語 (日本) | [秋山へいわ](https://github.com/akio1321) |
+| ko-kr | 한국어 (대한민국) | [VenusGirl❤](https://github.com/VenusGirl) |
+| my-mm | မြန်မာ (မြန်မာ) | [Paing Thet Kyaw](https://github.com/Paing100) |
+| nl-nl | Nederlands (Nederland) | [Kajoe](https://github.com/Kajoe1) |
+| pl-pl | polski (Polska) | [JakubDriver](https://github.com/jakubdriver) |
+| pt-br | português (Brasil) | [Igor Rückert](https://github.com/igorruckert) |
+| ru-ru | pусский (Россия) | [Долматов Алексей](https://github.com/iDolmatov) |
+| th-th | ไทย (ไทย) | [dekthaiinchina](https://github.com/dekthaiinchina) |
+| tr-tr | Türkçe (Türkiye) | [Tayfun Akkoyun](https://github.com/crasadure) |
+| uk-ua | українська (Україна) | [Olexii Korshunov](https://github.com/korshunov-olexiy) |
+| vi-vn | Tiếng Việt (Việt Nam) | [Nguyen Quang Trung](https://github.com/TrungThachDau) |
+| zh-tw | 繁體中文 (台灣) | [Yi Chi](https://www.cotpear.com) |
+| zho-yue | 粵語 (廣東) | [Yerong](https://www.officetool.plus/) |
+
+## About
+
+© 2016-2026 Yerong. All Rights Reserved.
+
+> Blog [@Yerong の小窝](https://blog.yerong.org/) · GitHub [@YerongAI](https://github.com/YerongAI) · Telegram [@Office Tool Plus](https://t.me/s/otp_channel) · Discord [Office Tool Plus](https://otp.landian.vip/redirect/?ref=discord)

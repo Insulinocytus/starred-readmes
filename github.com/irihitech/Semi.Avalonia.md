@@ -1,0 +1,96 @@
+# Semi Avalonia
+
+[![Semi Avalonia](https://img.shields.io/nuget/v/Semi.Avalonia.svg?color=red&style=flat-square)](https://www.nuget.org/packages/Semi.Avalonia/)
+[![Semi Avalonia](https://img.shields.io/nuget/dt/Semi.Avalonia.svg?style=flat-square)](https://www.nuget.org/packages/Semi.Avalonia/)
+[![GitCode](https://gitcode.com/IRIHI_Technology/Semi.Avalonia/star/badge.svg)](https://gitcode.com/IRIHI_Technology/Semi.Avalonia)
+
+[中文](./README_CN.md)
+
+Avalonia Theme inspired by Semi Design
+
+Semi.Avalonia can be previewed in the browser [here](https://irihitech.github.io/Semi.Avalonia/)
+
+If you are looking for more detailed documentation, Please visit [Semi Documentation](https://docs.irihi.tech/semi/)
+
+If you are looking for more customized controls, Please try [Ursa](https://github.com/irihitech/Ursa.Avalonia)
+
+![Light](./docs/demo.jpg)
+
+## How to Use
+
+### Installation
+
+```bash
+dotnet add package Semi.Avalonia
+```
+
+Include Semi Design Styles in application:
+
+```xaml
+<Application
+    ...
+    xmlns:semi="https://irihi.tech/semi">
+    <Application.Styles>
+        <semi:SemiTheme Locale="zh-CN" />
+    </Application.Styles>
+</Application>
+```
+
+That's all.
+
+ColorPicker, DataGrid, TreeDataGrid, Dock, Tabalonia and AvaloniaEdit are distributed in separated packages. Please install if you need.
+
+```bash
+dotnet add package Semi.Avalonia.ColorPicker
+dotnet add package Semi.Avalonia.DataGrid
+dotnet add package Semi.Avalonia.TreeDataGrid
+dotnet add package Semi.Avalonia.Dock
+dotnet add package Semi.Avalonia.Tabalonia
+dotnet add package Semi.Avalonia.AvaloniaEdit
+```
+
+```xaml
+<Application.Styles>
+    <semi:ColorPickerSemiTheme />
+    <semi:DataGridSemiTheme />
+    <semi:TreeDataGridSemiTheme />
+    <semi:DockSemiTheme />
+    <semi:TabaloniaSemiTheme />
+    <semi:AvaloniaEditSemiTheme />
+</Application.Styles>
+```
+
+Notice: Dock, Tabalonia and AvaloniaEdit are delivered via nuget for free, but not open source. Please read the license and agree to continue use these packages. If you need source code, please contact us via email: [contact@irihi.tech](contact@irihi.tech)
+
+## Demo
+
+You can always download demo executable to play around with Semi Avalonia Themes.
+<https://github.com/irihitech/Semi.Avalonia/releases>
+
+## Support
+
+We offer limited free community support for Semi Avalonia and Ursa. If you have any question or suggestion, feel free to raise issues and discussions via GitHub, and you are welcomed to join our group via FeiShu(Lark)
+
+![FeiShu](./docs/community-support.png)
+
+## Version compatibility
+
+| Semi Avalonia Version | Avalonia Version |
+|:----------------------|:-----------------|
+| 11.3.7                | >=11.3.7         |
+| 11.2.1                | >=11.2.1         |
+| 11.2.0                | End of Life      |
+| 11.1.x                | End of Life      |
+
+## Credits
+
+[Semi Design](https://semi.design/)
+
+[Avalonia](https://github.com/AvaloniaUI/Avalonia)
+
+[FluentAvalonia](https://github.com/amwx/FluentAvalonia)
+
+[Material Design Icons](https://pictogrammers.com/library/mdi/)
+
+[CommunityToolKit](https://github.com/CommunityToolkit/dotnet)
+
