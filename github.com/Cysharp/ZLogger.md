@@ -245,7 +245,7 @@ By adding Providers, you can configure where the logs are output. ZLogger has th
 | ZLoggerFileLoggerProvider              | ZLoggerFile         | AddZLoggerFile         |
 | ZLoggerRollingFileLoggerProvider       | ZLoggerRollingFile  | AddZLoggerRollingFile  |
 | ZLoggerStreamLoggerProvider            | ZLoggerStream       | AddZLoggerStream       |
-| ZLoggerInMemoryProcessorLoggerProvider | ZLoggerInMemory     | AddZLoggerInMemory     |
+| ZLoggerInMemoryLoggerProvider          | ZLoggerInMemory     | AddZLoggerInMemory     |
 | ZLoggerLogProcessorLoggerProvider      | ZLoggerLogProcessor | AddZLoggerLogProcessor |
 
 All Providers can take an Action that sets `ZLoggerOptions` as the last argument. As follows.
@@ -267,7 +267,7 @@ builder.Logging
     });
 ```
 
-If you are using `Microsoft.Extensions.Configuration`, you can set the log level through configuration. In this case, alias of Provider can be used.  for example:
+If you are using `Microsoft.Extensions.Configuration`, you can set the log level through configuration. In this case, use the alias of the Provider (or its full type name, e.g. `ZLogger.Providers.ZLoggerConsoleLoggerProvider`). For example:
 
 ```json
 {
@@ -275,13 +275,19 @@ If you are using `Microsoft.Extensions.Configuration`, you can set the log level
     "LogLevel": {
       "Default": "Information"
     },
-    "ZLoggerConsoleLoggerProvider": {
+    "ZLoggerConsole": {
       "LogLevel": {
         "Default": "Debug"
       }
     }
   }
 }
+```
+
+The Generic Host (`Host.CreateApplicationBuilder`, `WebApplication.CreateBuilder`, etc.) loads the `Logging` section automatically. Otherwise, load it with `AddConfiguration` from `Microsoft.Extensions.Logging.Configuration`.
+
+```csharp
+builder.Logging.AddConfiguration(configuration.GetSection("Logging"));
 ```
 
 Each Provider's behavior can be modified using the common `ZLoggerOptions`. For details, please refer to the [ZLoggerOptions](#zloggeroptions) section. Additionally, you can customize structured logging (JSON Logging) using the `UseFormatter` method within these options. For more information on this, check the [Formatter Configurations](#formatter-configurations) section.
@@ -493,6 +499,37 @@ logging.AddZLoggerConsole(options =>
     });
 });
 ```
+
+To write content whose length changes per log, such as scopes, use `GetUtf8StringWriter()` to write directly to the buffer. If you don't use the message template, pass an empty template (`$""`). The writer must be flushed, so declare it with `using` (or call `Flush()`); otherwise nothing is written.
+
+```csharp
+logging.AddZLoggerConsole(options =>
+{
+    options.IncludeScopes = true;
+    options.UsePlainTextFormatter(formatter =>
+    {
+        // => Type=Foo => Id=17
+        // log message...
+        formatter.SetPrefixFormatter($"", (in MessageTemplate template, in LogInfo info) =>
+        {
+            if (info.ScopeState is not { IsEmpty: false } scope) return;
+
+            using var writer = template.GetUtf8StringWriter();
+            foreach (var (key, value) in scope.Properties)
+            {
+                if (key == "{OriginalFormat}") continue;
+                writer.AppendLiteral(" => ");
+                writer.AppendFormatted(key);
+                writer.AppendLiteral("=");
+                writer.AppendFormatted(value);
+            }
+            writer.AppendLine();
+        });
+    });
+});
+```
+
+When you use both, call `template.Format(...)` first and then write with `GetUtf8StringWriter()`; the content is appended after the template.
 
 SetExceptionFormatter allows you to customize the display when outputting exceptions. This can be easily converted to a string using `Utf8String.Format`.
 

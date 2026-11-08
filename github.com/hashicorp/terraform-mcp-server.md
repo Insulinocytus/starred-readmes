@@ -51,7 +51,8 @@ automation and interaction capabilities for Infrastructure as Code (IaC) develop
 <a href="#available-tools">Available Tools</a><br>
 <a href="#available-resources">Available Resources</a><br>
 <a href="#available-metrics">Available Metrics</a><br>
-<a href="#tool-filtering">Tool Filtering</a>
+<a href="#tool-filtering">Tool Filtering</a><br>
+<a href="#search-toolset">Search Toolset</a>
 </td>
 <td width="34%" valign="top">
 <a href="#session-modes">Session Modes</a><br>
@@ -105,6 +106,10 @@ automation and interaction capabilities for Infrastructure as Code (IaC) develop
 |----------|-------------|---------|
 | `TFE_ADDRESS` | Sets the Terraform Enterprise/HCP Terraform address for API calls. Must include the protocol (e.g., `https://app.terraform.io`). In streamable-http mode this is the only way to set the address; it cannot be supplied by clients via header or query parameter. | Optional |
 | `TFE_TOKEN` | Terraform Enterprise API token | `""` (empty) |
+| `TF_MCP_QUERY_WORKSPACE` | Proposed source workspace used by Search/query tools unless the user supplies an explicit workspace override. The agent confirms the resolved source before the query workflow. Independent of the import destination. | Unset; falls back to `TF_WORKSPACE` |
+| `TF_MCP_IMPORT_WORKSPACE` | Proposed import destination used by import tools unless the user supplies an explicit target override. The agent must always present and confirm the target before calling an import tool. Separate from the query workspace. | Unset; falls back to `TF_WORKSPACE` |
+| `TF_WORKSPACE` | Fallback source-workspace default when `TF_MCP_QUERY_WORKSPACE` is unset and fallback import-target default when `TF_MCP_IMPORT_WORKSPACE` is unset. Neither use replaces agent confirmation. | Unset |
+| `TF_CLOUD_ORGANIZATION` | Proposed Search source organization used when no explicit organization override is supplied. The agent confirms the resolved source before the query workflow. | Unset |
 | `TF_MCP_SHARED_SECRET` | Shared secret sent as the `X-Tf-Mcp-Secret` header on requests to HCP Terraform / TFE, used to identify requests originating from a hosted MCP deployment. Should only be used over TLS. | `""` (empty) |
 | `TFE_SKIP_TLS_VERIFY` | Skip HCP Terraform or Terraform Enterprise TLS verification | `false` |
 | `LOG_LEVEL` | Logging level: `trace`, `debug`, `info`, `warn`, `error`, `fatal`, `panic` (overrides `--log-level` flag) | `info` |
@@ -126,6 +131,7 @@ automation and interaction capabilities for Infrastructure as Code (IaC) develop
 | `MCP_FORWARD_CLIENT_IP` | Forward the client IP to HCP Terraform / TFE via `X-Forwarded-For`. Set to `true` to enable | `false` |
 | `MCP_REMOTE_IP_METHOD` | How the client IP is sourced when forwarding is enabled: `RemoteAddr` (direct connection only), `X-Real-IP`, or `X-Forwarded-For` | `RemoteAddr` |
 | `MCP_XFF_TRUSTED_HOPS` | Number of trusted proxy hops counted from the right of the `X-Forwarded-For` chain. Only used when `MCP_REMOTE_IP_METHOD=X-Forwarded-For` | `0` |
+| `MCP_PPROF_ADDR` | Address to serve Go pprof profiling endpoints on, like `127.0.0.1:6060`. Off when unset. See [Profiling](#profiling) | `""` (empty) |
 | `ENABLE_TF_OPERATIONS` | Enable tools that require explicit approval | `false` |
 | `OTEL_METRICS_ENABLED` | Enable tools and server metrics using otel | `false` |
 | `OTEL_METRICS_SERVICE_VERSION` | Version of the terraform-mcp-server sending metrics, which is used to set metric attributes. It also helps track metrics across different deployments | `latest` |
@@ -700,7 +706,8 @@ Second, the MCP server records custom tool metrics around tool execution using M
 1. mcp_tool_calls_total
 2. mcp_tool_errors_total
 3. mcp_tool_duration_seconds
-
+4. mcp_client_type_total
+5. mcp_org_tool_calls_total
 
 ### Tool Filtering
 
@@ -715,6 +722,18 @@ terraform-mcp-server --tools=search_provider_docs,get_provider_details,list_work
 ```
 
 Available toolsets: `registry`, `registry-private`, `terraform`, `all`, `default`. See `pkg/toolsets/mapping.go` for individual tool names. Cannot use both flags together.
+
+## Search Toolset
+
+Search tools resolve a proposed source from explicit arguments first, then server-configured query defaults. Without an override, the source workspace uses `TF_MCP_QUERY_WORKSPACE`, then `TF_WORKSPACE`, and the source organization uses `TF_CLOUD_ORGANIZATION`. Import tools independently resolve a proposed target workspace from an explicit argument, then `TF_MCP_IMPORT_WORKSPACE`, then `TF_WORKSPACE`; they never use `TF_MCP_QUERY_WORKSPACE` as the target default. The target organization uses an explicit argument, then `TF_CLOUD_ORGANIZATION`, and must still match the QueryRun source organization. Overrides apply independently to each field. If either field was omitted, present and confirm the complete resolved pair before continuing. Empty and whitespace-only values are treated as unset. No `TF_MCP_ORGANIZATION` variable is used.
+
+On a remote server, these environment variables are server-wide defaults shared by all users of that server. Explicit `terraform_org_name` and `workspace_name` arguments override the corresponding defaults for that request; they do not change the server configuration or other users' requests. `organization_name` is not accepted as a Search tool input alias.
+
+When either scope field is omitted, the Mark3Labs route returns a normal, non-error JSON result with `status` (`input_required`), `proposed_scope`, and `missing_inputs` before tool-handler client acquisition or scoped API access. The agent presents the complete proposal, obtains confirmation or corrections, and retries with explicit `terraform_org_name` and `workspace_name`. The official SDK route requests the same complete pair through `CallToolResult.InputRequests`. Both routes require explicit scope on the continued call and make no scoped API request while requesting input.
+
+**Source confirmation and query execution approval:** Before provider discovery for a new query, the agent confirms the resolved source organization and workspace. Before calling `execute_query`, the agent separately summarizes that source and the query selections (provider, resource types, and filters, if any), explains that execution starts a query run without creating or modifying infrastructure, and waits for user approval. If the source or query selections change, approval must be obtained again. This is agent-driven guidance, not a server-enforced approval parameter or status; clients calling the tool directly are not blocked by an approval check.
+
+Pass workspace variables to the **MCP server process**, for example through the environment settings in OpenCode's JSON/JSONC configuration or an equivalent MCP-client configuration. A container or remote deployment must receive them in its own environment. The server does not read client configuration files or inherit the agent's separate shell environment. When import is requested, the agent always asks for and confirms the target organization, target workspace, and existing local configuration directory. A query default or configured import default never authorizes that target. After confirmation, pass the complete target explicitly to `prepare_import` and `verify_import_plan`. The read-only import tools do not upload configuration, create a speculative Run, apply an import, or modify infrastructure.
 
 ## Transport Support
 
@@ -789,7 +808,6 @@ Earlier versions used the leftmost `X-Forwarded-For` value when the header was p
 |--------|-------------|
 | `TFE_TOKEN` | Terraform API token |
 | `Authorization: Bearer <token>` | Alternative method using standard Bearer auth |
-| `TFE_SKIP_TLS_VERIFY` | Skip TLS verification for the request |
 
 ### Example: curl
 
@@ -807,9 +825,14 @@ curl -X POST http://localhost:8080/mcp \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize",...}'
 ```
 
+### Request IDs
+
+In streamable-http mode every request gets its own correlation ID. The server sends it as the `X-Request-Id` header on its calls to HCP Terraform / TFE and the public registry, returns it to the client in the `X-Request-Id` response header, and logs it as `request_id` on tool calls. In stdio mode each tool call gets its own ID. The server always generates the ID itself, so an `X-Request-Id` sent by the client is ignored.
+
 ### Security Considerations
 
 - **TFE_ADDRESS cannot be set by clients.** In streamable-http mode the Terraform address is sourced only from the server-side `TFE_ADDRESS` environment variable (or the default). Requests that attempt to set `TFE_ADDRESS` via HTTP header or query parameter are rejected with a 403. This prevents a client from redirecting requests, and the `Authorization` token, to a malicious server.
+- **TFE_SKIP_TLS_VERIFY cannot be set by clients.** In streamable-http mode it is read only from the server-side environment variable. If a client sends it as a header or query parameter it is ignored and a warning is logged, so a client cannot turn off certificate verification on the server's calls to HCP Terraform / TFE.
 - **Hosted deployment identification:** setting `TF_MCP_SHARED_SECRET` sends that value as the `X-Tf-Mcp-Secret` header on every HCP Terraform / TFE request, letting the backend identify requests from a known hosted deployment (e.g. to apply IP allowlists). It is a static secret sent in a header, so only use it over TLS and treat the value as a credential.
 - **Never pass tokens in query parameters** - the server will reject such requests with a 400 error.
 - Always use TLS (`MCP_TLS_CERT_FILE`/`MCP_TLS_KEY_FILE`) when deploying centrally to protect tokens in transit.
@@ -832,6 +855,29 @@ docker run -p 8080:8080 \
 ```
 
 Users then connect with their individual tokens passed via headers, enabling per-user RBAC enforcement.
+
+## Profiling
+
+Set `MCP_PPROF_ADDR` to serve Go's [pprof](https://pkg.go.dev/net/http/pprof) endpoints on a separate port from the MCP server. It's off by default and works in every transport mode.
+
+```bash
+MCP_PPROF_ADDR=127.0.0.1:6060 TRANSPORT_MODE=streamable-http terraform-mcp-server
+```
+
+Then grab a profile with `go tool pprof`:
+
+```bash
+# 30 second CPU profile
+go tool pprof http://127.0.0.1:6060/debug/pprof/profile?seconds=30
+
+# memory in use right now
+go tool pprof http://127.0.0.1:6060/debug/pprof/heap
+
+# every goroutine and what it's doing
+curl http://127.0.0.1:6060/debug/pprof/goroutine?debug=1
+```
+
+`http://127.0.0.1:6060/debug/pprof/` lists everything you can grab. Profiles show the server's internals, so keep it on loopback, the server logs a warning if it's bound to anything else. In Kubernetes, bind it to `127.0.0.1` and use `kubectl port-forward pod/<pod> 6060:6060` to get to it.
 
 ## Troubleshooting
 

@@ -9,7 +9,7 @@
 Quality-gated, animation-ready, and deliberately token-efficient — reconstruction-by-code, not photogrammetry, mesh extraction, or downloaded art packs.
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.0.1-green.svg)](CHANGELOG.md)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Runtime](https://img.shields.io/badge/runtime-Three.js-000000.svg)](https://threejs.org)
 [![Tooling](https://img.shields.io/badge/tooling-Python%203.10%2B%20stdlib-3776ab.svg)](forge)
@@ -126,6 +126,9 @@ Then **restart your agent** and go to [step 4](#4-run-a-reconstruction-in-your-a
 your agent install it, want a manual or single-agent install, or something failed:
 [`docs/INSTALL.md`](docs/INSTALL.md) (paste-to-agent prompt, expected output, troubleshooting,
 update and uninstall, other agents such as Cursor).
+
+**Already installed?** Update with the row that matches your install in
+[`docs/INSTALL.md` §4](docs/INSTALL.md#4-update-an-existing-install).
 
 ### 2. Install the plugin harness, if needed
 

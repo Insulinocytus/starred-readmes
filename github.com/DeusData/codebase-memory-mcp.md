@@ -145,6 +145,8 @@ Installation also equips supported coding agents to use the graph in daily work.
 
 Hook augmentation is context-only and fail-open: it does not replace or block the requested tool call. Features vary by client and platform; some clients use durable instructions or a parent-agent handoff instead of hooks or direct subagent MCP access. Codex users review and trust installed hooks through `/hooks`. See [Multi-Agent Support](#multi-agent-support) and [Sessions, compaction, and subagents](#sessions-compaction-and-subagents) for exact support and activation requirements.
 
+Hooks are enabled by default. Run `codebase-memory-mcp install --no-hooks` to remove CBM-managed hooks while keeping MCP registration and other integration files; the choice persists for later installs and updates. Run `codebase-memory-mcp install --hooks` to re-enable them, or inspect the current preference with `codebase-memory-mcp config get install_hooks`.
+
 ### Session Coordination Daemon
 
 CBM automatically shares one per-account coordination daemon across Claude Code, Codex, OpenCode, and every other configured client. There is no opt-in setting for MCP servers or hook clients: the first daemon-backed CBM session starts it, each session registers its own work, and a session-managed daemon stops after the final session. A daemon started with `daemon start` remains running until stopped. The daemon owns long-lived background services such as watchers, shared indexing jobs, and the optional UI. Closing one session cancels work owned only by that session, while work still needed by another session continues.
@@ -1024,10 +1026,12 @@ codebase-memory-mcp config set watcher_enabled false     # stop the watcher thre
 codebase-memory-mcp config set watch_non_git true        # also poll non-git project roots (default: false)
 codebase-memory-mcp config set index_max_files 250000    # optional per-index source-file limit
 codebase-memory-mcp config set index_max_source_mb 16384 # optional per-index source-size limit
+codebase-memory-mcp config set index_max_rss_mb 8192     # optional worker-tree charged-memory limit
+codebase-memory-mcp config set index_max_duration_seconds 3600 # optional per-request duration
 codebase-memory-mcp config reset auto_index              # reset to default
 ```
 
-The two `index_max_*` settings default to `off`. Exceeding one fails the complete
+The four `index_max_*` settings default to `off`. Exceeding one fails the complete
 index attempt rather than publishing a partial graph; an existing serving index
 is preserved. See [Index resource limits](docs/INDEX_RESOURCE_LIMITS.md).
 

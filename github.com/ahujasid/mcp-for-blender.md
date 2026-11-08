@@ -676,6 +676,7 @@ It runs through [Premium](#premium) with no key, or on your own Tripo API key.
 Through Premium, text uses your default quality and an image counts as one high-quality generation.
 [Get a Tripo API key](https://developers.tripo3d.ai/en/keys).
 Tick **Tripo** under **AI Model Generation** in the sidebar, choose a **Model**, and paste the key.
+For a [tripo3d.com](https://www.tripo3d.com/) (China) account, set **Tripo Domain** to `.com` in the add-on preferences.
 
 #### Meshy
 
@@ -806,6 +807,10 @@ For headless setups or CI, credentials can also be injected by environment varia
 | `BLENDERMCP_MESHY_API_KEY` |
 | `BLENDERMCP_TRIPO_API_KEY` |
 
+Hyper3D with your own key uses the `Gen-2.5-Medium` tier on both the main-site
+and fal.ai paths. The free trial key is available only in main-site mode; fal.ai
+requires your own fal.ai API key. The trial key button is hidden in fal.ai mode.
+
 ---
 
 ## Troubleshooting
@@ -826,6 +831,19 @@ The system uses a simple JSON-based protocol over TCP sockets:
 
 - **Commands** are sent as JSON objects with a `type` and optional `params`
 - **Responses** are JSON objects with a `status` and `result` or `message`
+
+### Connecting from another machine
+
+The add-on listens on `localhost` by default. To accept connections from another
+trusted PC, Docker, or WSL, open **Edit > Preferences > Add-ons > MCP for Blender**,
+set **Bind Address** to the Blender machine's LAN IPv4 address (or `0.0.0.0` for all
+interfaces), enable **Allow Remote Connections**, then disconnect and reconnect. On
+the client side, set `BLENDER_HOST` to that address and `BLENDER_PORT` to the port
+shown in Blender.
+
+**Remote access has no authentication or encryption and lets clients run Python in
+Blender.** Use it only on a trusted network behind a firewall, never on the public
+internet. An SSH tunnel to the default `localhost` listener is a safer alternative.
 
 ## Limitations & Security Considerations
 
