@@ -1,5 +1,25 @@
 <div align="center">
 
+## New: Caveman Code. Free.
+
+**The most efficient coding agent.** Same model, same work, smaller bill.
+
+<table>
+<tr>
+<td align="center"><h3>21% cheaper</h3>than Codex<br><sub>Terminal-Bench 4, per solved task</sub></td>
+<td align="center"><h3>14% cheaper</h3>than Claude Code<br><sub>Terminal-Bench 4, 97 vs 83 solved</sub></td>
+<td align="center"><h3>76% cheaper</h3>than Claude Code<br><sub>full workday, 4 connected apps</sub></td>
+</tr>
+</table>
+
+<sub>Same model on both sides: GPT-6.1 Sol against Codex, Opus 5.5 against Claude Code. Our own runs, November 2026, at list prices. <a href="https://caveman.so/code">How we measured</a></sub>
+
+Every coding agent in one window. Free on the subscriptions and keys you already have.
+
+**[Download Caveman Code for Mac](https://caveman.so/download) · [Read the launch post](https://caveman.so/news/introducing-caveman-code)**
+
+---
+
 <img src="docs/assets/caveman-logo-banner.png" alt="Caveman" width="720">
 
 # why many token when few do trick

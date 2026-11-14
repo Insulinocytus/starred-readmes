@@ -52,18 +52,23 @@ Store updates may arrive at different times. The userscript provides core webpag
 
 ## Sponsorship
 
-The project is currently funded mainly out of pocket, with tens of thousands of US dollars spent each month on API tokens for open-source development. We believe FluentRead can make the world a little better.
+The project is currently funded mainly out of pocket, with a few hundred US dollars spent each month on maintenance. We believe FluentRead can make the world a little better.
 
-<a href="mailto:a1914493943@gmail.com?subject=FluentRead%20sponsorship"><img src="./docs/public/support/sponsor-placeholder-en.svg" width="480" height="128" alt="Your brand here — become a FluentRead sponsor" /></a>
+Thank you to [**bilibili Index-Translate**](https://index-translate.bilibili.com/) for becoming FluentRead’s first sponsor.
 
-[Email us](mailto:a1914493943@gmail.com?subject=FluentRead%20sponsorship) · [Add on WeChat](https://read.thinkstu.com/support/wechat-contact.jpg)
+[Become a sponsor](https://read.thinkstu.com/en/guide/support#sponsorship) · [Email us](mailto:a1914493943@gmail.com?subject=FluentRead%20sponsorship) · [Add on WeChat](https://read.thinkstu.com/support/wechat-contact.jpg)
 
 ## Local development
 
-Use Node.js 20+ and pnpm 9. Install dependencies with `pnpm install --frozen-lockfile`.
+Use the Node.js version in `.nvmrc` to match CI. Run pnpm through Corepack to use the version pinned in `package.json` even when your shell has an older global pnpm.
 
-- `pnpm dev` starts local development.
-- `pnpm zip` builds and packages the Chrome extension.
+```sh
+nvm install
+corepack pnpm install --frozen-lockfile
+```
+
+- `corepack pnpm dev` starts local development.
+- `corepack pnpm zip` builds and packages the Chrome extension.
 
 [Other browsers](./docs/maintainers/releases.md#本地打包) · [Firefox source review](./scripts/amo/README.md)
 

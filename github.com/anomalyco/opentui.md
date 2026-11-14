@@ -7,6 +7,7 @@
 <div align="center">
     <a href="https://www.npmjs.com/package/@opentui/core"><img alt="npm version" src="https://img.shields.io/npm/v/@opentui/core?style=flat-square" /></a>
     <a href="https://github.com/anomalyco/opentui/actions/workflows/build-core.yml"><img alt="Core build status" src="https://img.shields.io/github/actions/workflow/status/anomalyco/opentui/build-core.yml?style=flat-square&branch=main" /></a>
+    <a href="https://opencode.ai"><picture><source media="(prefers-color-scheme: dark)" srcset="https://opencode.ai/brand/badges/opencode-built-with-g-dark-20.svg"><img alt="Built with OpenCode" src="https://opencode.ai/brand/badges/opencode-built-with-g-light-20.svg" height="20" /></picture></a>
 </div>
 
 OpenTUI is a library to build terminal user interfaces.
@@ -36,6 +37,7 @@ OpenCode uses OpenTUI in production for millions of users.
 - [`@opentui/native`](packages/native) - Private workspace with the Zig implementation, native tests, and benchmarks.
 - [`@opentui/examples`](packages/examples) - Private workspace with example applications and a standalone examples executable.
 - [`@opentui/web`](packages/web) - Private workspace with the documentation website and the AI agent skill.
+- [`packages/rust`](packages/rust) - Unpublished Rust bindings for the native C ABI and a framework built on them.
 
 ## AI agent skill
 
@@ -51,7 +53,7 @@ new release. Install from `https://opentui.com/docs/next` to follow the main bra
 
 ## Development
 
-Development requires Bun 1.4.1 or later and Zig 0.17.0.
+Development requires Bun 1.4.1 or later and Zig 0.17.1.
 
 See [AGENTS.md](AGENTS.md) for engineering, tooling, and verification conventions.
 

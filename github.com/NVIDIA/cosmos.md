@@ -27,29 +27,29 @@
   <tr>
     <td align="center" width="33%">
       <img src="assets/demos/physics_newton_cradle.gif" alt="Physics-aware generation: Newton's cradle">
-      <sub><a href="https://nvda.ws/48tob2l"><b>Physics-aware generation</b></a><br>A Newton's cradle in motion: momentum transfer rendered with physical fidelity</sub>
+      <sub><a href="https://nvda.ws/3UT6QNl"><b>Physics-aware generation</b></a><br>A Newton's cradle in motion: momentum transfer rendered with physical fidelity</sub>
     </td>
     <td align="center" width="33%">
       <img src="assets/demos/transfer_worldscenario.gif" alt="World-scenario transfer: control layout to photoreal driving video">
-      <sub><a href="https://nvda.ws/4sm3te7"><b>Transfer</b></a><br>World-scenario control layout → photoreal driving video</sub>
+      <sub><a href="https://nvda.ws/4sM8jBr"><b>Transfer</b></a><br>World-scenario control layout → photoreal driving video</sub>
     </td>
     <td align="center" width="33%">
       <img src="assets/demos/policy_screwdriver.gif" alt="Robot policy executing a manipulation task">
-      <sub><a href="https://nvda.ws/4ses7Nz"><b>Action policy</b></a><br>Policy run: "put the screwdriver and the glove in the purple container"</sub>
+      <sub><a href="https://nvda.ws/4CbbSFV"><b>Action policy</b></a><br>Policy run: "put the screwdriver and the glove in the purple container"</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="33%">
       <img src="assets/demos/driving_sim_falling_rocks.gif" alt="Driving simulation for autonomous vehicles">
-      <sub><a href="https://nvda.ws/48tob2l"><b>Simulation</b></a><br>Generate synthetic data and create simulation for autonomous driving</sub>
+      <sub><a href="https://nvda.ws/3UT6QNl"><b>Simulation</b></a><br>Generate synthetic data and create simulation for autonomous driving</sub>
     </td>
     <td align="center" width="33%">
       <img src="assets/demos/fd_egocentric_repair_poses.gif" alt="Forward dynamics egocentric rollout">
-      <sub><a href="https://nvda.ws/4srp0C7"><b>Action-conditioned World Model</b></a><br>Forward dynamics: egocentric rollout from input camera + hand pose</sub>
+      <sub><a href="https://nvda.ws/4AjVK2R"><b>Action-conditioned World Model</b></a><br>Forward dynamics: egocentric rollout from input camera + hand pose</sub>
     </td>
     <td align="center" width="33%">
       <img src="assets/demos/reasoner_driving_hazard.gif" alt="World Reasoner: dashcam hazard anticipation">
-      <sub><a href="https://nvda.ws/4BlGqEj"><b>World reasoning</b></a><br>Reason in complex real-world scenarios: a rolling ball means a child or pet may follow</sub>
+      <sub><a href="https://nvda.ws/4kFUrXs"><b>World reasoning</b></a><br>Reason in complex real-world scenarios: a rolling ball means a child or pet may follow</sub>
     </td>
   </tr>
 </table>
@@ -118,7 +118,7 @@ video = pipe(prompt="A mobile robot navigates a warehouse aisle and stops at a s
 export_to_video(video, "first_video.mp4", fps=24)
 ```
 
-First run downloads the 16B checkpoint; diffusion steps are compute-heavy, so long step times are normal. Full options, image/sound modes, and every other backend: [audiovisual cookbooks](https://nvda.ws/4zd0fw5) · setup issues: [environment setup guide](https://nvda.ws/4hUq6Tm).
+First run downloads the 16B checkpoint; diffusion steps are compute-heavy, so long step times are normal. Full options, image/sound modes, and every other backend: [audiovisual cookbooks](https://nvda.ws/4iGZxA5) · setup issues: [environment setup guide](https://nvda.ws/4hUq6Tm).
 
 
 ## Models

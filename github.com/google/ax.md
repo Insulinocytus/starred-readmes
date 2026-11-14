@@ -19,14 +19,15 @@ kind: Workspace
 metadata:
   name: golang
 spec:
-  git:
-    - repo: https://github.com/golang/go.git
-      branch: "my-fix"
-  files:
-    - path: "AGENTS.md"
-      content: |
-        - Run `go test` to ensure that tests are passing.
-        - Do not modify the public API.
+  setup:
+    git:
+      - repo: https://github.com/golang/go.git
+        ref: "my-fix"
+    files:
+      - path: "AGENTS.md"
+        content: |
+          - Run `go test` to ensure that tests are passing.
+          - Do not modify the public API.
 ---
 apiVersion: ax.io/v1alpha1
 kind: Task
@@ -141,6 +142,7 @@ Want to see the whole lifecycle end to end? Run [`./demo.sh`](demo.sh). It appli
 | [Sandbox](docs/sandbox.md) | See what the runner does on boot and what your command can rely on: metadata server, guest services, environment. |
 | [Runners](docs/runner.md) | Understand the contract between the control plane and the task container, and build your own runner image to replace the default. |
 | [Networking](docs/networking.md) | Reach a running task through the atenet router from the cluster, your laptop, or a gRPC client. |
+| [Observability](docs/observability.md) | Collect ax-server's logs, metrics, traces, and events, and configure where they go. |
 | [Architecture](DESIGN.md) | Understand how the control plane fits together, plus the [API reference](DESIGN.md#api-reference). |
 | [Development](docs/development.md) | Build, test, and ship changes to AX itself. |
 | [Roadmap](docs/roadmap.md) | See planned milestones across core specs, actor architecture, agentic environments, and governance. |
@@ -169,13 +171,19 @@ ax ssh task123                        # interactive shell (task needs spec.debug
 ax ssh task123 -- ls -la /workspace   # one-off command
 ax ssh task123 -- python3 main.py
 
-# Workspaces and models follow the same pattern
+# Workspaces, gateways, and models follow the same pattern
 
 ax get workspaces
 # NAME                ATESPACE   GIT-REPOS   MCP-SERVERS
 # default-workspace   default    1           1
 ax describe workspace default-workspace
 ax delete workspace default-workspace
+
+ax get gateways
+# NAME            ATESPACE   EGRESS-RULES
+# review-bot-gw   default    3
+ax describe gateway review-bot-gw
+ax delete gateway review-bot-gw
 
 ax get models
 # NAME            ATESPACE   PROVIDER   MODEL
@@ -213,6 +221,7 @@ ax --context=dev-cluster get tasks
 | `-n`, `--namespace` | Kubernetes namespace where AX is installed | `ax-system` |
 | `--context` | Kubernetes context to target | active `kubectx` / `current-context` |
 | `--server` | Control plane address, bypassing auto-detection | derived from kube context, or `$AX_SERVER` |
+| `--trace` | Trace the command and print its trace ID to stderr. Its RPCs send a sampled W3C `traceparent`, and CLI spans are exported over OTLP when `OTEL_EXPORTER_OTLP_ENDPOINT` is set. Without it, the CLI sends no trace context and ax-server samples on its own. See [CLI traces](docs/observability.md#cli-traces) | off |
 
 ## License
 

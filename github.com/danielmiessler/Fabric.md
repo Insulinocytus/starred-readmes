@@ -367,8 +367,10 @@ Fabric supports a wide range of AI providers:
 - AIStupidLevel
 - API Route
 - Apple Foundation Models (local, macOS 27 or later: run `sudo fm license` once, then `fm serve --port 1976`; no API key; select it once in `fabric -S` to enable it)
+- AtmoRouter
 - Cerebras
 - cheapaimodel
+- llm.buzz
 - Cheaper Inference
 - DeepSeek
 - DemonRoute
@@ -393,9 +395,13 @@ Fabric supports a wide range of AI providers:
 - Pzero
 - Requesty
 - SiliconCloud
+- StandardCompute
+- Synap
 - Synthorai
 - Together
+- UberLLM
 - Venice AI
+- Wiro
 - Y-API
 - Z AI
 
@@ -742,6 +748,9 @@ Application Options:
   -q, --scrape_question=            Search question using Jina AI
       --serply_search=              Search Google using Serply and send the results to chat
       --firecrawl_search=           Search the web using Firecrawl and send the top pages to chat as Markdown
+      --searchapi_search=           Search Google using SearchApi and send the results to chat
+      --sofya_search=               Search the web using Sofya and send the top pages to chat as Markdown
+      --keenable_search=            Search the web using Keenable (no API key required) and send the results to chat
   -e, --seed=                       Seed to be used for LMM generation
   -w, --wipecontext=                Wipe context
   -W, --wipesession=                Wipe session

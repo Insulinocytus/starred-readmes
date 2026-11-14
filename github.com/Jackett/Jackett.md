@@ -320,6 +320,7 @@ Prior versions of Jackett are no longer supported.
  * BTSCHOOL
  * BWTorrents
  * BYRBT
+ * BytePeer
  * C411
  * cangbaoge (CBG)
  * CapybaraBR
@@ -409,6 +410,7 @@ Prior versions of Jackett are no longer supported.
  * HDArea (HDA)
  * HDBao
  * HDBits [![(invite needed)][inviteneeded]](#)
+ * HDChina (HDWing) [![(invite needed)][inviteneeded]](#)
  * HDCiTY (HDC)
  * HDClone
  * HDFans
@@ -430,7 +432,6 @@ Prior versions of Jackett are no longer supported.
  * House of Devil
  * HQMusic [![(invite needed)][inviteneeded]](#)
  * HUDBT (蝴蝶) [![(invite needed)][inviteneeded]](#)
- * HxPT (好学) [![(invite needed)][inviteneeded]](#)
  * ImmortalSeed (iS)
  * Immortuos
  * Indietorrents [![(invite needed)][inviteneeded]](#)
@@ -497,6 +498,7 @@ Prior versions of Jackett are no longer supported.
  * Nebulance (NBL) (TransmiTheNet)
  * NewHeaven (TorrentHeavenResurrection) [![(invite needed)][inviteneeded]](#)
  * NicePT
+ * NightBloom
  * Nirvana
  * njtupt (浦园)) [![(invite needed)][inviteneeded]](#)
  * NOBS (NUCLEAR ORDER BIT SYNDICATE)

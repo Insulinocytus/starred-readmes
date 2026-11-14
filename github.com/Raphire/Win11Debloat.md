@@ -102,6 +102,7 @@ Below is an overview of the key features and functionality offered by Win11Deblo
 - Turn off Enhance Pointer Precision (mouse acceleration).
 - Disable the Sticky Keys keyboard shortcut.
 - Disable Storage Sense automatic disk cleanup.
+- Disable the delay before startup apps run after signing in.
 - Disable fast start-up to ensure a full shutdown.
 - Disable BitLocker automatic device encryption.
 - Disable network connectivity during Modern Standby to reduce battery drain.
@@ -125,6 +126,7 @@ Below is an overview of the key features and functionality offered by Win11Deblo
 - Customize the start menu by removing pinned apps, hiding recommendations, and customizing the 'All Apps' section.
 - Disable the Phone Link mobile devices integration in the start menu.
 - Disable Bing web search & Copilot integration and Microsoft Store app suggestions in Windows search.
+- Optimize Windows search memory usage by disabling WebView2-based rendering.
 
 #### Taskbar
 

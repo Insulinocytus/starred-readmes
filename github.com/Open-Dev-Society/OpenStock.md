@@ -3,10 +3,6 @@
 <p align="center"><sub><a href="#sponsors">SPONSORED BY</a></sub></p>
 
 <p align="center">
-  <a href="https://www.rapidproxy.io/?ref=openstock"><img src="public/assets/images/rapidproxy-banner.png" alt="RapidProxy: try for free, 90M+ clean residential IPs" width="420"></a>
-</p>
-
-<p align="center">
   <a href="https://github.com/diip3sh/orbit"><picture><source media="(prefers-color-scheme: dark)" srcset="public/assets/icons/orbit.png"><img src="public/assets/icons/orbit-black.png" alt="" height="20"></picture></a> <a href="https://github.com/diip3sh/orbit"><b>Orbit</b></a>. Free, open-source macOS screen recorder, screenshot tool and video editor: auto-zoom, smooth cursor, backgrounds, web recordings and AI agent recording.
 </p>
 
@@ -80,7 +76,7 @@
 ## 🔋 Features <a name="features"></a>
 
 **Markets**
-- A dashboard for eight markets: US, India, Germany, Canada, Australia, Saudi Arabia, Crypto and Forex, with an index pulse, a sector heatmap, market leaders and top stories.
+- A dashboard for nine markets: US, India, Germany, Canada, Australia, Saudi Arabia, Poland, Crypto and Forex, with an index pulse, a sector heatmap, market leaders and top stories.
 - Search every exchange Finnhub covers with **⌘K**, and keep stocks open as browser-style tabs.
 
 **Stock pages**
@@ -215,6 +211,17 @@ OpenStock ships a [`railway.json`](railway.json) that builds the `Dockerfile`, c
 
 For background jobs, add your Railway domain as an app in the [Inngest dashboard](https://app.inngest.com), pointing to `https://<your-domain>/api/inngest`. To turn on realtime mode, also set `NEXT_PUBLIC_OPENSTOCK_DATA_MODE=realtime`; Railway passes it to the build.
 
+### Cloudflare Workers (experimental)
+
+OpenStock can also run on [Cloudflare Workers](https://developers.cloudflare.com/workers/) through [vinext](https://github.com/cloudflare/vinext). The hosted site still runs on Vercel; Workers is for self-hosters who want it.
+
+1. Set the runtime variables as Worker secrets (`npx wrangler secret put MONGODB_URI`, and the same for `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `FINNHUB_API_KEY`, the email, Inngest and AI keys). `BETTER_AUTH_URL` is your Worker's URL. `NEXT_PUBLIC_*` values are read at build time, so set them before building.
+2. Allow Cloudflare's addresses in your database's network access (on Atlas, `0.0.0.0/0` with a strong password).
+3. Add `https://<your-worker>/api/auth/callback/google` and `.../github` to your OAuth apps if you use social sign-in, and point Inngest at `https://<your-worker>/api/inngest`.
+4. Build and deploy: `npm run build:vinext && npm run deploy:vinext`. `npm run dev:vinext` runs it locally on port 3001.
+
+Each request on Workers opens its own MongoDB connection and closes it when the response is done; Node, Docker and Vercel keep one shared connection.
+
 ### Vercel
 
 Import the repository, set the variables above for Production, and connect Inngest (its Vercel integration sets both keys). [`vercel.json`](vercel.json) pins functions to Mumbai (`bom1`), next to the hosted database; change it to the region nearest yours.
@@ -267,6 +274,7 @@ __tests__/        Vitest tests
 | Forex | Live | No |
 | 🇨🇦 Canada, 🇦🇺 Australia | Delayed | No |
 | 🇸🇦 Saudi Arabia (Tadawul) | Blocked; delayed Yahoo Finance quotes instead | No |
+| 🇵🇱 Poland (GPW Warsaw) | End of day; delayed Yahoo Finance quotes on the dashboard | No |
 | 🇮🇳 India (BSE; `.NS` symbols chart on BSE), 🇩🇪 Germany | End of day | No |
 | London, Tokyo, Hong Kong, Korea and others | Candles blocked; financials, technicals and profile work | No |
 
@@ -304,54 +312,58 @@ OpenStock is built by everyone below: the people who wrote the code and the peop
 <!-- Generated from the credits in lib/changelog.ts: update both together. -->
 <table>
   <tr>
-    <td align="center" width="16%"><a href="https://github.com/ravixalgorithm"><img src="https://github.com/ravixalgorithm.png?size=96" width="56" height="56" alt="ravixalgorithm"/><br/><sub><b>ravixalgorithm</b></sub></a><br/><sub>Maintainer · 36 PRs</sub></td>
+    <td align="center" width="16%"><a href="https://github.com/ravixalgorithm"><img src="https://github.com/ravixalgorithm.png?size=96" width="56" height="56" alt="ravixalgorithm"/><br/><sub><b>ravixalgorithm</b></sub></a><br/><sub>Maintainer · 47 PRs</sub></td>
     <td align="center" width="16%"><a href="https://github.com/keshav-005"><img src="https://github.com/keshav-005.png?size=96" width="56" height="56" alt="keshav-005"/><br/><sub><b>keshav-005</b></sub></a><br/><sub>7 PRs</sub></td>
+    <td align="center" width="16%"><a href="https://github.com/ahmaddirar-ios"><img src="https://github.com/ahmaddirar-ios.png?size=96" width="56" height="56" alt="ahmaddirar-ios"/><br/><sub><b>ahmaddirar-ios</b></sub></a><br/><sub>3 PRs</sub></td>
+    <td align="center" width="16%"><a href="https://github.com/octo-patch"><img src="https://github.com/octo-patch.png?size=96" width="56" height="56" alt="octo-patch"/><br/><sub><b>octo-patch</b></sub></a><br/><sub>3 PRs</sub></td>
     <td align="center" width="16%"><a href="https://github.com/akoweicollinxx"><img src="https://github.com/akoweicollinxx.png?size=96" width="56" height="56" alt="akoweicollinxx"/><br/><sub><b>akoweicollinxx</b></sub></a><br/><sub>2 PRs</sub></td>
-    <td align="center" width="16%"><a href="https://github.com/octo-patch"><img src="https://github.com/octo-patch.png?size=96" width="56" height="56" alt="octo-patch"/><br/><sub><b>octo-patch</b></sub></a><br/><sub>2 PRs</sub></td>
-    <td align="center" width="16%"><a href="https://github.com/ahmaddirar-ios"><img src="https://github.com/ahmaddirar-ios.png?size=96" width="56" height="56" alt="ahmaddirar-ios"/><br/><sub><b>ahmaddirar-ios</b></sub></a><br/><sub>1 PR</sub></td>
-    <td align="center" width="16%"><a href="https://github.com/alexander-schneider"><img src="https://github.com/alexander-schneider.png?size=96" width="56" height="56" alt="alexander-schneider"/><br/><sub><b>alexander-schneider</b></sub></a><br/><sub>1 PR</sub></td>
+    <td align="center" width="16%"><a href="https://github.com/pawisoon"><img src="https://github.com/pawisoon.png?size=96" width="56" height="56" alt="pawisoon"/><br/><sub><b>pawisoon</b></sub></a><br/><sub>2 PRs</sub></td>
   </tr>
   <tr>
+    <td align="center" width="16%"><a href="https://github.com/alexander-schneider"><img src="https://github.com/alexander-schneider.png?size=96" width="56" height="56" alt="alexander-schneider"/><br/><sub><b>alexander-schneider</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/BambaSatoru"><img src="https://github.com/BambaSatoru.png?size=96" width="56" height="56" alt="BambaSatoru"/><br/><sub><b>BambaSatoru</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/Bortlesboat"><img src="https://github.com/Bortlesboat.png?size=96" width="56" height="56" alt="Bortlesboat"/><br/><sub><b>Bortlesboat</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/chinnsenn"><img src="https://github.com/chinnsenn.png?size=96" width="56" height="56" alt="chinnsenn"/><br/><sub><b>chinnsenn</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/Chukwuebuka-2003"><img src="https://github.com/Chukwuebuka-2003.png?size=96" width="56" height="56" alt="Chukwuebuka-2003"/><br/><sub><b>Chukwuebuka-2003</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/cosark"><img src="https://github.com/cosark.png?size=96" width="56" height="56" alt="cosark"/><br/><sub><b>cosark</b></sub></a><br/><sub>1 PR</sub></td>
-    <td align="center" width="16%"><a href="https://github.com/cosmind-rusu"><img src="https://github.com/cosmind-rusu.png?size=96" width="56" height="56" alt="cosmind-rusu"/><br/><sub><b>cosmind-rusu</b></sub></a><br/><sub>1 PR</sub></td>
   </tr>
   <tr>
+    <td align="center" width="16%"><a href="https://github.com/cosmind-rusu"><img src="https://github.com/cosmind-rusu.png?size=96" width="56" height="56" alt="cosmind-rusu"/><br/><sub><b>cosmind-rusu</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/CrixusWen"><img src="https://github.com/CrixusWen.png?size=96" width="56" height="56" alt="CrixusWen"/><br/><sub><b>CrixusWen</b></sub></a><br/><sub>1 PR</sub></td>
+    <td align="center" width="16%"><a href="https://github.com/dajiaohuang"><img src="https://github.com/dajiaohuang.png?size=96" width="56" height="56" alt="dajiaohuang"/><br/><sub><b>dajiaohuang</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/ettoreciolli"><img src="https://github.com/ettoreciolli.png?size=96" width="56" height="56" alt="ettoreciolli"/><br/><sub><b>ettoreciolli</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/fuxicodex"><img src="https://github.com/fuxicodex.png?size=96" width="56" height="56" alt="fuxicodex"/><br/><sub><b>fuxicodex</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/kuishou68"><img src="https://github.com/kuishou68.png?size=96" width="56" height="56" alt="kuishou68"/><br/><sub><b>kuishou68</b></sub></a><br/><sub>1 PR</sub></td>
-    <td align="center" width="16%"><a href="https://github.com/Mubashirrrr"><img src="https://github.com/Mubashirrrr.png?size=96" width="56" height="56" alt="Mubashirrrr"/><br/><sub><b>Mubashirrrr</b></sub></a><br/><sub>1 PR</sub></td>
-    <td align="center" width="16%"><a href="https://github.com/muskanbandta23"><img src="https://github.com/muskanbandta23.png?size=96" width="56" height="56" alt="muskanbandta23"/><br/><sub><b>muskanbandta23</b></sub></a><br/><sub>1 PR</sub></td>
   </tr>
   <tr>
+    <td align="center" width="16%"><a href="https://github.com/Mubashirrrr"><img src="https://github.com/Mubashirrrr.png?size=96" width="56" height="56" alt="Mubashirrrr"/><br/><sub><b>Mubashirrrr</b></sub></a><br/><sub>1 PR</sub></td>
+    <td align="center" width="16%"><a href="https://github.com/muskanbandta23"><img src="https://github.com/muskanbandta23.png?size=96" width="56" height="56" alt="muskanbandta23"/><br/><sub><b>muskanbandta23</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/nb-src"><img src="https://github.com/nb-src.png?size=96" width="56" height="56" alt="nb-src"/><br/><sub><b>nb-src</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/NicolasBohn"><img src="https://github.com/NicolasBohn.png?size=96" width="56" height="56" alt="NicolasBohn"/><br/><sub><b>NicolasBohn</b></sub></a><br/><sub>1 PR</sub></td>
+    <td align="center" width="16%"><a href="https://github.com/samki6576"><img src="https://github.com/samki6576.png?size=96" width="56" height="56" alt="samki6576"/><br/><sub><b>samki6576</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/TPTBusiness"><img src="https://github.com/TPTBusiness.png?size=96" width="56" height="56" alt="TPTBusiness"/><br/><sub><b>TPTBusiness</b></sub></a><br/><sub>1 PR</sub></td>
+  </tr>
+  <tr>
     <td align="center" width="16%"><a href="https://github.com/Yi-111-a"><img src="https://github.com/Yi-111-a.png?size=96" width="56" height="56" alt="Yi-111-a"/><br/><sub><b>Yi-111-a</b></sub></a><br/><sub>1 PR</sub></td>
     <td align="center" width="16%"><a href="https://github.com/nexitpl"><img src="https://github.com/nexitpl.png?size=96" width="56" height="56" alt="nexitpl"/><br/><sub><b>nexitpl</b></sub></a><br/><sub>6 issues</sub></td>
     <td align="center" width="16%"><a href="https://github.com/a-lacruz"><img src="https://github.com/a-lacruz.png?size=96" width="56" height="56" alt="a-lacruz"/><br/><sub><b>a-lacruz</b></sub></a><br/><sub>1 issue</sub></td>
-  </tr>
-  <tr>
     <td align="center" width="16%"><a href="https://github.com/aaronwork1205"><img src="https://github.com/aaronwork1205.png?size=96" width="56" height="56" alt="aaronwork1205"/><br/><sub><b>aaronwork1205</b></sub></a><br/><sub>1 issue</sub></td>
     <td align="center" width="16%"><a href="https://github.com/brainistry10"><img src="https://github.com/brainistry10.png?size=96" width="56" height="56" alt="brainistry10"/><br/><sub><b>brainistry10</b></sub></a><br/><sub>1 issue</sub></td>
     <td align="center" width="16%"><a href="https://github.com/cn-zeus-jp"><img src="https://github.com/cn-zeus-jp.png?size=96" width="56" height="56" alt="cn-zeus-jp"/><br/><sub><b>cn-zeus-jp</b></sub></a><br/><sub>1 issue</sub></td>
+  </tr>
+  <tr>
     <td align="center" width="16%"><a href="https://github.com/danieldanielecki"><img src="https://github.com/danieldanielecki.png?size=96" width="56" height="56" alt="danieldanielecki"/><br/><sub><b>danieldanielecki</b></sub></a><br/><sub>1 issue</sub></td>
     <td align="center" width="16%"><a href="https://github.com/Greatz08"><img src="https://github.com/Greatz08.png?size=96" width="56" height="56" alt="Greatz08"/><br/><sub><b>Greatz08</b></sub></a><br/><sub>1 issue</sub></td>
     <td align="center" width="16%"><a href="https://github.com/juipeter-pixel"><img src="https://github.com/juipeter-pixel.png?size=96" width="56" height="56" alt="juipeter-pixel"/><br/><sub><b>juipeter-pixel</b></sub></a><br/><sub>1 issue</sub></td>
-  </tr>
-  <tr>
     <td align="center" width="16%"><a href="https://github.com/k2alzhang"><img src="https://github.com/k2alzhang.png?size=96" width="56" height="56" alt="k2alzhang"/><br/><sub><b>k2alzhang</b></sub></a><br/><sub>1 issue</sub></td>
     <td align="center" width="16%"><a href="https://github.com/khajaG321"><img src="https://github.com/khajaG321.png?size=96" width="56" height="56" alt="khajaG321"/><br/><sub><b>khajaG321</b></sub></a><br/><sub>1 issue</sub></td>
     <td align="center" width="16%"><a href="https://github.com/maplelaef0320"><img src="https://github.com/maplelaef0320.png?size=96" width="56" height="56" alt="maplelaef0320"/><br/><sub><b>maplelaef0320</b></sub></a><br/><sub>1 issue</sub></td>
-    <td align="center" width="16%"><a href="https://github.com/maxsyst"><img src="https://github.com/maxsyst.png?size=96" width="56" height="56" alt="maxsyst"/><br/><sub><b>maxsyst</b></sub></a><br/><sub>1 issue</sub></td>
-    <td align="center" width="16%"><a href="https://github.com/saschabrockel"><img src="https://github.com/saschabrockel.png?size=96" width="56" height="56" alt="saschabrockel"/><br/><sub><b>saschabrockel</b></sub></a><br/><sub>1 issue</sub></td>
-    <td align="center" width="16%"><a href="https://github.com/soonfatt"><img src="https://github.com/soonfatt.png?size=96" width="56" height="56" alt="soonfatt"/><br/><sub><b>soonfatt</b></sub></a><br/><sub>1 issue</sub></td>
   </tr>
   <tr>
+    <td align="center" width="16%"><a href="https://github.com/maxsyst"><img src="https://github.com/maxsyst.png?size=96" width="56" height="56" alt="maxsyst"/><br/><sub><b>maxsyst</b></sub></a><br/><sub>1 issue</sub></td>
+    <td align="center" width="16%"><a href="https://github.com/saschabrockel"><img src="https://github.com/saschabrockel.png?size=96" width="56" height="56" alt="saschabrockel"/><br/><sub><b>saschabrockel</b></sub></a><br/><sub>1 issue</sub></td>
+    <td align="center" width="16%"><a href="https://github.com/soarkit"><img src="https://github.com/soarkit.png?size=96" width="56" height="56" alt="soarkit"/><br/><sub><b>soarkit</b></sub></a><br/><sub>1 issue</sub></td>
+    <td align="center" width="16%"><a href="https://github.com/soonfatt"><img src="https://github.com/soonfatt.png?size=96" width="56" height="56" alt="soonfatt"/><br/><sub><b>soonfatt</b></sub></a><br/><sub>1 issue</sub></td>
     <td align="center" width="16%"><a href="https://github.com/Terry0930"><img src="https://github.com/Terry0930.png?size=96" width="56" height="56" alt="Terry0930"/><br/><sub><b>Terry0930</b></sub></a><br/><sub>1 issue</sub></td>
   </tr>
 </table>
@@ -415,5 +427,5 @@ Sponsorships are paid through GitHub Sponsors to [@ravixalgorithm](https://githu
 
 Can't sponsor right now? Pick a [good first issue](https://github.com/Open-Dev-Society/OpenStock/issues?q=is%3Aopen+label%3A%22good+first+issue%22), star the repo, or share OpenStock with someone who pays too much for a terminal.
 
-**Current sponsors** are shown at the [top of this README](#readme): [RapidProxy](https://www.rapidproxy.io/?ref=openstock) · [Orbit](https://github.com/diip3sh/orbit)
-**Previously backed by:** [Atlas Cloud](https://www.atlascloud.ai) · [Siray.ai](https://www.siray.ai/) (2026)
+**Current sponsors** are shown at the [top of this README](#readme): [Orbit](https://github.com/diip3sh/orbit)
+**Previously backed by:** [Atlas Cloud](https://www.atlascloud.ai) · [Siray.ai](https://www.siray.ai/) (2026) · [RapidProxy](https://www.rapidproxy.io) (2026)

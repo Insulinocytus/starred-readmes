@@ -55,12 +55,14 @@ winget install --id 9N6623X973JV --source msstore
 - **Lightweight & fast** — ~1.5 MB installer (Rust + Canvas), minimal memory; runs quietly in the system tray (no extra daemons or telemetry)
 - **Annotate anywhere** — draw over any app, including the taskbar
 - **11 tools** — select, pen, highlighter, laser, arrow, rectangle, ellipse, line, eraser, text, stamp
-- **Marquee batch edit** — press <kbd>V</kbd> for Select: box/click select, group drag, <kbd>Delete</kbd> to remove
+- **Stroke styles** — press <kbd>D</kbd> to cycle solid → dashed → dotted (<kbd>Shift</kbd>+<kbd>D</kbd> reverses) for pen, line, arrow, rectangle, and ellipse
+- **Hold to straighten** — while drawing with pen/highlighter, hold still ~0.5s to lock into a straight line and keep dragging to preview; hold <kbd>Alt</kbd> to draw a perfect line immediately
+- **Marquee batch edit** — press <kbd>V</kbd> for Select: box/click select, group drag, corner reshape, top-handle rotate, <kbd>Delete</kbd> to remove
 - **Flexible toolbar** — press <kbd>Space</kbd> to toggle, or enable **always-on** in Settings; compact panel with **Expand** for full options, undo, copy, and whiteboard actions in-panel; **independent floating window** with drawing / click-through toggles
 - **Click-through mode** — interact with apps below while staying in the session; toggle via toolbar buttons, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd> (global), or <kbd>X</kbd> while drawing; disabled in whiteboard mode
 - **Full keyboard control** — every action has a shortcut, no menus needed
 - **Preserve drawings** — enable **Keep after exit** under Whiteboard & content to resume on re-enter
-- **Whiteboard mode** — set default entry to whiteboard, or press <kbd>W</kbd> to toggle; content rules are in **Whiteboard & content** settings
+- **Whiteboard mode** — set default entry to whiteboard, or press <kbd>W</kbd> to toggle; choose **white or black** board color under **Whiteboard & content**
 - **Whiteboard copy** — copy the whiteboard as an image with <kbd>Ctrl</kbd>/<kbd>Command</kbd> + <kbd>C</kbd>
 
 <table>
@@ -110,6 +112,7 @@ On **macOS**, use <kbd>Command</kbd> (⌘) in place of <kbd>Ctrl</kbd>, and <kbd
 | Whiteboard toggle | <kbd>W</kbd> | <kbd>W</kbd> |
 | Undo / Redo | <kbd>Ctrl</kbd> + <kbd>Z</kbd> / <kbd>Y</kbd> | <kbd>Command</kbd> + <kbd>Z</kbd> / <kbd>Y</kbd> |
 | Stroke width | <kbd>Ctrl</kbd> + Scroll | <kbd>Command</kbd> + Scroll (pen, laser & shapes share; highlighter/eraser/text separate) |
+| Stroke style (solid / dashed / dotted) | <kbd>D</kbd> / <kbd>Shift</kbd>+<kbd>D</kbd> | <kbd>D</kbd> / <kbd>Shift</kbd>+<kbd>D</kbd> (pen, line, arrow, rect, ellipse) |
 | Exit | <kbd>Esc</kbd> | <kbd>Esc</kbd> |
 
 <details>
@@ -131,16 +134,17 @@ On **macOS**, use <kbd>Command</kbd> (⌘) in place of <kbd>Ctrl</kbd>, and <kbd
 
 | Action | Effect |
 | :--- | :--- |
-| Select tool (<kbd>V</kbd>) | Marquee or click to select; drag selection as a group; <kbd>Delete</kbd> / <kbd>Backspace</kbd> to remove; <kbd>Esc</kbd> clears selection |
+| Select tool (<kbd>V</kbd>) | Marquee or click to select; drag selection as a group; drag corners to resize, top handle to rotate (<kbd>Shift</kbd> snaps); <kbd>Delete</kbd> / <kbd>Backspace</kbd> to remove; <kbd>Esc</kbd> clears selection |
 | Element dragging | In General settings: **Off** / **Hover drag** / **Hold Ctrl to drag** |
 | Double-click existing text | Re-enter **edit mode** for that text |
 | Double-click empty area in <kbd>T</kbd> mode | Create a new text input at cursor position |
 
-#### Color Switching
+#### Color & Stroke Style
 
 | Action | Effect |
 | :--- | :--- |
 | <kbd>Q</kbd> / <kbd>E</kbd> | Previous / Next color |
+| <kbd>D</kbd> / <kbd>Shift</kbd>+<kbd>D</kbd> | Cycle solid → dashed → dotted (Shift reverses); pen, line, arrow, rectangle, ellipse |
 | Right-click | Hold to erase; release restores the previous tool |
 
 #### Other
@@ -156,7 +160,7 @@ On **macOS**, use <kbd>Command</kbd> (⌘) in place of <kbd>Ctrl</kbd>, and <kbd
 
 In **Settings → General** (toolbar display, click-through, and stroke width — see [Features](#features)):
 
-- **Whiteboard & content** — default entry (screen / whiteboard), keep after exit, keep on <kbd>W</kbd> toggle
+- **Whiteboard & content** — default entry (screen / whiteboard), board color (white / black), keep after exit, keep on <kbd>W</kbd> toggle
 - **Element dragging** — off, hover to drag, or hold <kbd>Ctrl</kbd>/<kbd>Command</kbd> to drag (disabled while eraser is selected)
 - **Eraser mode** — stroke (local erase) or object (delete whole elements); with eraser selected, press <kbd>7</kbd> again (or click the toolbar eraser again) to switch
 - **Angle snap step** — snap interval for straight lines drawn with <kbd>Alt</kbd>

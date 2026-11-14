@@ -5,6 +5,25 @@
   </picture>
 </p>
 
+> **Cite this work.** M, N.; M, A. From Laya to Vega: Open Non-Autoregressive Decision Models with Calibrated Probabilities. *Preprints* **2026**, 2026110781. [https://doi.org/10.20944/preprints202611.0781.v1](https://doi.org/10.20944/preprints202611.0781.v1)
+
+<details>
+<summary>BibTeX</summary>
+
+```bibtex
+@article{m2026laya_vega,
+  title   = {From Laya to Vega: Open Non-Autoregressive Decision Models with Calibrated Probabilities},
+  author  = {M, N. and M, A.},
+  journal = {Preprints},
+  year    = {2026},
+  pages   = {2026110781},
+  doi     = {10.20944/preprints202611.0781.v1},
+  url     = {https://doi.org/10.20944/preprints202611.0781.v1}
+}
+```
+
+</details>
+
 **Multilingual, non-autoregressive System 1 decision engine.** Typed decisions over 100+ languages in a single forward pass — 33 ms — trained with reinforcement learning against strictly proper scoring rules (RLCD), with a router that picks the right checkpoint per request.
 
 <div align="center">
@@ -244,64 +263,18 @@ The shipped checkpoints work zero-shot, but fine-tuning on decisions from your o
 
 **[nandhakishorm.github.io/laya](https://nandhakishorm.github.io/laya/)**: guides for [prediction hooks](https://nandhakishorm.github.io/laya/hooks/), [schema-driven decisions](https://nandhakishorm.github.io/laya/structured/), [Docker](https://nandhakishorm.github.io/laya/docker/) and [LangChain and LangGraph](https://nandhakishorm.github.io/laya/langchain/), plus a full [API reference](https://nandhakishorm.github.io/laya/reference/).
 
-## What's new in 0.4.29
+## What's new in 0.4.31
 
-* **Off-topic records go to a person.** A policy
-  exported from Studio now carries the off-topic limit its routing question measured on the
-  calibration rows. After `load_calibration`, a record that lies further outside the policy's
-  space than any calibration row did comes back with `outbound` on every answer and
-  `route: "review"`. `thresholds()` and the `load_calibration` result report the limit; a policy
-  exported before the limit existed has none, and the check is off for it.
-* **Asking with an option the policy never saw no longer crashes.** It used to raise inside the
-  calibration ("probability key names no option"). Now that question skips the calibration,
-  says `calibrated: False`, and routes to `review` with the new option named. Every answer of a
-  loaded policy carries `calibrated`.
-* **`unbound` no longer routes.** It is still on every answer, but with the published threshold
-  it fired on 71% of in-domain banking77 rows and 26% of typed-decisions rows (93% of
-  off-topic ones), so it sent most good answers to review. The engine rule is now the conformal
-  set and abstain.
-
-## What's new in 0.4.28
-
-* **Load a trained policy straight from its `.zip`, verified.** `Agent(vegaml=True).load_calibration`
-  takes the folder or the downloaded `.zip` itself, nothing to unpack, and returns the questions
-  ready for `predict`:
-
-  ```python
-  agent = laya.Agent(vegaml=True)
-  info = agent.load_calibration("acme-policy.zip")
-  agent.predict("the message to decide", info["questions"])
-  ```
-
-  Before anything is installed it checks that every file has the SHA-256 its manifest states,
-  that a signed policy's Ed25519 signature verifies against a key laya trusts (Embedding Space's
-  key is pinned in `laya.policy.TRUSTED_KEYS`), and that the loaded engine is the one the policy
-  was trained on. Any failure raises `laya.policy.PolicyError` naming the file, the key or the
-  engine. `verify="signed"` also refuses an unsigned policy; `verify=False` skips the checks.
-  `save_calibration` now writes an unsigned manifest of hashes, so laya's own folders are
-  integrity-checked on load, and folders written before 0.4.28 still load, reported as
-  unverified. `cryptography` is a new dependency.
-
-## What's new in 0.4.27
-
-* **Faster CPU inference on long inputs.** On transformers 5, ModernBERT's local attention
-  layers compute their window in blocks instead of full-sequence attention masked afterwards,
-  and the decision head packs its projections and, in its final layer, scores only the marker
-  and pooled positions. Same weights, same answers: a 186-key real-weights comparison across
-  the three checkpoints, short and long states, batches and `predict_long` matched 0.4.26 to
-  six decimals. Measured 26 to 55 percent lower latency between 2k and 7k tokens (#1467).
-* **Named refusals instead of leaked errors.** `predict_batch` and `predict_long` refuse a
-  float, string or boolean `batch_size` with a `ValueError` before any state is encoded, and
-  `None`, `0` and negatives still mean no cap (#1458); a wide integer in an adapter answer is
-  refused as malformed rather than raising `OverflowError` (#1466); the Router's fallback for
-  older agents composes both legacy keywords (#1468); the ONNX exporter's default opset
-  follows the installed torch (#1451).
-* **`laya-ts` Router parity.** `leafNonEnglish` reads each line on its own, as Python does
-  (#1450, fixes #1449); `maxLoaded` is read as `int()` reads it, so an unreadable cap cannot
-  disable eviction (#1457); `hooksTimeout` bounds the Router's own hooks (#1459);
-  `predictBatch` gates on `minConfidence` (#1460) and groups by the resolved checkpoint (#1461).
-* **TypeScript HTTP SDK: `predictBatch`** sends independent states with one question set to
-  `/v1/systemone/batch` in one request (#1471).
+* **LangChain and LangGraph can follow vega's own route.** `LayaRouter(decision_policy="native")`
+  returns the fallback branch whenever the answer says `route: "review"`, even at high
+  confidence, and a business branch only on `auto`. The default stays `"confidence"` (#1489).
+* **Cached answers through hooks work on vega.** A start hook's `ctx.skip([result])` returns the
+  answer itself from `predict`, and `predict_long` no longer raises on a cached answer or alters
+  it (#1488). Loading a heads-only policy clears a previous calibration instead of keeping it
+  and reporting `calibrated: True` (#1479).
+* **`laya-ts` explains its routing.** An opt-in diagnostic says which field and line decided the
+  language, matching Python's `analyse(..., explain=True)`. Off by default, and decisions are
+  unchanged (#1447).
 
 ## Where to go next
 

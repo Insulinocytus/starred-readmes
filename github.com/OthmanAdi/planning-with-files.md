@@ -11,23 +11,24 @@
   Not a prompt it might follow. A hook that fires every turn, a plan on disk that survives <code>/clear</code>, and 3 out of 3 blind A/B wins to show it works.
 </p>
 
+### <a name="sponsor"></a>Sponsors & supporters
+
 <!-- sponsor:evomi:start -->
-### Sponsor
-
 <p align="center">
-  <a href="https://scrape.ly/?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=planning-with-files&amp;utm_content=v2-banner"><img src="https://scrape.ly/brand/sponsor/cta-06d-07b-2x.png" width="520" alt="Scrape.ly by evomi: get structured data from Google, LinkedIn, Instagram, TikTok, Reddit and 500+ more. Connect to your Agent now."></a>
+<a href="https://scrape.ly/?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=planning-with-files&amp;utm_content=v2-banner"><img src="https://scrape.ly/brand/sponsor/cta-06d-07b-2x.png" width="320" alt="Scrape.ly by evomi: get structured data from Google, LinkedIn, Instagram, TikTok, Reddit and 500+ more. Connect to your Agent now."></a><br>
+<sub><strong>Your agent keeps the plan. Scrape.ly brings the web data.</strong></sub>
 </p>
-
-**Your agent keeps the plan. Scrape.ly brings the web data.**
-
-Connect the [Scrape.ly MCP server](https://scrape.ly/?utm_source=github&utm_medium=readme&utm_campaign=planning-with-files&utm_content=v2-text) to Claude Code, Cursor or any MCP client: your agent searches the Store, runs a scraper and reads structured results, without leaving the task.
 <!-- sponsor:evomi:end -->
 
----
+<!-- sponsor:swiftproxy:start -->
+<p align="center">
+<a href="https://www.swiftproxy.net/?ref=planningwithfiles"><img src="https://raw.githubusercontent.com/OthmanAdi/planning-with-files/master/media/swiftproxy-logo.png" alt="Swiftproxy logo" width="112"></a><br>
+<sub><strong><a href="https://www.swiftproxy.net/?ref=planningwithfiles">Swiftproxy</a></strong> · Residential proxies for browser automation.</sub>
+</p>
+<!-- sponsor:swiftproxy:end -->
 
 <!-- oss-support:coderabbit:start -->
-**OSS code review support**<br>
-Provided through [CodeRabbit’s open-source program](https://www.coderabbit.ai/oss).
+<p align="center"><sub>OSS code review support: <a href="https://www.coderabbit.ai/oss">CodeRabbit’s open-source program</a>.</sub></p>
 <!-- oss-support:coderabbit:end -->
 
 ---
@@ -432,6 +433,7 @@ One hook fire measures 289ms wall-clock since the v3.6.0 optimization, down from
 
 | Version | Highlights |
 |---------|------------|
+| **v3.28.2** | Completes shell and native PowerShell help handling; adds recovery grader and npm README checks to pytest; documents native PowerShell fixture use and preserves trial receipts; clarifies compaction and recovery behavior (PRs #365, #366, #368, #373, #374, #375). |
 | **v3.28.1** | `attest-plan` reports one refusal that names its cause on both routes and adds `-Target` on PowerShell; echoed selectors cannot forge output; `init-session` refuses mistyped switches; localized `/plan` commands follow plan selection; faster JSON listing on Git Bash (PR #353, #360, #362, #363, #364) |
 | **v3.28.0** | Adds opt-in archive and restore for finished named plans (`--archive` / `--restore`, preview first, nothing deleted), so hooks select the remaining plan again; the multiple-plans notice names the command; fixes inventory timestamps, locked files, long paths, hidden folders and PowerShell output on Windows (#355). |
 | **v3.27.0** | Adds optional agent-readable plan inventory (`--list --json` / `-List -Json`) with paths, phase metadata, selection uncertainty and bounded paging; aligns Claude plugin commands with selected-plan and initializer contracts (#349, #350, PR #351). |

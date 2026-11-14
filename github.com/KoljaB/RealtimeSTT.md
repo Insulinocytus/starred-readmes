@@ -1,5 +1,9 @@
 # RealtimeSTT
 
+> **License:** RealtimeSTT's own code is Apache-2.0. Engines, models, VADs and
+> wake-word backends keep their own licenses, which you must check yourself:
+> [license notes](docs/licenses.md).
+
 RealtimeSTT is a Python speech-to-text library for applications that need
 voice activity detection, fast transcription, optional realtime text updates,
 wake words, and direct access to audio streams. It is designed for assistants,
@@ -9,6 +13,59 @@ speech into text with only a few lines of code.
 The general-purpose default path uses `faster_whisper`. Other engines are
 available through install extras when their optional dependencies and models
 are present.
+
+## New in 1.2.0: fast pause transcripts for voice assistants
+
+A voice assistant has to decide, every time the user pauses, whether the turn
+is over and what was said. The sooner it has a reliable transcript of the
+words so far, the sooner it can judge the turn, start the language model, and
+answer. RealtimeSTT 1.2.0 makes that transcript (the **Preview**) much faster
+on the production server:
+
+- **Live-flush Preview** (`--preview-live-flush`, new `nemotron_ort` engine).
+  At a pause the streaming model decodes the audio it has not yet finalized on
+  a copy of its state, so the live stream continues undisturbed. The Preview
+  arrives in tens of milliseconds instead of waiting for a full re-decode. The
+  accurate full-model text follows as a separate `previewRecord` event, and an
+  optional second flush stage (`previewRefined`) adds a slightly longer read.
+- **Tail-anchored Preview** (`--preview-input-mode tail`). Instead of
+  re-decoding the whole turn at every pause, the final model decodes only the
+  newest audio and joins it to the text already recognized. The cost no longer
+  grows with the length of the turn. If the join cannot be proven, the server
+  decodes the full turn.
+- **Orukeet final model** (`stt-install-sherpa-models --model orukeet`): an
+  optional, hash-verified Parakeet TDT derivative for 25 European languages.
+
+Measured once on the Linux x86-64 production host, on a 12-second English
+utterance: live-flush Preview **48 ms**, tail-mode Preview **149 ms**, and a
+full-turn Preview **about 710 ms**, from request to event.
+
+**These fast paths are CPU only.** `nemotron_ort` runs on ONNX Runtime's CPU
+provider, and the tested profile is the CPU Nemotron/Orukeet pair on Linux
+x86-64. On GPU, `faster_whisper` remains the recommended general-purpose path
+and does not offer live flush.
+
+A voice-assistant server with all three enabled:
+
+```bash
+python -m pip install "RealtimeSTT[server,sherpa-onnx,nemotron-ort]"
+stt-install-sherpa-models --root ./models/sherpa-onnx --model nemotron
+stt-install-sherpa-models --root ./models/sherpa-onnx --model orukeet
+stt-server-production \
+  --engine sherpa_onnx_parakeet --model oruk/orukeet \
+  --realtime-engine nemotron_ort \
+  --realtime-model ./models/sherpa-onnx/sherpa-onnx-nemotron-3.5-asr-streaming-0.6b-560ms-int8-2026-06-11 \
+  --download-root ./models/sherpa-onnx --device cpu \
+  --preview-only-transcription \
+  --preview-input-mode tail --preview-live-flush
+```
+
+The client sends `{"type":"preview","previewRequestId":"pause-1","pauseTextSource":"live_flush"}`
+when it detects a pause. Protocol details, fallbacks and events are in the
+[production server guide](RealtimeSTT_server/PRODUCTION_SERVER.md#live-flush-preview---preview-live-flush).
+The `nemotron-ort` extra pins `onnxruntime==1.23.2`; do not combine it with the
+`parakeet-onnx` extra in one environment. Full change list:
+[release notes](RELEASE_NOTES.md).
 
 ## Recommended Engine Profiles
 
@@ -34,6 +91,20 @@ stt-install-sherpa-models --root ./models/sherpa-onnx --model all
 See the [production server guide](RealtimeSTT_server/PRODUCTION_SERVER.md) for
 the authenticated HTTP/WebSocket deployment recipe and exact pinned model
 directories.
+
+### Orukeet CPU performance: official runtime tuning
+
+**Official sherpa-ONNX 1.13.8 supports disabling CPU worker spinning through a
+provider configuration file.** On the tested Ubuntu 24.04 x86-64 / Python 3.12
+host, seven threads with spinning disabled beat our earlier custom build:
+**107.2 versus 113.3 ms** for five-second audio over 20 alternating-order rounds.
+The same Orukeet INT8 model and CPU affinity were used; transcripts matched.
+
+This configuration uses official PyPI wheels and requires no custom native build.
+Install and enable it explicitly; the standard extra and model installer do not
+automatically select a CPU performance profile. Seven threads is a measured
+setting for one host. See the
+[installation, configuration and benchmark details](docs/engines/sherpa-onnx.md#cpu-performance-and-installation).
 
 ### Support RealtimeSTT
 
@@ -256,7 +327,17 @@ unit tests separate from opt-in real-model tests; see [docs/testing.md](docs/tes
 
 ## License
 
-MIT
+RealtimeSTT's own source code is licensed under the
+[Apache License 2.0](LICENSE); see also [NOTICE](NOTICE). Releases up to and
+including 1.1.2 were published under the MIT License.
+
+This license covers the RealtimeSTT code only. It does not relicense, and does
+not release you from checking and complying with, the licenses and terms of
+the transcription engines, VAD and wake-word engines, model weights or hosted
+services you use through this library. Some of them require attribution,
+share-alike, a commercial license or a provider agreement. Start with the
+[license notes](docs/licenses.md) and verify the upstream terms for the exact
+package, model and revision you ship.
 
 ## Author
 
