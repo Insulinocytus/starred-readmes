@@ -253,7 +253,7 @@ The generator reports problems when you compile:
 | Id | Problem |
 |---|---|
 | CSVH001 | The type, or a type that contains it, is not `partial`. |
-| CSVH002 | A member's type cannot be read from a field. |
+| CSVH002 | A member's or constructor parameter's type cannot be read from a field. |
 | CSVH003 | No constructor to use: the type is abstract or static, has no public or internal constructor, or several constructors have the most parameters. |
 | CSVH004 | The type is generic, a `ref struct`, file-local or not accessible from its whole assembly, or it contains itself through nested records. |
 | CSVH005 | Warning: `[CsvColumn]` is on a member that cannot be set. |
@@ -275,7 +275,7 @@ adds the generator itself:
 
 | Situation | Behavior |
 |---|---|
-| Separator | Detected from the first lines (`,` `;` tab `\|`), scored by how consistently each appears per line. Excel's `sep=;` first line is honored and skipped. |
+| Separator | Detected from the first lines (`,` `;` tab `\|`, or the `SeparatorCandidates` you list), scored by how consistently each appears per line. Excel's `sep=;` first line is honored and skipped. |
 | Encoding | UTF-8 (BOM skipped). UTF-16/UTF-32 byte order marks are detected and transcoded. `Encoding` option for other code pages. |
 | Line endings | `\n`, `\r\n` and lone `\r`, mixed freely. |
 | Quotes | RFC 4180: a quote at the start of a field opens a quoted field (separators/line breaks inside are text, `""` is a quote). |
