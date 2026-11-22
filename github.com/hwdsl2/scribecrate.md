@@ -27,7 +27,7 @@ ScribeCrate is a self-hosted speech-to-text API for transcribing audio, generati
 
 Also available as part of the [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack), which deploys a complete self-hosted AI stack with a single command.
 
-> 📘 **The Self-Hosted AI Builder’s Guide** ([Kindle](https://books2read.com/aiguide?store=amazon) · [Google Play](https://books2read.com/aiguide?store=google) · [paperback](https://books2read.com/aiguide?store=amazon-paperback&format=PAPERBACK)) is a practical guide to building, securing, and operating your own private AI stack.
+> 📘 **The Self-Hosted AI Builder’s Guide** shows how to configure this service and use it with other self-hosted AI tools. [Kindle](https://books2read.com/aiguide?store=amazon) · [Google Play](https://books2read.com/aiguide?store=google) · [paperback](https://books2read.com/aiguide?store=amazon-paperback&format=PAPERBACK)
 
 ## Quick start
 
@@ -244,6 +244,55 @@ docker run \
     --env-file=whisper.env \
     -d hwdsl2/whisper-server
 ```
+
+</details>
+
+## Secret files
+
+`WHISPER_API_KEY_FILE` optionally loads the API key from a mounted file. Existing configuration works as before when file inputs are unset.
+
+Use a compatible image and a readable, nonempty file. Leave each matching direct variable unset, including empty assignments in container settings or the mounted env file. See the [Compose example](docs/examples/compose.secrets.yml) and expand the instructions below before changing credential sources.
+
+File-sourced auth keys are not saved in the data volume. Before disabling file mode or downgrading, configure another supported credential source to avoid legacy unauthenticated operation.
+
+<details>
+<summary>Setup, rotation and rollback</summary>
+
+**Setup**
+
+The mounted env file keeps its existing precedence. Conflicting sources, an empty file path or an invalid file stop startup before credential/configuration writes.
+
+**Note:** If the matching direct variable is inherited from `-e` or Compose `environment`, remove its assignment and recreate the container. Alternatively, remove any direct assignment from the bind-mounted `whisper.env`, add the matching `unset` command (for example, `unset WHISPER_API_KEY`) before the `_FILE` assignment, and restart once the updated file is visible. This command works in the shell-sourced bind-mounted file; Docker `--env-file` and Compose `env_file` do not execute shell commands. The workaround leaves the old credential in the container configuration until recreation.
+
+Use a readable, nonempty regular file (a symlink to one is accepted). Paths may contain spaces. Only terminal LF/CRLF sequences are removed; embedded line breaks, lone CR, NUL and other controls are rejected. Bearer tokens may contain ASCII letters, digits and `-._~+/`, with optional trailing `=` padding. External permissions and ownership are unchanged.
+
+Choose a compatible published image, or optionally build a local CPU image from this checkout. For a local build, merge the existing configuration with the [Compose override](docs/examples/compose.secrets.yml):
+
+```bash
+docker build -t scribecrate:secret-files-candidate .
+SECRET_FILE_IMAGE=scribecrate:secret-files-candidate SECRET_FILE_PATH=/absolute/path/to/api-key \
+  docker compose -f docker-compose.yml -f docs/examples/compose.secrets.yml config
+```
+
+Review the merged configuration before starting only the affected service with the same project, volumes and file arguments. Remove its direct-key assignment first. CUDA deployments must use a compatible CUDA build and their existing CUDA Compose file. Older published images may ignore these inputs; select an image containing this implementation.
+
+**Credential storage**
+
+File-sourced auth keys are not written to persistent `.api_key` files. Existing saved keys remain available when file mode is removed. Management helpers use a private 0700 directory and atomic 0600 startup snapshot under `/run/whisper-secrets`; `/run` is not necessarily memory-backed. Snapshots are replaced on startup or removed when file mode ends, so source edits/deletion do not change the key reported by `--getkey`. Runtime state is not included in data-volume backups.
+
+File mode requires writable private runtime storage. If you replace `/run` or use a read-only root filesystem, provision the snapshot directory with the service UID and mode 0700.
+
+Upstream processes may still receive the values in environments or arguments; `_FILE` does not provide encryption.
+
+Back up the external secret source separately from container data.
+
+**Rotation and rollback**
+
+Rotation is startup-based. After making new contents visible, restart the affected container and refresh credential consumers. Changing the container's environment configuration or mounts requires recreation. Atomic replacement of a bind-mounted host file can leave the old inode mounted; verify visibility and recreate the affected container if needed. Keep persistent volumes and backups. Before downgrading, configure a direct/saved credential supported by the older image and verify protected requests with correct, wrong and missing credentials.
+
+**Compatibility**
+
+CI covers image builds, authentication and standalone Docker Compose secret mounts for the tested variants. Podman, rootless operation, Podman Compose, Swarm, Kubernetes and GPU acceleration were not tested.
 
 </details>
 

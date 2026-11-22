@@ -4,8 +4,6 @@ Lightweight swiss-army-knife-like VPN client to multiple VPN service providers
 
 ⚠️ This and [gluetun-wiki](https://github.com/qdm12/gluetun-wiki) are the only websites for Gluetun, other websites claiming to be official are scams ⚠️
 
-🗯️ this repository will be migrated to [github.com/passteque/gluetun](https://github.com/passteque/gluetun) on 2026-05-21, which is a Github organization under my sole control, so don't get alarmed if you get redirected in the coming days 😉 Reason being migrating Github sponsors to the Open source collective due to my personal situation, basically annoying paperwork. On the plus side, it will be more transparent and funds donated will only be used for the project. The Docker image names will remain the same.
-
 ![Title image](title.svg)
 
 [![Build status](https://github.com/passteque/gluetun/actions/workflows/ci.yml/badge.svg)](https://github.com/passteque/gluetun/actions/workflows/ci.yml)
@@ -59,7 +57,7 @@ Lightweight swiss-army-knife-like VPN client to multiple VPN service providers
 
 ## Features
 
-- Based on Alpine 3.23 for a small Docker image of 43.1MB
+- Based on Alpine 3.24 for a small Docker image of 53.8MB
 - Supports: **AirVPN**, **Cyberghost**, **ExpressVPN**, **FastestVPN**, **Giganews**, **HideMyAss**, **IPVanish**, **IVPN**, **Mullvad** (Wireguard only), **NordVPN**, **Privado**, **Private Internet Access**, **PrivateVPN**, **ProtonVPN**, **PureVPN**,  **SlickVPN**, **Surfshark**, **TorGuard**, **VPNSecure.me**, **VPNUnlimited**, **Vyprvpn**, **Windscribe** servers
 - Supports OpenVPN for all providers listed
 - Supports Wireguard both kernelspace and userspace
@@ -131,7 +129,7 @@ services:
 
 ## Fun graphs and badges
 
-[![passteque/gluetun | Trendshift](https://trendshift.io/api/badge/repositories/3591)](https://trendshift.io/repositories/3591?utm_source=repository-badge&utm_medium=badge&utm_campaign=badge-repository-3591)
+[![passteque/gluetun | Trendshift](https://trendshift.io/api/badge/repositories/3591)](https://trendshift.io/repositories/3591)
 
 [![Star History Chart](https://star-history.dera.page/svg?repos=passteque/gluetun&type=date&legend=top-left)](https://star-history.dera.page/#passteque/gluetun&type=date&legend=top-left)
 

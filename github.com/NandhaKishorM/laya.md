@@ -5,6 +5,59 @@
   </picture>
 </p>
 
+<p align="center"><a href="https://github.com/sponsors/NandhaKishorM"><img src="https://img.shields.io/badge/Sponsor-laya-ea4aaa?logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub" /></a></p>
+
+<p align="center">laya is free and open source. If it helps you, <a href="https://github.com/sponsors/NandhaKishorM">sponsor the work on GitHub</a>.</p>
+
+<p align="center"><img src="https://raw.githubusercontent.com/NandhaKishorM/vegaml/main/assets/vega-valleys.svg" width="900" alt="How it decides: a frozen LLM reads the message once, every answer is a valley, and a particle rolls and settles in one. Where it settles is the answer, with its probability, conformal set, abstain and unbound flags." /></p>
+
+**New in 0.5: laya reads images, audio and video, takes 73k tokens, says when it should not decide, and keeps learning.** All open source under Apache 2.0 (`pip install -U laya`).
+
+- **Text, images, audio and video.** `agent.predict(...)` with `image=`, `audio=` or `video=` gives the same typed answers as for text.
+- **73,728 tokens of context.** Whole contracts, threads and logs in one read.
+- **Abstain and unbound**, explained below.
+- **Physics, not text generation.** Each candidate answer is a valley; the input is a particle that rolls and settles in one. Deterministic, constant cost, nothing generated.
+- **Any LLM as the reader.** One small decision engine on top of a frozen reader, from 0.8B to 27B.
+- **Continuous learning.** `from laya import Learner`: it answers from day one and learns from every answer your team confirms, on your own machine, in seconds on a CPU with no fine-tuning.
+- **A teacher for what it is unsure of.** `laya.Escalator(learner, teacher)` sends only the records it abstains on, finds unbound or is not yet sure of to your teacher (a review queue, a rules engine, or a model you serve yourself with `laya.vllm_teacher`), serves that answer and learns from it, so the teacher is needed less and less. [Guide](https://github.com/NandhaKishorM/laya/blob/main/docs/vegaml.md#a-teacher-for-what-it-is-unsure-of).
+
+### How abstain and unbound work
+
+The input is placed as a particle in a small decision space where every candidate answer is a valley. Where the particle settles, and how deep, is the answer and its probability.
+
+- **`abstain`**: it declines to commit. The threshold is calibrated so that, among the answers it does give, the error rate stays under the configured risk (10% by default).
+- **`prediction_set`**: the conformal set, every option the answer could still be at `alpha` 0.10. One option means it is sure; two or more means the input really is ambiguous.
+- **`unbound`**: the particle settled far from every valley, so the input looks unlike anything it knows (likely off-distribution). It is reported on every answer but does not route on its own: measured, it also fired on 71% of normal banking77 rows, so it would have sent most good answers to review.
+- **`route`**: what to do with it, `auto` or `review`. Without labels, `review` when it abstains or the set holds more than one option. With labels (`agent.fit` / `agent.calibrate`), a band placed where precision holds at 95% on your rows decides. Gate on `route`, never on a confidence number.
+
+### Benchmarks at a glance
+
+**Continuous learning.** 14 decision templates (31 questions), each starting from about 600 generated examples, then learning from confirmed answers; scored on 60 held-out rows per template.
+
+| | day one | after 40 confirmed answers | after 120 |
+|---|---|---|---|
+| laya, `laya.Learner` | 84.7% | 91.6% | **96.0%** |
+| Jev 1.14, confirmed answers written into its criteria | **89.5%** | 91.5% | 92.6% |
+
+Jev leads on day one (23 of 31 questions); they are level at 40; laya leads at 120 (12 wins, 7 losses, 12 ties). Jev cannot be taught, only prompted, and is a hosted API (364 ms a request from India).
+
+**What learning costs.** laya learns from 300 answers in 34 s on 8 CPU threads, with no GPU (0.72 s an answer, 6.4 GB of RAM; on a GPU 40 ms and 2 GB). Fine-tuning the classic encoder on the same 300 rows takes 89 s on a GPU with 9 GB and rewrites all 421M weights.
+
+**Learning from a stream, November 2026** (4B reader, held-out rows):
+
+| | laya | Jev 1.14 |
+|---|---|---|
+| banking77, 924 held out, after 4,928 rows | **87.5%**, ECE 0.028, 92.5% routed auto at 91.5% precision | 79.4% as shipped (ECE 0.078), 85.7% with examples |
+| typed-decisions, 2,000 decisions, after 1,200 rows | 73.7%, ECE **0.031** | 74.7%, ECE 0.047 (level) |
+
+**Across readers**, one byte-identical decision engine, 50,676 held-out records: 0.8B 76.5%, 4B 79.1%, 27B 81.1%, ECE 0.010 to 0.021.
+
+**Where it loses.** Zero-shot on generic public suites a large hosted model leads. As a prompt-injection gate on real traffic (ToxicChat, 1.8% attacks), Jev untaught catches 79.1% at 0.3% refused against 73.0% at 0.7% for a fitted head. The benchmarks further down are for the classic encoder checkpoints.
+
+<sub>Under the hood the new engine comes from [vegaml](https://github.com/NandhaKishorM/vegaml), installed with laya. For the classic encoder, name it (`laya.Agent("convaiinnovations/laya")`) or pass `vegaml=False`.</sub>
+
+> **[Studio, from Embedding Space](https://studio.embedding.in)** builds the starting set for your questions and runs it for you.
+
 > **Cite this work.** M, N.; M, A. From Laya to Vega: Open Non-Autoregressive Decision Models with Calibrated Probabilities. *Preprints* **2026**, 2026110781. [https://doi.org/10.20944/preprints202611.0781.v1](https://doi.org/10.20944/preprints202611.0781.v1)
 
 <details>
@@ -60,16 +113,16 @@ For TypeScript / Node.js / browser, see [`laya-ts/`](https://github.com/NandhaKi
 
 ## Quickstart
 
-One argument puts vegaml's engine under laya's names: a frozen 0.8B reader with a small physics engine on top, so every answer carries a conformal prediction set, an abstain flag, an out-of-distribution flag and a route decided without a threshold you had to guess at. Text, images, speech and 73k-token documents go through the same call. Python 3.10 or newer; details in [vega inside laya](#vega-inside-laya-agentvegamltrue).
+Since 0.5.0 `laya.Agent()` loads laya's new engine: a frozen 0.8B reader with a small physics engine on top, so every answer carries a conformal prediction set, an abstain flag, an out-of-distribution flag and a route decided without a threshold you had to guess at. Text, images, speech and 73k-token documents go through the same call. Python 3.10 or newer; details in [vega inside laya](#vega-inside-laya-agentvegamltrue).
 
 ```bash
-python -m pip install -U laya   # 0.4.23 or newer: vegaml comes with it
+python -m pip install -U laya   # 0.5.0 or newer: the new engine is the default
 ```
 
 ```python
 import laya
 
-agent = laya.Agent(vegaml=True)   # the 0.8B universal reader (nandakishorm/vega-U), the default
+agent = laya.Agent()   # the new engine with a 0.8B reader, the default since 0.5.0
 
 # Switching the model underneath is one string. Every option keeps the same engine, questions and fields:
 #   laya.Agent(vegaml="4b")                                # the Qwen3.5-4B reader from the same Hub repo
@@ -77,7 +130,7 @@ agent = laya.Agent(vegaml=True)   # the 0.8B universal reader (nandakishorm/vega
 #   laya.Agent(vegaml="nandakishorm/vega-U")               # any Hub repo id holding a vega-U checkpoint
 #   laya.Agent(vegaml="./my-reader/")                      # a local dir from VegaAgent.attach(...), your own LLM ported in
 #   laya.Agent(vegaml=True, backbone="Qwen/Qwen3.5-0.8B")  # name the reader weights explicitly, e.g. a mirror
-# Without the argument, laya's own encoders, also by Hub name:
+# Naming one of laya's own encoders loads it instead (or pass vegaml=False):
 #   laya.Agent("convaiinnovations/laya")                   # English, 33 ms on a T4
 #   laya.Agent("convaiinnovations/laya-multilingual")      # 100+ languages, up to 8,192 tokens with max_len=8192
 #   laya.Agent("convaiinnovations/laya-typed-decisions")   # fine-tuned for the typed-decisions workflows
@@ -99,8 +152,8 @@ print(ans["choice"])             # billing
 print(ans["probabilities"])      # {"billing": 0.91, "technical": 0.04, "other": 0.05}
 print(ans["prediction_set"])     # ["billing"]: the options the answer could still be, at alpha 0.1
 print(ans["abstain"])            # False: the engine is not refusing this one
-print(ans["unbound"])            # False: the state looks like something it has seen
-print(ans["route"])              # "auto"; "review" when the set, abstain or unbound say so
+print(ans["unbound"])            # False: the state looks like something it has seen (reported, never routes)
+print(ans["route"])              # "auto"; "review" when the engine abstains or the set holds more than one
 print(out["answers"]["churn_risk"]["noul"])   # probability the answer is yes
 ```
 
@@ -111,7 +164,7 @@ The output keeps laya's shape (`choice`, `score`, `noul`, `probabilities`, `answ
 ```python
 from laya.vega import Router
 
-router = Router(fast=laya.Agent(), vega=agent)
+router = Router(fast=laya.Agent("convaiinnovations/laya"), vega=agent)
 out = router.predict(state, questions)
 print(out["routing"])            # {"model": "fast", "reason": "short English text, no fitted head: the fast encoder is enough"}
 out = router.predict("मुझसे मार्च में दो बार शुल्क लिया गया, कृपया डुप्लिकेट राशि वापस करें।", questions)
@@ -263,16 +316,32 @@ The shipped checkpoints work zero-shot, but fine-tuning on decisions from your o
 
 **[nandhakishorm.github.io/laya](https://nandhakishorm.github.io/laya/)**: guides for [prediction hooks](https://nandhakishorm.github.io/laya/hooks/), [schema-driven decisions](https://nandhakishorm.github.io/laya/structured/), [Docker](https://nandhakishorm.github.io/laya/docker/) and [LangChain and LangGraph](https://nandhakishorm.github.io/laya/langchain/), plus a full [API reference](https://nandhakishorm.github.io/laya/reference/).
 
-## What's new in 0.4.32
+## What's new in 0.5.2
 
-* **Calibration fits about 2.4x faster.** Fitting temperatures, abstention thresholds and the
-  binning map over 100,000 records went from 6.4 s to 2.7 s, with byte-identical results (#1496).
-* **`LayaToolSelector` takes a per-bucket `min_confidence` map.** It used to crash comparing a
-  number with the map; it now gates each answer at its own bucket's threshold, as the core gate
-  does (#1494).
-* **`OptionStabilityHook` no longer counts the original question twice** when the option keys
-  are already `A`, `B`, ...; that doubled one rendering's weight and could turn a `VERIFY`
-  into an `ACCEPT` (#1498).
+* **A teacher for what the learner is unsure of.** `laya.Escalator(learner, teacher)` sends only the
+  records it abstains on, finds unbound or is not yet sure of to your teacher, serves that answer and
+  learns from it, so the teacher is needed less and less. A 5% audit keeps a confident learner honest,
+  and a learned answer takes over only when it beats the engine on balanced accuracy (#1518).
+* **A teacher you run yourself.** `laya.vllm_teacher("http://localhost:8000/v1")` asks a model you serve
+  with vLLM (or any OpenAI-compatible server) on your own machines: no cost per call, nothing leaves your
+  network. Measured on 3,000 assistant requests with no labels from anyone, a 27B model served this way
+  took the learner from 35% to 79% right and cut the share sent to the teacher to 40%.
+* Needs vegaml 0.18 (now the minimum).
+
+## What's new in 0.5.1
+
+* **A signed policy can no longer carry an unhashed `questions.json`.** `questions.json` decides which
+  question the novelty check reads, so it now has to be in the manifest like `heads.npz` and
+  `calibration.json`, and `save_calibration` hashes it when it is in the folder. A malformed
+  `key_id`, deeply nested JSON or a non-object `provenance` now raise `PolicyError` instead of
+  crashing (#1510).
+* **laya-onnx (Rust) can skip the build-time ONNX Runtime download.** `download-binaries` is a
+  default feature; `--no-default-features --features load-dynamic` loads the library from
+  `ORT_DYLIB_PATH` instead, for offline build farms and Windows GNU (#1508).
+* The uvicorn log-level test passes on every uvicorn laya allows, 0.27 and later (#1515).
+
+From 0.5.0: the new engine is the default. `laya.Agent()` and `laya.load()` with no checkpoint named
+load it; name a checkpoint or pass `vegaml=False` for the classic encoder.
 
 ## Where to go next
 
@@ -1221,7 +1290,7 @@ agent.predict(audio=wav, questions=questions, sampling_rate=16000)   # transcrib
 agent.predict(video="call.mp4", questions=questions)                  # speech if any, else frames
 
 from laya.vega import Router
-router = Router(fast=laya.Agent(), vega=agent)   # laya for short English text, vega otherwise
+router = Router(fast=laya.Agent("convaiinnovations/laya"), vega=agent)   # laya for short English text, vega otherwise
 router.predict(state, questions)["routing"]     # {"model": "fast" | "vega", "reason": ...}
 ```
 
@@ -1676,7 +1745,9 @@ scheduled workflow evaluates the English checkpoint against the committed baseli
 
 ---
 
-## Benchmarks
+## Benchmarks: the classic laya checkpoints
+
+The new engine's numbers, including continuous learning, are in [Benchmarks at a glance](https://github.com/NandhaKishorM/laya#benchmarks-at-a-glance) at the top. This section measures the classic encoder checkpoints.
 
 Community diagnostics: [Chinese workplace decisions (Feishu-style)](https://github.com/NandhaKishorM/laya/blob/main/research/benchmarks/feishu_zh/README.md) · [中文说明](https://github.com/NandhaKishorM/laya/blob/main/research/benchmarks/feishu_zh/README.zh-CN.md). Includes frozen synthetic cases, archived paired Laya/Jev responses, and an offline audit; separate from the benchmark suites below. Also [Chinese short-command routing](https://github.com/NandhaKishorM/laya/blob/main/research/benchmarks/zh_short_commands/README.md) · [中文说明](https://github.com/NandhaKishorM/laya/blob/main/research/benchmarks/zh_short_commands/README.zh-CN.md): 18 frozen commands and a seven-rung ablation of the documented prompt guidance, which locates the accuracy loss on the four-question path rather than the six-option one.
 

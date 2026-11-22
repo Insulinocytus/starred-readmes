@@ -127,6 +127,8 @@ CCR supports OpenAI Chat / Responses, Anthropic Messages, Gemini Generate Conten
 
 ## Quick Start
 
+In **v3.1.6**, the Codex desktop app shows the current model provider's balance and usage. Codex profiles can route native image generation and editing through a configured Images API provider. [Release notes](https://github.com/musistudio/claude-code-router/releases/tag/v3.1.6) · [Codex setup](https://ccrdesk.top/en/configuration/agents/codex/)
+
 ### Desktop app (recommended)
 
 1. <details open>
@@ -137,28 +139,28 @@ CCR supports OpenAI Chat / Responses, Anthropic Messages, Gemini Generate Conten
    <table width="100%">
      <tr>
        <td align="center" width="330">
-         <a href="https://github.com/musistudio/claude-code-router/releases/download/v3.1.3/Claude-Code-Router_3.1.3.exe">
+         <a href="https://github.com/musistudio/claude-code-router/releases/download/v3.1.6/Claude-Code-Router_3.1.6.exe">
            <img src="/docs/public/platform-icons/windows.png" width="44" height="44" alt="Windows logo" />
            <br />
            <strong>Windows</strong>
          </a>
        </td>
        <td align="center" width="330">
-         <a href="https://github.com/musistudio/claude-code-router/releases/download/v3.1.3/Claude-Code-Router_3.1.3.AppImage">
+         <a href="https://github.com/musistudio/claude-code-router/releases/download/v3.1.6/Claude-Code-Router_3.1.6.AppImage">
            <img src="/docs/public/platform-icons/linux.png" width="44" height="44" alt="Linux logo" />
            <br />
            <strong>Linux</strong>
          </a>
        </td>
        <td align="center" width="330">
-         <a href="https://github.com/musistudio/claude-code-router/releases/download/v3.1.3/Claude-Code-Router_3.1.3-mac-Apple-Silicon-arm64.dmg">
+         <a href="https://github.com/musistudio/claude-code-router/releases/download/v3.1.6/Claude-Code-Router_3.1.6-mac-Apple-Silicon-arm64.dmg">
            <img src="/docs/public/platform-icons/macos.png" width="44" height="44" alt="macOS logo" />
            <br />
            <strong>macOS (Apple Silicon)</strong>
          </a>
        </td>
        <td align="center" width="330">
-         <a href="https://github.com/musistudio/claude-code-router/releases/download/v3.1.3/Claude-Code-Router_3.1.3-mac-Intel-x64.dmg">
+         <a href="https://github.com/musistudio/claude-code-router/releases/download/v3.1.6/Claude-Code-Router_3.1.6-mac-Intel-x64.dmg">
            <img src="/docs/public/platform-icons/macos.png" width="44" height="44" alt="macOS logo" />
            <br />
            <strong>macOS (Intel)</strong>
@@ -183,7 +185,7 @@ Your agent is now connected to CCR. To add conditions, retries, request rewrites
 The npm CLI requires Node.js 22 or newer. It starts the same gateway and a browser-based management UI without Electron:
 
 ```sh
-npm install -g @musistudio/claude-code-router
+npm install -g @musistudio/claude-code-router@latest
 ccr ui
 ```
 

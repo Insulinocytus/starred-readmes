@@ -16,7 +16,8 @@ Anysub (formerly Whishper) makes subtitles from audio and video. Upload a record
 - Word-level timings.
 - A subtitle editor with a waveform timeline, undo and autosave.
 - Warnings for subtitles that are too fast, too long, or overlap.
-- Export to SRT, WebVTT, plain text or JSON.
+- Translation into other languages, on your server or with a provider's chat model.
+- Export to SRT, WebVTT, LRC, plain text or JSON.
 - Uploads that resume, for hours-long files.
 - A searchable library.
 - Admin pages for models, defaults, upload limits, disk space and workers.
@@ -56,7 +57,7 @@ You need Linux on x86-64 with Docker and Docker Compose.
 
 4. Open `http://localhost:5173` and create your account. It asks for a setup code, which `docker compose logs web` shows.
 
-A GPU transcribes several times faster than a CPU. AMD and Intel GPUs aren't supported yet, but we plan to add them.
+A GPU transcribes several times faster than a CPU. AMD and Intel GPUs aren't supported yet, but I plan to add them.
 
 [Install](docs/INSTALL.md) covers Podman, reverse proxies and building from source. [NVIDIA GPUs](docs/GPU.md) helps when the GPU doesn't work.
 
@@ -66,7 +67,6 @@ Whishper 3 is no longer maintained, and Anysub can't read its data. [Coming from
 
 ## Not built yet
 
-- Translation.
 - Speaker labels.
 - Watched folders.
 - Import from a URL or an existing subtitle file.

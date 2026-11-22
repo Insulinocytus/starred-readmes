@@ -103,7 +103,7 @@ npm i -g @colbymchenry/codegraph
 
 <sub>CodeGraph bundles its own runtime — nothing to compile, no native build, works the same everywhere. The installer puts `codegraph` on your PATH but **doesn't change your current shell** — open a new terminal before the next step so the command resolves.</sub>
 
-<sub>**Upgrade any time** with `codegraph upgrade` — it detects how you installed (bundle, npm, or npx) and updates in place. Add `--check` to see if an update is available, or `codegraph upgrade <version>` to pin one.</sub>
+<sub>**Upgrade any time** with `codegraph upgrade` — it detects how you installed (bundle, npm, or npx) and updates in place. Add `--check` to see if an update is available, or `codegraph upgrade <version>` to pin one. After an upgrade, `codegraph status` and your agent tell you when a project's index was built by an older version: run `codegraph index` there to rebuild it.</sub>
 
 </details>
 
@@ -288,8 +288,8 @@ CodeGraph's parsing engine is a **native Rust kernel**: 20 languages — TypeScr
 | **Full-Text Search** | Find code by name instantly across your entire codebase, powered by FTS5 |
 | **Impact Analysis** | Trace callers, callees, and the full impact radius of any symbol before making changes |
 | **Always Fresh** | File watcher uses native OS events (FSEvents/inotify/ReadDirectoryChangesW) with debounced auto-sync — the graph stays current as you code, zero config |
-| **20+ Languages** | TypeScript, JavaScript, ArkTS, Python, Go, Rust, Java, C#, VB.NET, PHP, Ruby, C, C++, CUDA, Objective-C, Metal, Swift, Kotlin, Scala, Dart, Lua, Luau, R, Nix, Erlang, CFML, COBOL, Solidity, Terraform/OpenTofu, Svelte, Vue, Astro, Liquid, Pascal/Delphi |
-| **Framework-aware Routes** | Recognizes web-framework routing files and links URL patterns to their handlers across 17 frameworks |
+| **20+ Languages** | TypeScript, JavaScript, ArkTS, Python, Go, Rust, Java, C#, VB.NET, PHP, Ruby, C, C++, CUDA, Objective-C, Metal, Swift, Kotlin, Scala, Dart, Lua, Luau, R, Nix, Erlang, CFML, COBOL, Solidity, Terraform/OpenTofu, Svelte, Vue, Astro, Razor/Blazor, Liquid, Pascal/Delphi |
+| **Framework-aware Routes** | Recognizes web-framework routing files and links URL patterns to their handlers across more than 20 web frameworks and routers |
 | **Mixed iOS / React Native / Expo** | Closes cross-language flows that static parsing misses: Swift ↔ ObjC bridging, React Native legacy bridge + TurboModules + Fabric view components, native → JS event emitters, Expo Modules |
 | **Tauri** | Follows a desktop app across its web frontend and Rust core: `invoke('save_file')`, tauri-specta's typed `commands.saveFile()`, your own wrappers around `invoke`, and events in both directions |
 | **100% Local** | No data leaves your machine. No API keys. No external services. SQLite database only |
@@ -333,6 +333,7 @@ CodeGraph detects web-framework routing files and emits `route` nodes linked by 
 | **Flask** | `@app.route('/path', methods=[...])`, blueprint routes |
 | **FastAPI** | `@app.get(...)`, `@router.post(...)`, all standard methods |
 | **Express** | `app.get(...)`, `router.post(...)` with middleware chains |
+| **Elysia** | `new Elysia({ prefix })` chains of `.get(...)`, `.post(...)`, `.route('TRACE', ...)` and `.ws(...)`, `.group()` and `.guard()` callbacks, functional plugins, and `.use(plugin)` prefixes composed across files |
 | **NestJS** | `@Controller` + `@Get/@Post/...` (with `RouterModule` prefixes, `setGlobalPrefix` and URI versioning), GraphQL `@Resolver` + `@Query/@Mutation`, `@MessagePattern`/`@EventPattern`, `@SubscribeMessage` |
 | **Laravel** | `Route::get()`, `Route::resource()`, `Controller@action`, tuple syntax |
 | **Drupal** | `*.routing.yml` routes (`_controller`, `_form`, entity handlers); `hook_*` implementations in `.module`/`.theme`/`.install`/`.inc` and `#[Hook]` methods; `*.services.yml` services, and calls through `\Drupal::service()`; plugin definitions, as attributes or annotations |
@@ -353,7 +354,7 @@ These frameworks additionally emit **`navigates`** edges: the function that send
 | Router | Routes from | Navigation from |
 |---|---|---|
 | **Expo Router** | Every screen file under `app/` (`app/item/[id].tsx` → `/item/[id]`, groups stripped), bound to its default-export component; `+api` files are endpoints (`GET /hello`) bound to their handlers | `router.push` / `replace` / `navigate`, template hrefs, `{ pathname }` objects, and a helper's returned href |
-| **Next.js** | App Router `app/**/page.tsx` and Pages Router pages (`(group)` stripped, `[slug]` → `:slug`); `app/api/**/route.ts` exports and `pages/api/*` are endpoints, not screens | `router.push` / `replace` / `prefetch`, `redirect()` / `permanentRedirect()` in a server action or page, `NextResponse.redirect(new URL(…))` in middleware, `<Link href>` and internal `<a href>` |
+| **Next.js** | App Router `app/**/page.tsx` and Pages Router pages (`(group)` stripped, `[slug]` → `:slug`); `app/api/**/route.ts` exports and `pages/api/*` are endpoints, not screens; each route also links to the `proxy.ts` or `middleware.ts` that runs before it, as its `config.matcher` decides | `router.push` / `replace` / `prefetch`, `redirect()` / `permanentRedirect()` in a server action or page, `NextResponse.redirect(new URL(…))` in middleware, `<Link href>` and internal `<a href>` |
 | **React Router** | `<Route path component/element>` (v5 and v6) and `createBrowserRouter([{ path, element }])` | `history.push` / `replace`, `useNavigate`'s `navigate`, a loader's `redirect`, `<Link to>` / `<NavLink to>` / `<Navigate to>` / v5's `<Redirect to>` / react-router-bootstrap's `<LinkContainer to>`, and a `styled(Link)` wrapper |
 | **TanStack Router** | `createFileRoute('/posts/$postId')` (file-based) and `createRoute({ path, getParentRoute })` composed up its parent chain (code-based); `_pathless` segments, `(group)` folders, `__root` and `<Outlet/>` layouts are not addresses | `navigate({ to })`, a thrown `redirect({ to })`, `<Link to>` / `<Navigate to>` — where `to` is the route PATTERN and the values ride beside it in `params` |
 | **Vue Router** / **Nuxt** | `createRouter({ routes: [...] })` / `new Router(...)` and the route tables it's given (`export const constantRoutes = [...]`, per-module route files), with the view each entry names — a lazy `() => import(…)` bound to its file — and `children` joined onto their parent's path, the parent being the layout around them; plus Nuxt `pages/` file-based routes, `server/api/` endpoints and route middleware | `router.push` / `replace`, `this.$router.push`, Nuxt's `navigateTo`, `<router-link>` / `<RouterLink>` / `<NuxtLink>` — **by route name** (`push({ name: 'profile' })`) as well as by path |
@@ -542,14 +543,15 @@ codegraph install                 # Run installer (explicit)
 codegraph uninstall               # Remove CodeGraph from your agents AND the CLI (--keep-cli for configs only)
 codegraph init [path]             # Initialize a project + build its graph (one step; --local-only keeps .codegraph/ out of git)
 codegraph uninit [path]           # Remove CodeGraph from a project (--force to skip prompt)
-codegraph index [path]            # Full index (--force to re-index, --quiet for less output)
+codegraph index [path]            # Rebuild the full index from scratch (--quiet for less output; --force to allow a home folder or drive root)
 codegraph sync [path]             # Incremental update
 codegraph status [path]           # Show statistics (--json, --strict)
 codegraph unlock [path]           # Remove a stale lock file that's blocking indexing
 codegraph query <search>          # Search symbols (--kind, --limit, --json)
 codegraph explore <query>         # Relevant symbols' source + call paths in one shot (same output as the codegraph_explore MCP tool)
+codegraph context <task>          # Relevant symbols, relationships and code for a task description (--format markdown|json)
 codegraph node <symbol|file>      # One symbol's source + callers, or read a file with line numbers (same output as codegraph_node)
-codegraph files [path]            # Show file structure (--format, --filter, --max-depth, --tests, --json)
+codegraph files                   # Show file structure (--format tree|flat|grouped|package, --tests/--no-tests, --filter, --max-depth, --json)
 codegraph callers <symbol>        # Find what calls a function/method (--limit, --json)
 codegraph callees <symbol>        # Find what a function/method calls (--limit, --json)
 codegraph impact <symbol>         # Analyze what code is affected by changing a symbol (--depth, --json)
@@ -577,9 +579,12 @@ codegraph affected src/auth.ts --filter "e2e/*"     # Custom test file pattern
 |--------|-------------|---------|
 | `--stdin` | Read file list from stdin | `false` |
 | `-d, --depth <n>` | Max dependency traversal depth | `5` |
-| `-f, --filter <glob>` | Custom glob to identify test files | auto-detect |
+| `-f, --filter <glob>` | Glob for the files that count as tests (see below) | auto-detect |
 | `-j, --json` | Output as JSON | `false` |
 | `-q, --quiet` | Output file paths only | `false` |
+| `--cross-tier` | Also follow links across a process boundary: a client's HTTP call to its server's route, a queue job to its consumer, an event to its handler | `false` |
+
+`--filter` matches the whole name. With no slash (`*_test.go`) it matches the file name at any depth, with a slash (`e2e/*.spec.ts`) that folder at any depth, and with a leading `/` (`/tests/**/*.py`) from the project root only. `**` also matches no folder, so `tests/**/*.py` includes `tests/test_x.py`. Without `--filter`, files with the usual test names and folders count as tests, Google-style `foo_unittest.cc` and `foo_unittest.py` included.
 
 **CI/hook example:**
 
@@ -599,7 +604,7 @@ When running as an MCP server, CodeGraph exposes a **single tool** — `codegrap
 
 | Tool | Purpose |
 |------|---------|
-| `codegraph_explore` | Answer almost any question in one call — "how does X work", a flow ("how does X reach Y"), or surveying an area — returning the relevant symbols' verbatim source grouped by file, plus the call paths between them and a blast-radius summary. Surfaces dynamic-dispatch hops (callbacks, React re-render, interface→impl) grep can't follow. Name a file or symbol in the query to read its current line-numbered source, the same shape the Read tool gives you. |
+| `codegraph_explore` | Answer almost any question in one call — "how does X work", a flow ("how does X reach Y"), or surveying an area — returning the relevant symbols' verbatim source grouped by file, plus the call paths between them and a blast-radius summary. Surfaces dynamic-dispatch hops (callbacks, React re-render, interface→impl) grep can't follow. Name a file or symbol in the query to read its current line-numbered source, the same shape the Read tool gives you. A query that names one symbol, like "who calls `toValidURL`?", gets that symbol's source and every line that uses it, each with the function it sits in and the line's text. |
 
 The other tools (`codegraph_node`, `codegraph_search`, `codegraph_callers`, `codegraph_callees`, `codegraph_impact`, `codegraph_files`, `codegraph_status`) stay fully functional but **unlisted by default** — everything they return already arrives inline on `codegraph_explore` (its blast-radius section, the relationship map, a symbol's body as its callee list). Re-enable any of them for the MCP surface with the `CODEGRAPH_MCP_TOOLS` environment variable (e.g. `CODEGRAPH_MCP_TOOLS=explore,node,search,callers`), or use their CLI equivalents (`codegraph node` / `query` / `callers` / `callees` / `impact` / `files` / `status`).
 
@@ -748,6 +753,28 @@ language or a malformed file is warned about and skipped — it never breaks
 indexing — and a project with no `codegraph.json` behaves exactly as before.
 Re-index (`codegraph index`) after adding or changing mappings.
 
+### PHP includes from the web root
+
+PHP code often loads files from the folder the web server serves, as in
+`require $_SERVER['DOCUMENT_ROOT'] . '/inc/header.php'`. That folder is set in
+the server's configuration, not in your code, so CodeGraph works it out from
+your includes: it's the folder under which their paths name files your project
+has. When they don't settle it (fewer than three different paths, or two
+folders that fit them about as well), name it in `codegraph.json`:
+
+```json
+{
+  "webRoot": "public"
+}
+```
+
+The folder is relative to the project root, like `"public"`, `"web"` or
+`"htdocs"`, or `"."` for the root itself, and a `webRoot` you set always wins.
+Without either, these includes link to nothing rather than to a guess, which
+could be a different file of the same name. The next sync applies a change.
+Includes built from the including file's own folder, like
+`__DIR__ . '/inc/a.php'`, need neither.
+
 ## Telemetry
 
 CodeGraph collects **anonymous usage statistics** — which tools and commands get
@@ -761,6 +788,11 @@ off any time:
 ```bash
 codegraph telemetry off    # or: CODEGRAPH_TELEMETRY=0, or DO_NOT_TRACK=1
 ```
+
+To turn it off for one MCP server entry only, such as one in a config you
+share, add `--no-telemetry` to its arguments:
+`codegraph serve --mcp --no-telemetry`. That covers the background server it
+starts too.
 
 [`TELEMETRY.md`](TELEMETRY.md) lists every field, with the off-switches and the
 full data-handling story.
@@ -788,6 +820,9 @@ carries cryptographic proof of it:
   ```bash
   gh attestation verify codegraph-darwin-arm64.tar.gz -R colbymchenry/codegraph
   ```
+
+- **The bundled Node.js runtime** is checked against the SHA-256 checksums
+  nodejs.org publishes before it goes into a bundle.
 
 Releases published before July 2026 predate this pipeline and don't carry
 attestations.
@@ -845,7 +880,8 @@ agents learn the `codegraph explore` command:
 | Go | `.go` | Full support |
 | Rust | `.rs` | Full support |
 | Java | `.java` | Full support |
-| C# | `.cs` | Full support |
+| C# | `.cs` | Full support (MediatR `Send` / `Publish` link to their handlers, including ones written against your own interfaces like `ICommandHandler<T>` or a package's) |
+| ASP.NET Razor / Blazor | `.cshtml`, `.razor` | Markup links: `@model`, `@inherits`, `@inject`, `@typeof` and Blazor component tags link to the C# types they name, and what an inline `<script>` block calls links to the JavaScript that defines it |
 | PHP | `.php` | Full support |
 | Ruby | `.rb` | Full support |
 | C | `.c`, `.h` | Full support |
@@ -907,6 +943,10 @@ Framework routing is validated the same way, on a canonical app per framework: E
 ## Troubleshooting
 
 **"CodeGraph not initialized"** — Run `codegraph init` in your project directory first.
+
+**Answers still look like the old version after an upgrade** — Re-index each project with `codegraph index`. Most fixes take effect when a file is indexed, so an index an older version built keeps its old links until then. `codegraph status` says when a project's index was built by an older version, and your agent's first answer in that project warns you once.
+
+**CodeGraph won't use a folder as a project** — CodeGraph never treats a system folder such as `/`, `/etc` or `C:\Windows` as a project, nor `~/.ssh`, `~/.gnupg`, `~/.aws`, `~/.config` or any folder inside them, whichever link, junction or spelling of the path leads there. The MCP server won't make one a session's default project either, so start your agent in the project's own folder.
 
 **Indexing is slow** — Check that `node_modules` and other large directories are excluded. Use `--quiet` to reduce output overhead.
 

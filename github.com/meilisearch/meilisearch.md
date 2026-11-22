@@ -23,6 +23,14 @@
   <a href="https://github.com/meilisearch/meilisearch/queue"><img alt="Merge Queues enabled" src="https://img.shields.io/badge/Merge_Queues-enabled-%2357cf60?logo=github"></a>
 </p>
 
+<p align="center">
+  🚀 <strong>We’re launching Searchandising on Product Hunt!</strong> Pin, boost and hide results with search rules. We’d love your feedback and a follow.
+  <a href="https://www.producthunt.com/products/meilisearch-cloud?launch=meilisearch-searchandising">Check us out on Product Hunt →</a>
+</p>
+<p align="center">
+  <a href="https://www.producthunt.com/products/meilisearch-cloud?utm_source=badge-follow&utm_medium=badge&utm_campaign=badge-meilisearch-cloud" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/follow.svg?product_id=532742&theme=light" alt="Meilisearch - Fast search and AI retrieval for your apps and sites | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+</p>
+
 <p align="center">⚡ A lightning-fast search engine that fits effortlessly into your apps, websites, and workflow 🔍</p>
 
 [Meilisearch](https://www.meilisearch.com?utm_campaign=oss&utm_source=github&utm_medium=meilisearch&utm_content=intro) is a search engine for fast, relevant full-text, semantic, and hybrid search. The easiest way to get started and run it in production is [Meilisearch Cloud](https://cloud.meilisearch.com/register?utm_campaign=oss&utm_source=github&utm_medium=meilisearch&utm_content=intro): create a project and run your first search in minutes, with no servers to deploy, upgrade, or maintain. The engine is open source under the MIT license, so you can also self-host it.
@@ -198,7 +206,7 @@ The Meilisearch engine is available in two editions. Both can be self-hosted. [M
 
 ### 🧪 Community Edition (CE)
 
-- Fully open source under the [MIT license](./LICENSE)
+- Fully open source under the [MIT license](./LICENSE) and the [OpenLDAP License](./LICENSE-OPENLDAP)
 - Core search engine with fast and relevant full-text, semantic or hybrid search
 - Free to use for anyone, including commercial usage
 
@@ -254,3 +262,7 @@ Meilisearch releases and their associated binaries are available on the project'
 The binaries are versioned following [SemVer conventions](https://semver.org/). To know more, read our [versioning policy](./documentation/versioning-policy.md).
 
 Differently from the binaries, crates in this repository are not currently available on [crates.io](https://crates.io/) and do not follow [SemVer conventions](https://semver.org).
+
+## ⚖️ Licensing
+
+Meilisearch is licensed under MIT and BUSL. By default, Meilisearch statically links with LMDB, which is licensed under [the OpenLDAP license](./LICENSE-OPENLDAP). By using Meilisearch, you need to make sure you comply with the terms of both the MIT or BUSL and the OpenLDAP license.

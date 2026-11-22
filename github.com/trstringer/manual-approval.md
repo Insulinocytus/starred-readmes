@@ -55,6 +55,7 @@ steps:
       additional-approved-words: ''
       additional-denied-words: ''
       polling-interval-seconds: 10
+      allow-comment-reasons: false
 ```
 
 * `approvers` is a comma-delimited list of all required approvers. An approver can either be a user or an org team. (*Note: Required approvers must have the ability to be set as approvers in the repository. If you add an approver that doesn't have this permission then you would receive an HTTP/402 Validation Failed error when running this action*)
@@ -68,6 +69,8 @@ steps:
 * `additional-approved-words` is a comma separated list of strings to expand the dictionary of words that indicate approval. This is optional and defaults to an empty string.
 * `additional-denied-words` is a comma separated list of strings to expand the dictionary of words that indicate denial. This is optional and defaults to an empty string.
 * `polling-interval-seconds` is an integer that sets the number of seconds to wait between polling the GitHub API for approval status. This is optional and defaults to `10` seconds. Increase this value if you want to reduce API calls, or decrease it for faster response times.
+
+* `allow-comment-reasons` allows an approver to put only the approval or denial keyword (with optional punctuation) on the first line and any explanation on later lines. It defaults to `false`, preserving the existing requirement that the whole comment contain only the decision keyword and optional punctuation.
 
 > [!Note]
 > 1. If You are using issue-body-file-path then please make sure the file is reachable; for example, if the file is in your repo, then please checkout to your repo in the same job as the approval issue.
@@ -84,6 +87,7 @@ The file method works unless the file itself is so big that after breaking it in
 ### Outputs
 
 * `approval-status` is a string that indicates the final status of the approval. This will be either `approved` or `denied`.
+* `approval-comment` is the full comment that met the required number of approvals, including any explanation. The action logs this comment. The output is empty when there is no approval or the comment exceeds 64 KiB (UTF-8). When using the comment in a script, pass it through an environment variable.
 
 ### Creating Issues in a different repository
 

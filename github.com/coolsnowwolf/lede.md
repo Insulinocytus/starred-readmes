@@ -162,12 +162,12 @@ PS > git clone https://github.com/coolsnowwolf/lede <your_local_lede_path>
    Apple Silicon 上编译 Go 软件包时需要已安装的 Go 进行自举，构建系统会自动从 `PATH` 中查找。
    `python-setuptools` 为仍使用 `distutils` 的软件包构建脚本提供兼容模块。
    `swig` 用于 U-Boot 等组件的 Python FDT 绑定生成。
-   为 U-Boot 的 binman 镜像打包工具准备 Python 依赖：
+   为 U-Boot 的 binman 镜像打包工具和 STM32 的 OP-TEE 构建准备 Python 依赖：
 
    ```bash
    python3 -m venv --system-site-packages ~/.venvs/lede-build
    source ~/.venvs/lede-build/bin/activate
-   python3 -m pip install pyelftools
+   python3 -m pip install pyelftools cryptography
    export PYTHONPATH="$(python3 -c 'import site; print(site.getsitepackages()[0])')${PYTHONPATH:+:$PYTHONPATH}"
    ```
 
@@ -211,7 +211,15 @@ PS > git clone https://github.com/coolsnowwolf/lede <your_local_lede_path>
    这是 macOS 原生交叉编译，Apple Silicon 主机也可构建 x86_64 固件，无需虚拟机或容器。
    Airoha AN7581/AN7583 的 BL2 构建会自动下载经过 SHA256 校验的 Arm 工具链；Apple Silicon 使用原生 macOS ARM64 版本。Intel Mac 需额外执行 `brew install arm-none-eabi-gcc`。
 
+   mvebu 的 Cortex-A53 / Cortex-A72 SD 卡镜像默认使用 32 MiB boot 分区。复用旧配置时，请在 `Image Options` 中将 `Kernel partition size (in MiB)` 设为至少 `32`，为内核、设备树和文件系统元数据留出空间。
+
    UML（User Mode Linux）目标仅支持 Linux x86_64 主机构建，不适用于本节的 macOS 原生构建流程。
+
+   小容量设备仅支持 ROM 至少 8 MiB 的机型；4 MiB 及以下不再纳入支持范围，对应的 ath79、ramips 设备 profile 已屏蔽。Lantiq 固件分区不足 4 MiB 的设备 profile 也已屏蔽；`ase`、`xway_legacy` 已从子目标选择中移除。不会通过扩大分区绕过设备容量限制。
+
+   8 MiB 设备需在 `make menuconfig` 中裁减可选应用：关闭 SSR Plus 及其专用依赖、DDNS、UPnP、FTP、KMS 和流量统计等，保留基本 LuCI 管理、防火墙、SSH 和设备驱动；镜像仍超限时，可将 Design 主题替换为体积较小的 Bootstrap 主题。TLS 可选用 mbedTLS，避免同时引入 OpenSSL；裁减后仍须确认所选设备的正常 sysupgrade 镜像生成成功且未超过原分区容量。
+
+   对于仍然超限的 8 MiB 设备（如部分 Lantiq xway），还需按用途裁减可选网络模块，以及内核调试、跟踪、cgroups、MPTCP、swap 和 core dump 等功能，并启用内核体积优化。保留设备所需的 DSL、无线、IPv6、防火墙和进程隔离功能；每次修改后重新完整编译并检查正常升级镜像，不能仅凭 initramfs 镜像或 `make` 退出码判断通过。
 
 ## 特别提示
 

@@ -18,7 +18,7 @@
 
 
 <p align="center">
-  <img src="assets/MarkerOn_en.png" width="720" alt="MarkerOn" />
+  <img src="docs/assets/hero.png" width="720" alt="MarkerOn" />
 </p>
 
 **Contents:** [Download](#download) · [Quick Start](#quick-start) · [Features](#features) · [Shortcuts](#keyboard-shortcuts) · [Feedback](#feedback--issues) · [Development](#development)
@@ -33,6 +33,8 @@
 </p>
 
 **[Download Latest Release](https://github.com/ifer47/markeron/releases/latest)** — pick the installer for your platform from the assets list. Windows also ships a **portable zip** (`*_x64_portable.zip`): extract and run — config stays under `data\` next to the exe (no AppData).
+
+Updates keep your existing shortcuts, appearance, brush widths, and toolbar position. Switching between the installer, Microsoft Store, and portable builds also migrates the previous config automatically.
 
 Windows users can also install the Microsoft Store version with WinGet:
 
@@ -56,22 +58,36 @@ winget install --id 9N6623X973JV --source msstore
 - **Annotate anywhere** — draw over any app, including the taskbar
 - **11 tools** — select, pen, highlighter, laser, arrow, rectangle, ellipse, line, eraser, text, stamp
 - **Stroke styles** — press <kbd>D</kbd> to cycle solid → dashed → dotted (<kbd>Shift</kbd>+<kbd>D</kbd> reverses) for pen, line, arrow, rectangle, and ellipse
-- **Hold to straighten** — while drawing with pen/highlighter, hold still ~0.5s to lock into a straight line and keep dragging to preview; hold <kbd>Alt</kbd> to draw a perfect line immediately
+- **Hold to straighten** — while drawing with pen/highlighter, hold still ~0.5s to lock into a straight line and keep dragging to preview (only near-straight strokes snap — loops and elbows keep their shape); hold <kbd>Alt</kbd> to draw a perfect line immediately
 - **Marquee batch edit** — press <kbd>V</kbd> for Select: box/click select, group drag, corner reshape, top-handle rotate, <kbd>Delete</kbd> to remove
 - **Flexible toolbar** — press <kbd>Space</kbd> to toggle, or enable **always-on** in Settings; compact panel with **Expand** for full options, undo, copy, and whiteboard actions in-panel; **independent floating window** with drawing / click-through toggles
 - **Click-through mode** — interact with apps below while staying in the session; toggle via toolbar buttons, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd> (global), or <kbd>X</kbd> while drawing; disabled in whiteboard mode
 - **Full keyboard control** — every action has a shortcut, no menus needed
-- **Preserve drawings** — enable **Keep after exit** under Whiteboard & content to resume on re-enter
+- **Preserve drawings** — enable **Keep ink after exit** under Whiteboard & content so the toggle-annotation shortcut leaves ink on screen (click-through); one Esc also leaves the ink, a second Esc tucks the layer away with the ink kept for next time
 - **Whiteboard mode** — set default entry to whiteboard, or press <kbd>W</kbd> to toggle; choose **white or black** board color under **Whiteboard & content**
 - **Whiteboard copy** — copy the whiteboard as an image with <kbd>Ctrl</kbd>/<kbd>Command</kbd> + <kbd>C</kbd>
 
 <table>
 <tr>
 <td width="50%">
-<img src="assets/annotation-tools.png" alt="MarkerOn annotation tools" />
+<img src="docs/assets/tools.png" alt="MarkerOn annotation tools" />
 </td>
 <td width="50%">
-<img src="assets/settings-panel.png" alt="Settings panel" />
+<img src="docs/assets/settings.png" alt="Settings panel" />
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td width="33%">
+<img src="docs/assets/stroke-styles.png" alt="Solid, dashed and dotted strokes with nine width steps" />
+</td>
+<td width="33%">
+<img src="docs/assets/precision-editing.png" alt="Select and marquee, hold to straighten, text outline, click-through" />
+</td>
+<td width="33%">
+<img src="docs/assets/whiteboard.png" alt="Whiteboard mode on a white or black canvas" />
 </td>
 </tr>
 </table>
@@ -109,6 +125,7 @@ On **macOS**, use <kbd>Command</kbd> (⌘) in place of <kbd>Ctrl</kbd>, and <kbd
 | Cycle eraser mode (stroke / object) | <kbd>7</kbd> again while eraser selected | <kbd>7</kbd> again while eraser selected |
 | Toolbar always-on / layout | Settings → General | Settings → General |
 | Copy screen / whiteboard | <kbd>Ctrl</kbd> + <kbd>C</kbd> | <kbd>Command</kbd> + <kbd>C</kbd> |
+| Copy / paste selection | <kbd>Ctrl</kbd> + <kbd>C</kbd> / <kbd>V</kbd> | <kbd>Command</kbd> + <kbd>C</kbd> / <kbd>V</kbd> (with a selection, <kbd>C</kbd> copies it instead of the screen) |
 | Whiteboard toggle | <kbd>W</kbd> | <kbd>W</kbd> |
 | Undo / Redo | <kbd>Ctrl</kbd> + <kbd>Z</kbd> / <kbd>Y</kbd> | <kbd>Command</kbd> + <kbd>Z</kbd> / <kbd>Y</kbd> |
 | Stroke width | <kbd>Ctrl</kbd> + Scroll | <kbd>Command</kbd> + Scroll (pen, laser & shapes share; highlighter/eraser/text separate) |
@@ -134,7 +151,7 @@ On **macOS**, use <kbd>Command</kbd> (⌘) in place of <kbd>Ctrl</kbd>, and <kbd
 
 | Action | Effect |
 | :--- | :--- |
-| Select tool (<kbd>V</kbd>) | Marquee or click to select; drag selection as a group; drag corners to resize, top handle to rotate (<kbd>Shift</kbd> snaps); <kbd>Delete</kbd> / <kbd>Backspace</kbd> to remove; <kbd>Esc</kbd> clears selection |
+| Select tool (<kbd>V</kbd>) | Marquee or click to select; drag selection as a group; drag corners to resize, top handle to rotate (<kbd>Shift</kbd> snaps; <kbd>Alt</kbd> resizes from the center); double-press <kbd>V</kbd> (or double-click the toolbar Select button) to select all; repeat to clear; <kbd>Delete</kbd> / <kbd>Backspace</kbd> to remove; <kbd>Esc</kbd> clears selection |
 | Element dragging | In General settings: **Off** / **Hover drag** / **Hold Ctrl to drag** |
 | Double-click existing text | Re-enter **edit mode** for that text |
 | Double-click empty area in <kbd>T</kbd> mode | Create a new text input at cursor position |
@@ -160,7 +177,7 @@ On **macOS**, use <kbd>Command</kbd> (⌘) in place of <kbd>Ctrl</kbd>, and <kbd
 
 In **Settings → General** (toolbar display, click-through, and stroke width — see [Features](#features)):
 
-- **Whiteboard & content** — default entry (screen / whiteboard), board color (white / black), keep after exit, keep on <kbd>W</kbd> toggle
+- **Whiteboard & content** — default entry (screen / whiteboard), board color (white / black), keep ink after exit, keep on <kbd>W</kbd> toggle
 - **Element dragging** — off, hover to drag, or hold <kbd>Ctrl</kbd>/<kbd>Command</kbd> to drag (disabled while eraser is selected)
 - **Eraser mode** — stroke (local erase) or object (delete whole elements); with eraser selected, press <kbd>7</kbd> again (or click the toolbar eraser again) to switch
 - **Angle snap step** — snap interval for straight lines drawn with <kbd>Alt</kbd>

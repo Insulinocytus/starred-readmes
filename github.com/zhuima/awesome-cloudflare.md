@@ -289,6 +289,12 @@
 | [cf-work-deployer](https://github.com/happymy/cf-work-deployer) | 在浏览器中将公开 GitHub 项目部署到 Cloudflare Workers，自动解析配置并创建 KV/D1/R2 等资源，支持历史版本和回滚。可自部署，无需本地安装 Wrangler。 | <https://dp.heipi.dpdns.org/> | 维护中 |
 | [CF Manager](https://github.com/hefy2027/cf-manager) | Cloudflare 多账户统一管理面板，整合 Workers/Pages、DNS、KV/D1/R2、Workers AI 与浏览器渲染；提供 Express 自部署和 Cloudflare Pages/Hono 后端，支持 OpenAI 兼容 API。MIT 开源。 | <https://mgrcf.pages.dev/admin/> | 维护中 |
 | [CloudSSH](https://github.com/newbietan/CloudSSH) | 基于 Workers、Durable Objects 和 TCP Sockets 的 Web SSH 终端，支持多会话标签、密钥认证、SFTP/trzsz 文件传输、跳板连接及需人工确认的 AI 运维助手。 | <https://ssh.newbietan.cn> | 维护中 |
+| [fwrd-sms-mcp](https://github.com/alanwtom/fwrd-sms-mcp) | 部署在你自己的 Cloudflare Workers 上的 MCP 服务器（Durable Objects）：配合 iPhone 应用 Fwrd，把手机收到的短信验证码交给 Claude、Cursor 等 AI 代理。MIT 开源。 |  | 维护中 |
+| [FlareRouter](https://github.com/HenryYannis/FlareRouter) | 部署在单个 Cloudflare Worker 上的个人 AI 网关，零构建。同时提供 OpenAI 兼容与 Anthropic Messages 接口（Claude Code 可直连），支持双向协议互转；集成多服务商统一聚合、容灾自动切换与智能熔断、D1 异步日志与调用密钥管理；内置管理页、流式试聊面板及出站数据确定性隐私脱敏还原。MIT 协议。 | | 维护中 |
+| [Formkove](https://formkove.com/?ref=directory-awesome-cloudflare) | 基于 Cloudflare Workers、D1、Queues 与 Workers AI 构建的表单后端（Form Backend）。支持任意 HTML 表单或 fetch() 提交，先拦截垃圾信息并保留 30 天待审，再按自定义标签与情感规则分发到 Slack、Discord、Google Sheets、Zapier 或签名 Webhook，同时发送邮件通知；支持代理商按客户划分独立工作区，并提供托管 MCP 服务供 Claude Code、Cursor 等助手直接创建表单。 | <https://formkove.com/?ref=directory-awesome-cloudflare> | 维护中 |
+| [Gateweave Track](https://github.com/gateweavehq/track) | 实时问题追踪器，一个 Worker 即可运行，每个工作区一个 Durable Object，浏览器里有可离线使用的本地副本，并带有给 AI 代理使用的 MCP 服务器。支持一键部署到 Cloudflare，AGPL-3.0 许可。 | <https://track-demo.gateweave.com> | 维护中 |
+| [API Screenshot](https://github.com/matbrons/api-screenshot) | 基于 Cloudflare Workers + Browser Rendering 的开源截图 API，也可用 Docker 部署。整页截图，自动去除 Cookie 弹窗、弹出层、聊天窗口和广告；遇到验证码或拦截页时返回错误而不是截图。支持一键部署、API 密钥、签名链接、缓存、PDF 和 MCP。MIT 开源。 | <https://apiscreenshot.com> | 维护中 |
+| [No Stairs Please](https://nostairsplease.com/) | 基于 Cloudflare Workers + D1 + OAuth 2.1 构建的北美独立音乐演出场地目录与巡演路线 MCP 服务器，支持按载入无障碍条件、容量和驾驶时间查询并直接通过 `/mcp` 接入 AI 助手。 | <https://nostairsplease.com/mcp> | 维护中 |
 
 ## 文章
 
@@ -309,6 +315,7 @@
 | [用Workers免服务器部署挪车二维码，可微信通知、拨打电话](https://www.dujin.org/23105.html)                                                                                        | 基于微信推送实现消息通知。                                                                                                                                                                                              |          | 有效中 |
 | [使用 Cloudflare Worker、Hono 和 Telegram Bot API 构建 RSS 订阅推送系统](https://calpa.me/blog/build-rss-subscription-push-system-with-cloudflare-worker-hono-telegram-bot-api/) | 本文详细介绍如何利用 Cloudflare Worker、Hono 框架和 Telegram Bot API 构建一个自动监控 RSS 订阅源并推送更新到 Telegram 频道的系统。该方案完全 Serverless，无需服务器，适合个人开发者和小型团队，支持定时任务和消息去重。 |          | 有效中 |
 | [D1 over Postgres for an all-Cloudflare build](https://aiarch.dev/architecture-d1-over-postgres) | Why a production learning platform chose D1 over a managed Postgres — what the decision turned on, the `src/lib/` boundary that keeps the swap a one-file fix, and the single condition that would reverse it. Written from a running Workers + D1 deployment, not from the docs. | <https://aiarch.dev> | Active |
+| [我怎么用 Worker Cron 做友链存活检测的](https://exia.de5.net/p/worker-cron-friend-check) | 用 Cloudflare Workers Cron Triggers + D1 每 20 分钟批量检测友链存活：三态判定（正常 / 4xx-5xx / 拿不到响应）、按 checked_at 轮转配额、并发压测实测数据，以及"删库重建导致部署 500"这类踩坑记录。 | <https://exia.de5.net> | 有效中 |
 
 ## 其他
 

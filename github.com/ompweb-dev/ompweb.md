@@ -34,7 +34,7 @@ A clean, modern web UI for the [oh-my-pi (omp)](https://github.com/can1357/oh-my
 
 ## Requirements
 
-- Nothing else for omp: ompweb runs its own [omp](https://github.com/can1357/oh-my-pi) build, `ompweb-omp`, which reads your `~/.omp` settings, auth and sessions. Every install (npm, npx or the single binary) downloads the `ompweb-omp` of its exact version from that version's [GitHub release](https://github.com/ompweb-dev/ompweb/releases) the first time it starts, checks its SHA-256 and keeps it (beside the single binary, otherwise in `~/.omp/agent/omp-web/omp/<version>/`); `ompweb fetch-omp` does the same on demand. Sessions start once it is there. It exists for linux-x64, linux-arm64, darwin-x64, darwin-arm64 and windows-x64; on any other platform (Linux on musl, Windows on Arm, FreeBSD) ompweb cannot start sessions. A machine that cannot reach GitHub needs `OMP_WEB_OMP_BIN` pointing at a copy of that release's `ompweb-omp-<os>-<arch>`
+- Nothing else for omp: ompweb runs its own [omp](https://github.com/can1357/oh-my-pi) build, `ompweb-omp`, which reads your `~/.omp` settings, auth and sessions. It is built and released by the [oh-my-pi fork](https://github.com/ompweb-dev/oh-my-pi/releases), not by ompweb. Every install (npm, npx or the single binary) downloads the `ompweb-omp` of the fork release its ompweb version pins (`omp-runner.json`) the first time it starts, checks its SHA-256 and keeps it (beside the single binary, otherwise in `~/.omp/agent/omp-web/omp/<version>/<release tag>/`); `ompweb fetch-omp` does the same on demand. Sessions start once it is there. It exists for linux-x64, linux-arm64, darwin-x64, darwin-arm64 and windows-x64; on any other platform (Linux on musl, Windows on Arm, FreeBSD) ompweb cannot start sessions. A machine that cannot reach GitHub needs `OMP_WEB_OMP_BIN` pointing at a copy of that release's `ompweb-omp-<os>-<arch>`
 - Node.js `>= 24`. The server runs on [Bun](https://bun.sh), which installs automatically as a dependency of the npm package (a Bun on your `PATH` is used if the bundled one is missing)
 
 The **Steer**, **Delete** and **Edit** actions on a queued message are commands of the `ompweb-omp` channel (`promote_queued_message`, `remove_queued_message`). Deletion is confirmed by omp before the chip disappears; editing recalls text only after cancellation succeeds. A message that is no longer pending leaves the queue unchanged and displays a notice; ompweb does not send a duplicate steering message.
@@ -87,6 +87,44 @@ session you are viewing. Clicking a notification opens its session.
 Completion notifications use the `ompweb-omp` channel's `prompt_result` and
 `session_settled` frames.
 
+## GitHub agent tools
+
+With **Agent tools** enabled and `gh` logged in on the web server, agents can
+watch pull requests, issues and specific GitHub Actions runs. Pass a run URL such
+as `https://github.com/OWNER/REPO/actions/runs/ID` to `watch_github`; status and
+attempt changes arrive in the session, followed by the final conclusion. The
+watch ends after completion. Runs that already completed are not registered.
+Watches survive server restarts and use the existing 20-watch limit per session.
+
+Automatic updates contain metadata only, not workflow names, job names or logs.
+Use `github_read` with the same URL for run details (`include: ["summary"]`) or
+jobs (`include: ["checks"]`), and `unwatch_github` to stop watching. Run comments,
+other read parts, and subscriptions to future runs of a workflow are not supported.
+Remote sessions use the same per-repository read confirmation as PRs and issues.
+
+For manual runs, use `github_workflow_list` to discover workflows and
+`github_workflow_read` with a branch or tag to inspect dispatch inputs.
+`github_workflow_dispatch` takes `repo`, `workflow`, `ref` and optional `inputs`,
+and returns the exact created run ID and URL. Pass that URL to `watch_github`.
+`github_run_list` finds existing runs; `github_run_cancel` requests cancellation;
+`github_run_rerun` requests all or failed jobs, or a specific job and its dependents.
+A rerun retains its run ID: read until the new attempt appears before watching it.
+
+Settings → System controls dispatch, cancellation and rerun independently:
+**Blocked**, **Ask each time** (default), or **Allow without asking**.
+The comment-writing switch does not authorize these operations. These controls
+limit agent actions through omp-web, not the server account's GitHub privileges.
+GitHub refusals retain the reported reason and available permission, SSO or
+rate-limit evidence; a 403 alone is not treated as a missing token scope.
+Fine-grained credentials need Actions write for these mutations; classic/OAuth
+credentials use `repo`. The classic `workflow` scope is for editing workflow
+files, not dispatching them. omp-web does not change credentials automatically.
+
+Mutation requests are recorded before sending and are never automatically
+replayed after an uncertain result. Inspect the existing runs before issuing a
+new dispatch or rerun. Confirmation inputs and explicit workflow reads are not
+secret channels: do not pass credentials as workflow inputs.
+
 ## Quick Start
 
 **Run directly without installing:**
@@ -117,7 +155,7 @@ Open [http://127.0.0.1:30177](http://127.0.0.1:30177) in your browser.
 ompweb --port 8080                         # Custom port
 ompweb --hostname 0.0.0.0                  # Listen on network
 ompweb hash-password                       # Print the value for OMP_WEB_PASSWORD_HASH
-ompweb fetch-omp                           # Download this version's ompweb-omp from its GitHub release (SHA-256-checked) if it is missing
+ompweb fetch-omp                           # Download the pinned ompweb-omp from its fork release (SHA-256-checked) if it is missing
 ompweb preflight                           # Start the session omp once (as a new session would) and wait for its hello; exit 1 says why it failed
 ompweb --no-open                           # Don't auto-open the browser
 ompweb --install-tray                      # Install Windows System Tray service & Desktop shortcuts
@@ -175,11 +213,13 @@ restart, without signing out of Windows.
 
 ### Behind a reverse proxy
 
-Forward WebSocket upgrades on `/api/events/link` (browsers) and `/api/hosts/link` (hosts); without the upgrade, a browser falls back to server-sent events after a few seconds. In nginx that means `proxy_http_version 1.1;`, `proxy_set_header Upgrade $http_upgrade;`, `proxy_set_header Connection "upgrade";`, and a `proxy_read_timeout` well above 30 s.
+Forward WebSocket upgrades on `/api/events/link` (browsers), `/api/hosts/link` (application traffic) and `/api/hosts/maintenance` (host management and recovery); without the browser upgrade, the browser falls back to server-sent events after a few seconds. In nginx that means `proxy_http_version 1.1;`, `proxy_set_header Upgrade $http_upgrade;`, `proxy_set_header Connection "upgrade";`, and a `proxy_read_timeout` well above 30 s.
 
 Hosts that [use the server's provider logins](#use-the-servers-provider-logins-on-a-host) also call `/api/hosts/broker/`, authenticated by their host token. That path must reach ompweb without the proxy's own authentication (a proxy login page or `auth_request` would block the daemon), without response buffering (it carries a long-lived event stream; in nginx, `proxy_buffering off;`) and without redirects.
 
 Cluster members also fetch this machine's omp configuration from `/api/hosts/cluster-config/manifest` and `/api/hosts/cluster-config/file/<hash>` (exactly these two paths, `<hash>` being 64 hexadecimal digits), authenticated by their host token and answering members only. Unlike the broker's prefix, they must be reachable at exactly these paths, without the proxy's own authentication and without redirects.
+
+A server-sent-events client keeps its stream alive with a comment frame every 30 s by default; `GET /api/events?heartbeat=<seconds>` (15 to 110) chooses another interval for that connection. A value outside that range falls back to the 30 s default. The proxy's read timeout must stay above the interval the client asks for: nginx's default `proxy_read_timeout` is 60 s, so a client selecting 110 s needs a timeout above 110 s (for example `proxy_read_timeout 120s;`), or the proxy drops the idle stream before its first keep-alive. `GET /api/app-info` tells a native client whether the server supports the query.
 
 ### Two services: the web server and the local daemon
 
@@ -188,29 +228,72 @@ linked to the web server over loopback. The service installers (`ompweb systemd 
 `ompweb launchd install`, `ompweb --install-tray`) install both: the web
 service and `ompweb-host`. Uninstall removes both.
 
-**Running ompweb in the foreground** (`ompweb` in a terminal, or `npx
-@kahme247/ompweb@latest`) installs no service, so nothing runs the daemon: keep
-`ompweb host` (with npx: `npx @kahme247/ompweb@latest host`) running in a
-second terminal. Without it "This machine" stays offline. The web server writes
-the daemon's link when it starts, so start the web server first.
+**Running ompweb in the foreground** (`ompweb` in a terminal, or
+`npx @kahme247/ompweb@latest`) installs no service. The production server prepares
+the local link and starts an independent `ompweb host` if none answers its private
+control endpoint. It reuses an existing daemon, including an older one awaiting
+recovery; concurrent starts cannot create two hosts. A configured native host
+supervisor keeps ownership even when startup is slow: the web server does not
+replace it with an unmanaged daemon after a fixed grace period.
 
 - **Restarting or redeploying the web server does not interrupt runs.** The daemon
   keeps the omp processes running; the restarted web server takes them over, with
   no resume prompt, and dialogs or tool calls omp was waiting on reappear.
 - **Restarting the daemon does end runs** (it owns the omp processes). With auto-resume
   on, sessions that were running resume once. `ompweb systemd restart` restarts the
-  web service only; upgrades restart the daemon only when its link protocol version
-  is outside the range the new release supports.
-- **First start after an upgrade:** if no daemon has linked after about 90 seconds,
-  ompweb shows a banner with the install command for your platform. It never installs
-  services itself. Until the daemon runs, "This machine" shows offline and new
-  sessions on it cannot start.
+  web service only. A coordinated upgrade shows any required daemon restart before
+  asking for approval.
+- **A failed local start stays visible.** The web server never installs services
+  itself. If the daemon cannot start or its endpoint cannot be verified, "This
+  machine" remains offline and the install/start guidance remains available.
 - **It is a host like any other.** Rename "This machine" in **Settings → Hosts**
   (clear the name to reset it); it cannot be revoked. The web server writes the
   daemon's link (`~/.omp/agent/omp-web/host.json`, mode `600`) at startup, only
   for a loopback bind address.
 - **Development:** `npm run dev` does not take the daemon (see
   [Development](#development)).
+
+### Coordinated upgrades
+
+**Settings → System → Update** updates the server, including an owned single-binary
+release. It first prepares a plan showing the target version, required host
+upgrades, affected sessions and any compatibility or recovery blocker. Compatible
+remote hosts keep running; the local host is included when its installation must
+be replaced or its protocol upgraded.
+
+Review the plan, then approve it. An update that must interrupt sessions or use
+legacy recovery requires a separate, unchecked **Force** confirmation. Force may
+terminate sessions and subagents; it never bypasses release digests, installation
+ownership, process identity, service permissions or the update-disable setting.
+An unreachable incompatible host blocks a server-only cutover instead of being
+silently left behind.
+Approval pins the selected release and its artifacts. Changing either requires
+a new plan and approval; a later registry `latest` does not replace an approved
+target. Required service stop/start permissions are checked before any
+incompatible host moves.
+
+**Settings → Hosts** retains per-host Update and offers **Force update** when a
+verified recovery path is available. For old daemons without the maintenance API,
+the server uses an isolated, fixed recovery bootstrap through their existing
+runner command channel. Windows uses native PowerShell and Windows process/service
+APIs; Linux and macOS use their own supervisor controls. A broken legacy runner or
+an uncontrollable service is reported, not treated as an updated host.
+For systemd, verified user units and elevated system-service control are supported.
+A non-root system service with custom polkit grants is refused when its exact
+stop/start authority cannot be proved without changing service state; use a user
+unit rather than relying on an unverifiable grant.
+
+All required participants download, verify and preflight their pinned release
+before the coordinator authorizes any host to stop. A failed preparation cancels
+the other preparations without changing their installations. Host version,
+protocol and session inventory are checked again before committing and before
+server cutover; an unrelated change invalidates the approved plan.
+Progress survives web-server restarts; completion requires the expected release,
+approved protocol receipt and connection to the specific server being upgraded. A failed
+cutover restores the previous installation where possible and reports any
+participant still requiring recovery. An uncertain shutdown or maintenance reply
+retains its update claim and displays the recovery error instead of permitting a
+second update. Closing the dialog does not cancel a committed update.
 
 ### Transparent host pools
 
@@ -458,7 +541,6 @@ built (for example `2026-11-01T10:30:00Z`), with the same five archives.
 ```bash
 tar -xzf ompweb-linux-x64.tar.gz -C ~/.local/share   # unpacks ompweb-linux-x64/
 ~/.local/share/ompweb-linux-x64/ompweb               # the web server: same options and environment variables as above
-~/.local/share/ompweb-linux-x64/ompweb host          # the local daemon, in a second terminal
 ```
 
 - **Keep `ompweb` in its directory.** It runs the `ompweb-omp` beside it and serves `dist/`, `public/` and the other
@@ -471,10 +553,11 @@ tar -xzf ompweb-linux-x64.tar.gz -C ~/.local/share   # unpacks ompweb-linux-x64/
   `curl` reaches it, allow your terminal (or `ompweb`) under System Settings →
   Privacy & Security → Local Network. A server reached over a VPN such as
   Tailscale, or a host started from an SSH session, is not affected.
-- **No tray, service installers or in-app update.** To update, stop `ompweb` and
-  `ompweb host`, replace the directory with the new release, and start both again;
-  **Settings → System** links the release page when a new version is out.
-  Your sessions and settings live in `~/.omp`, not in that directory.
+- **GUI updates, without a tray or service installer.** **Settings → System**
+  prepares and confirms an update of the owned release directory and any required
+  host migration. **Settings → Hosts** manages individual daemons. Keep the release
+  directory writable only by its owner and retain permission to control its service
+  or scheduled task. Sessions and settings live in `~/.omp`, outside that directory.
 - **As systemd user services**, write the two units yourself (adjust the paths):
 
 ```ini
@@ -961,7 +1044,7 @@ Stop it with `Stop-ScheduledTask ompweb-host`, then end the running host with
 | `OMP_WEB_NO_OPEN` | Set to `1` to prevent auto-opening browser | `0` |
 | `OMP_WEB_DISABLE_AUTOUPDATE` | Set to `1` to disable update checks and in-app updates; restart after changing | `0` |
 | `OMP_WEB_NAME` | Name shown in browser tabs and installed-app names. `url`, `host` or `domain` (any case) uses the hostname the browser connected to, without port; localhost and IP addresses keep `omp web`. Any other value is used as-is. Restart after changing | `omp web` |
-| `OMP_WEB_OMP_BIN` | Path to an `ompweb-omp` build to use instead of the downloaded one: a copy of the release's `ompweb-omp-<os>-<arch>` on a machine that cannot reach GitHub, or `runner/release/ompweb-omp-<os>-<arch>` from a source checkout. A stock `omp` does not work: it does not speak ompweb's channel. The service installers write it into the service environment only when you set it | _the downloaded `ompweb-omp`_ |
+| `OMP_WEB_OMP_BIN` | Path to an `ompweb-omp` build to use instead of the downloaded one: a copy of the fork release's `ompweb-omp-<os>-<arch>` on a machine that cannot reach GitHub, or a runner you built from the fork. A stock `omp` does not work: it does not speak ompweb's channel. The service installers write it into the service environment only when you set it | _the downloaded `ompweb-omp`_ |
 | `PI_CODING_AGENT_DIR` | Custom omp agent directory | `~/.omp/agent` |
 | `OMP_WEB_STT_ENDPOINT` | OpenAI-compatible transcription endpoint URL. Leave unset to transcribe with `OMP_WEB_STT_MODEL` through omp's own credentials | _None_ |
 | `OMP_WEB_STT_KEY` | Optional API key for the STT endpoint | _None_ |
@@ -1084,13 +1167,12 @@ addresses you list in `set_real_ip_from`:
 git clone https://github.com/ompweb-dev/ompweb.git
 cd ompweb
 npm install
-npx bun runner/scripts/use-omp-build.ts && (cd runner && npx bun install --frozen-lockfile)
-npx bun runner/scripts/build-binary.ts   # ompweb's omp build for this machine: runner/release/ompweb-omp-<os>-<arch>
+npm run fetch-omp   # ompweb's omp runner (from the fork release omp-runner.json pins), where the dev server finds it
 npm run dev
 ```
 
-The dev server runs at [http://127.0.0.1:30178](http://127.0.0.1:30178). It finds the runner in
-`runner/release/` by itself; `npm test` and `npm run build:binary` need the runner set up too.
+The dev server runs at [http://127.0.0.1:30178](http://127.0.0.1:30178). It needs
+the runner `npm run fetch-omp` downloaded (once per pin); `npm run smoke` and `npm run build:binary` download theirs themselves.
 
 A dev server does not take over the local daemon: only the production web
 server writes the daemon's `host.json`, so "This machine" shows offline in dev

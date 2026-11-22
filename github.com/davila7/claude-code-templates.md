@@ -10,6 +10,30 @@
 
 <h1 align="center">Claude Code Templates</h1>
 
+<p align="center"><sub>SUPPORTED BY</sub></p>
+
+<p align="center">
+  <a href="https://www.nvidia.com/en-us/startups/"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme/supporters/nvidia-dark.svg" />
+    <img src="docs/images/readme/supporters/nvidia-light.svg" alt="NVIDIA Inception" height="28" />
+  </picture></a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://claude.com/contact-sales/claude-for-oss"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme/supporters/claude-dark.svg" />
+    <img src="docs/images/readme/supporters/claude-light.svg" alt="Claude for Open Source" height="28" />
+  </picture></a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://vercel.com/oss"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme/supporters/vercel-dark.svg" />
+    <img src="docs/images/readme/supporters/vercel-light.svg" alt="Vercel OSS" height="28" />
+  </picture></a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://get.neon.com/4eCjZDz"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme/supporters/neon-dark.svg" />
+    <img src="docs/images/readme/supporters/neon-light.svg" alt="Neon Open Source" height="28" />
+  </picture></a>
+</p>
+
 <p align="center">
   An open catalog of components for Claude Code, installable with one command.
 </p>
@@ -36,20 +60,16 @@
 <p align="center"><sub>SPONSORED BY</sub></p>
 
 <p align="center">
-  <a href="https://www.swiftproxy.net/">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/swiftproxy-dark.png" />
-      <source media="(prefers-color-scheme: light)" srcset="docs/sponsors/swiftproxy-light.png" />
-      <img src="docs/sponsors/swiftproxy-light.png" alt="Swiftproxy" width="280" />
-    </picture>
+  <a href="https://proxy-seller.com/?partner=DKN86HR5VI69P">
+    <img src="docs/sponsors/proxyseller.png" alt="Proxy-Seller" width="280" />
   </a>
 </p>
 
 <p align="center">
-  <b>Swiftproxy proudly supports this project.</b><br />
-  Connect your AI-powered workflows to reliable residential proxies for web data collection, browser automation, and AI-driven research.<br />
-  90M+ residential IPs across 220+ locations, rotating and static residential proxies, with HTTP(S) and SOCKS5 support.<br /><br />
-  <a href="https://www.swiftproxy.net/"><img src="https://img.shields.io/badge/Get%2010%25%20off-code%20PROXY90-2563eb?style=for-the-badge" alt="Get 10% off with code PROXY90" /></a>
+  <b>Proxy-Seller proudly supports this project.</b><br />
+  Reliable proxy infrastructure for any workflow: private residential, mobile (4G/5G/LTE), ISP, and datacenter IPv4/IPv6 proxies, all with HTTP(S) and SOCKS5 support.<br />
+  Residential IPs across 220+ locations, targeting by country, city, or ISP, and 24/7 support.<br /><br />
+  <a href="https://proxy-seller.com/?partner=DKN86HR5VI69P"><img src="https://img.shields.io/badge/Get%2015%25%20off-code%20CCT15-22c55e?style=for-the-badge" alt="Get 15% off with code CCT15" /></a>
 </p>
 
 <picture>

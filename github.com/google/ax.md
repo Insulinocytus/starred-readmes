@@ -19,6 +19,8 @@ kind: Workspace
 metadata:
   name: golang
 spec:
+  profile:          # tasks that bind this workspace and omit spec.profile use it
+    image: "ghcr.io/my-org/my-coding-agent@sha256:..."
   setup:
     git:
       - repo: https://github.com/golang/go.git
@@ -34,19 +36,18 @@ kind: Task
 metadata:
   name: test
 spec:
-  profile:
-    image: "ghcr.io/my-org/my-coding-agent@sha256:..."
   goal:
-    spec: "Fix what's broken please."
+    text: "Fix what's broken please."
   workspace:
     name: golang
   debug: true   # enables `ax ssh`
 ```
 
-Then apply it, check on it, and look over the agent's shoulder:
+Then apply it, resume it, and look over the agent's shoulder:
 
 ```bash
 ax apply -f task.yaml
+ax resume task test
 ax describe task test
 ax ssh test -- ls -al /workspace
 ```
@@ -60,6 +61,7 @@ Agents are a new kind of workload. They are neither stateless microservices nor 
 | Run untrusted agent code in an isolated sandbox with CPU/memory limits | **`Task`** |
 | Pre-wire Git repos, MCP servers, and skill packages so every agent starts warm | **`Workspace`** |
 | Configure which LLM the platform itself uses, with credentials from a Kubernetes secret | **`Model`** |
+| Decide which hosts an agent can reach, and inject credentials without the agent ever seeing them | **`Gateway`** |
 | Pause an idle agent and pick up exactly where it left off | `ax suspend` / `ax resume` |
 | Shell into a running agent to see what it is doing | `ax ssh` |
 
@@ -67,54 +69,47 @@ Everything is expressed as `ax.io/v1alpha1` manifests and applied with a single 
 
 ## Quick start
 
-### Prerequisites
-
-AX schedules every task as a sandboxed actor on [Agent Substrate](https://github.com/agent-substrate/substrate), so Substrate must be running in your cluster before you deploy AX. You need:
-
-- A Kubernetes cluster with **Agent Substrate** installed (see below)
-- [Go](https://go.dev/doc/install) and `kubectl`
-- [Podman](https://podman.io/) or [Docker](https://docs.docker.com/get-docker/), authenticated to a container registry your cluster can pull from
-
-To install Agent Substrate, follow the instructions in the [Substrate README](https://github.com/agent-substrate/substrate#readme). Substrate lands in the `ate-system` namespace and exposes its Control API at `api.ate-system.svc.cluster.local:443`, which is where AX expects to find it. Verify it is up before moving on:
-
-```bash
-kubectl get svc api -n ate-system
-```
-
 ### 1. Install the CLI
 
 ```bash
-go install github.com/google/ax/cmd/ax@latest
+curl -fsSL https://github.com/google/ax/releases/latest/download/install.sh | sh
+export PATH="$HOME/.ax/bin:$PATH"
 ```
 
-This puts the `ax` binary in `$(go env GOPATH)/bin`. Make sure that directory is on your `PATH`.
+> [!TIP]
+> Prefer a UI? [AX Studio](https://github.com/agentexecutor/studio#readme) is a local web app that sets up AX on your computer and starts tasks for you. It deploys its own AX images, so you can skip steps 2 and 3. Install it as its README describes, then run `ax studio`.
 
-### 2. Build and push the images
+### 2. Build the images
 
-Point `AX_IMAGE_REPO` at your registry, then build the `ax-server` and `ax-task-runner` images and push them to it:
+Until release images are published, build and push your own from an ax checkout and pin them by digest:
 
 ```bash
 export AX_IMAGE_REPO=<your-registry>   # e.g. gcr.io/my-project
-make images
+make images                            # prints the digest of each pushed image
+export AX_SERVER_IMAGE="$AX_IMAGE_REPO/ax-server@<digest>"
 ```
 
-### 3. Deploy the control plane
+For `ax local start` you can use a registry on `localhost` instead of a remote one: see [Using Locally Built Images](docs/local_installer.md#using-locally-built-images).
 
-With the [prerequisites](#prerequisites) in place — most importantly a reachable Agent Substrate Control API — deploy the AX control plane:
+### 3. Install AX
+
+**Locally**, on a new Kind cluster with Substrate and a WorkerPool:
 
 ```bash
-make deploy
+ax local start --server-image "$AX_SERVER_IMAGE"
 ```
 
-This deploys PostgreSQL and the `ax-server` image you just pushed, configured to use your `ax-task-runner` image for tasks that do not set `spec.profile.image`. Everything lands in the `ax-system` namespace.
+**On an existing cluster** with Kubernetes 1.37+ and [Agent Substrate](https://github.com/agent-substrate/substrate#readme):
 
-### 4. Create a WorkerPool
+```bash
+ax install --server-image "$AX_SERVER_IMAGE"
+```
 
-Every task runs as a Substrate actor, and an actor needs a free worker from a `WorkerPool`. Nothing creates one for you — not `make deploy`, and not the Substrate installer — so without a pool, the first `ax resume` fails with `ResourceExhausted: no free workers available` (the task itself stays `Suspended`).
+Then create a WorkerPool from [`examples/workerpool.yaml`](examples/workerpool.yaml). Without one, tasks fail to resume with `no free workers available`.
 
-Create a small gVisor pool from [`examples/workerpool.yaml`](examples/workerpool.yaml) (its header explains how to apply it), or follow the WorkerPool step in the [installation guide](docs/installation.md#substrate-setup). Then wait until `kubectl get workerpools -A` shows the workers ready.
+See the [Local Installer guide](docs/local_installer.md) for prerequisites, `ax uninstall`, and more.
 
-### 5. Run your first task
+### Run your first task
 
 From your ax checkout:
 
@@ -132,12 +127,16 @@ ax resume task simple-task               # pick up where it left off
 
 The first resume also waits for the workspace to initialize (cloning its git repos), so it can take a while; if the CLI gives up first, the task keeps coming up in the background — `ax get tasks` tells you where it is.
 
-Want to see the whole lifecycle end to end? Run [`./demo.sh`](demo.sh). It applies a custom workspace, resumes the task, runs commands over `ax ssh`, and suspends it again.
+Every Task runs an image pinned by digest, named by `spec.profile.image` or `spec.profile.ateTemplate.name` or inherited from its Workspace's `spec.profile`; replace the image in `examples/simple.yaml` with `$AX_TASK_IMAGE` if you built your own.
+
+Want to see the whole lifecycle end to end? Run `AX_TASK_IMAGE=... ./demo.sh` ([`demo.sh`](demo.sh)). It applies a custom workspace, resumes the task, runs commands over `ax ssh`, and suspends it again.
 
 ## Documentation
 
 | Guide | Read it to... |
 |---|---|
+| [Local Installer](docs/local_installer.md) | Walk through `ax local`, `ax studio`, `ax ctx`, `ax install`, and promoting tasks unchanged from local Kind to a remote GKE cluster. |
+| [AX Studio](https://github.com/agentexecutor/studio#readme) | Set up AX on your computer and start, watch, and shell into tasks from a local web app (`ax studio`). |
 | [Concepts](docs/concepts.md) | Learn what a `Task`, `Workspace`, and `Model` each do, and how a task moves through phases and conditions. |
 | [Manifests](docs/manifests.md) | Write your own YAML, with an annotated example of every kind. |
 | [Sandbox](docs/sandbox.md) | See what the runner does on boot and what your command can rely on: metadata server, guest services, environment. |
@@ -165,6 +164,7 @@ ax get task task123                   # full spec + live status as YAML
 ax describe task task123              # human-readable detail
 ax suspend task task123               # checkpoint actor state and pause
 ax resume task task123                # resume a suspended task
+ax promote task task123 --to prod     # copy the task and what it binds to the cluster of kube context prod, and resume it there
 ax delete task task123
 
 # Shell into the running sandbox
@@ -192,8 +192,15 @@ ax get models
 ax describe model default-model
 ax delete model default-model
 
-# Connection plumbing
-ax ctx                                # active kube context and how ax is reaching the control plane
+# Environment & connection plumbing
+ax local start --server-image <img>   # create/resume local Kind + Substrate + AX cluster
+ax local status                       # check local environment, Substrate, and AX health
+ax local stop                         # stop local environment while keeping state
+ax local delete                       # destroy local environment and clean up owned context
+ax install / ax uninstall             # install or remove AX on the active Kubernetes cluster
+ax studio                             # launch the AX Studio local Web UI on 127.0.0.1:8080 (needs the ax-studio binary)
+ax ctx                                # list kube contexts and active AX tunnel status
+ax ctx <name>                         # switch active Kubernetes context in kubeconfig
 ax tunnel list                        # background tunnels (state lives in ~/.ax/tunnels)
 ax tunnel stop
 ax version

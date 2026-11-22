@@ -118,7 +118,9 @@ uv pip install leann
 # CPU-only (Linux): use the `cpu` extra (e.g. `leann[cpu]`)
 ```
 
-> **Linux note:** if a later `leann build` fails with `Security Violation [pathsec.open]: refusing multiply-linked file`, reinstall with `UV_LINK_MODE=copy uv pip install --reinstall ...` (or `UV_LINK_MODE=copy uv tool install --reinstall ...`) - uv's default hardlink installs trip nltk's hardened file loader bundled with llama-index. Details in the [FAQ](docs/faq.md).
+> **macOS note:** prebuilt wheels require **macOS 15 or later** on Apple Silicon (`macosx_15_0_arm64`), and macOS 15 or later on Intel. Releases after `0.3.9` no longer ship a `macosx_14_0_arm64` wheel, because GitHub retired the macOS 14 runner and the replacement runner's system libraries (`libomp`, `libzmq`, `libsodium`) carry a 15.0 minimum, so a 14.0-tagged wheel cannot honestly be produced. On macOS 14, either pin the last release that ships one, `uv pip install 'leann==0.3.9'`, or build from source (below). `0.3.9` has `macosx_14_0_arm64` wheels for Python 3.10 through 3.14.
+
+> **Linux note:** if a later `leann build` fails with `Security Violation [pathsec.open]: refusing multiply-linked file`, reinstall with `UV_LINK_MODE=copy uv pip install --reinstall ...` (or `UV_LINK_MODE=copy uv tool install --reinstall ...`) - uv's default hardlink installs trip nltk's hardened file loader bundled with llama-index. If it instead fails with `Resource 'stopwords' not found` after `NLTK will not read data from ...` warnings, the environment is group-writable: `export NLTK_DATA=` a private directory (`mkdir -m 700`). Details in the [FAQ](docs/faq.md).
 
 <!--
 > Low-resource? See "Low-resource setups" in the [Configuration Guide](docs/configuration-guide.md#low-resource-setups). -->
@@ -456,6 +458,31 @@ python -m apps.document_rag --enable-code-chunking --data-dir "./my_project"
 # Or use the specialized code RAG for better code understanding
 python -m apps.code_rag --repo-dir "./my_codebase" --query "How does authentication work?"
 ```
+
+</details>
+
+<details>
+<summary><strong>📋 Click to expand: Scanned PDFs and images (OCR)</strong></summary>
+
+OCR uses [MinerU](https://github.com/opendatalab/MinerU), which is optional. The first OCR run downloads its models, which take over 1 GB.
+
+```bash
+pip install "mineru>=4.0,<5"
+
+# Auto-detect (the default once MinerU is installed): OCR images, scanned PDFs, and scanned pages inside other PDFs
+python -m apps.document_rag --data-dir "./scans" --query "What does the letter ask for?"
+
+# Force OCR on every PDF, even ones with a text layer
+python -m apps.document_rag --data-dir "./scans" --use-ocr --query "What does the letter ask for?"
+
+# Choose a tier: flash, basic, standard (default), or advanced. Faster tiers are less accurate
+python -m apps.document_rag --data-dir "./scans" --use-ocr --ocr-tier basic --query "What does the letter ask for?"
+
+# Turn off auto-detect
+python -m apps.document_rag --data-dir "./scans" --no-auto-detect-scanned --query "What does the letter ask for?"
+```
+
+Do not install `mineru[torch]` in the same environment, because it needs a newer `transformers` than LEANN allows. See [OCR accuracy on olmOCR-Bench](benchmarks/ocr_benchmark/README.md) for test results.
 
 </details>
 
@@ -913,6 +940,10 @@ Once your iMessage conversations are indexed, you can search with queries like:
 without an API key: `python -m apps.parallel_rag` searches, indexes, and answers in one
 command, or export Markdown for `leann build`.
 
+**Web pages:** [Search and scrape with Outcrawl](docs/outcrawl.md) using an
+`OUTCRAWL_API_KEY`: `python -m apps.outcrawl_rag --scrape` indexes whole result pages
+as Markdown, or export them for `leann build`.
+
 Connect to live data sources through the Model Context Protocol (MCP). LEANN now supports real-time RAG on platforms like Slack, Twitter, and more through standardized MCP servers.
 
 **Key Benefits:**
@@ -1158,8 +1189,9 @@ leann build INDEX_NAME --docs DIRECTORY|FILE [DIRECTORY|FILE ...] [OPTIONS]
 Options:
   --backend {hnsw,diskann}     Backend to use (default: hnsw)
   --embedding-model MODEL      Embedding model (default: facebook/contriever)
-  --graph-degree N             Graph degree (default: 32)
-  --complexity N               Build complexity (default: 64)
+  --graph-degree N             Graph degree (default: backend's own; HNSW M=32, DiskANN 32)
+  --complexity N               Build complexity (default: backend's own; HNSW efConstruction=200, DiskANN 64)
+  --num-threads N              Build threads (default: backend's own; HNSW all cores on Linux, DiskANN 8)
   --force                      Force rebuild existing index
   --compact / --no-compact     Use compact storage (default: true). Must be `no-compact` for `no-recompute` build.
   --recompute / --no-recompute Enable recomputation (default: true)

@@ -63,6 +63,7 @@
 ## 📋 Table of Contents
 
 - [Get Started in Seconds](#-get-started-in-seconds)
+- [BrowserQL](#browserql)
 - [Features](#-features)
 - [Customisable Deployment Options](#-customisable-deployment-options)
 - [Why Browserless?](#-why-browserless)
@@ -132,6 +133,28 @@ await browser.close();
 Example Domain
 ```
 
+## BrowserQL
+
+The open-source image includes primitive browser actions through BrowserQL
+over HTTP or WebSocket. Detector avoidance and captcha solving are premium
+capabilities, not part of this API.
+
+```sh
+curl 'http://localhost:3000/chromium/bql?token=YOUR_TOKEN' \
+  -H 'Content-Type: application/json' \
+  --data '{"query":"mutation { goto(url: \"https://example.com\") { status } title { title } }"}'
+```
+
+For a persistent session, connect to the same path over WebSocket with the
+`graphql-transport-ws` subprotocol, send `connection_init`, then send a
+`subscribe` operation after receiving `connection_ack`. The acknowledgement
+includes the server's capabilities. Chrome and Edge use `/chrome/bql` and
+`/edge/bql` when installed.
+
+See [BrowserQL usage](docs/bql.md) for both WebSocket modes, subscriptions,
+export chaining and errors, and [module extensions](docs/bql-extensions.md) for
+adding fields through standard GraphQL SDL and dependency injection.
+
 ## ✨ Features
 
 ### General Features
@@ -142,7 +165,7 @@ Example Domain
 - **Fonts & emoji** — All system fonts and emoji support out-of-the-box
 - **Configurable timeouts** — Set session timers and health-checks to keep things running smoothly
 - **Error tolerant** — If Chrome crashes, Browserless won't
-- **ARM64 architecture support** — Full support for ARM64 platforms including Apple Silicon; some browsers (Edge, Chrome) have limited ARM64 compatibility
+- **ARM64 architecture support** — Full support for ARM64 platforms including Apple Silicon; Edge is the one exception and remains amd64-only
 
 ### Premium Features
 

@@ -352,7 +352,7 @@ Fabric supports a wide range of AI providers:
 - OpenAI Codex (ChatGPT/Codex subscription OAuth via private backend)
 - Anthropic (Claude)
 - Claude Code (Claude subscription via the local `claude` CLI)
-- Google Gemini
+- Google Gemini (API key, or Google OAuth through Vertex AI: see [Gemini OAuth](./docs/Gemini-OAuth.md))
 - Ollama (local models)
 - Azure OpenAI
 - Amazon Bedrock
@@ -363,6 +363,7 @@ Fabric supports a wide range of AI providers:
 **OpenAI-Compatible Providers:**
 
 - Abacus
+- AIGROW
 - AIML
 - AIStupidLevel
 - API Route
@@ -402,6 +403,7 @@ Fabric supports a wide range of AI providers:
 - UberLLM
 - Venice AI
 - Wiro
+- WorldRouter
 - Y-API
 - Z AI
 
@@ -747,6 +749,7 @@ Application Options:
   -u, --scrape_url=                 Scrape website URL to markdown using Jina AI
   -q, --scrape_question=            Search question using Jina AI
       --serply_search=              Search Google using Serply and send the results to chat
+      --parallel_search=            Search the web using Parallel (anonymous by default) and return source excerpts
       --firecrawl_search=           Search the web using Firecrawl and send the top pages to chat as Markdown
       --searchapi_search=           Search Google using SearchApi and send the results to chat
       --sofya_search=               Search the web using Sofya and send the top pages to chat as Markdown
@@ -813,6 +816,21 @@ Use the `--debug` flag to control runtime logging:
 - `2`: detailed debugging
 - `3`: trace level
 - `4`: wire level (full request and response bodies)
+
+### Optional Parallel web search
+
+Use `fabric --parallel_search "golang generics tutorial"` to print source URLs and
+excerpts without an inference provider. Add `-p summarize` to send the results to
+a configured model. This option connects to [Parallel's Unified MCP server](https://docs.parallel.ai/integrations/mcp/quickstart)
+and uses its default Fast search mode. Anonymous access is free with rate limits.
+It makes no requests unless `--parallel_search` is supplied; existing Jina,
+Serply, Firecrawl, and model-native `--search` behavior stays the same.
+
+An optional `PARALLEL_API_KEY` in the environment or Fabric's `.env` uses your
+Parallel account and its billing. You can also set it via `fabric --setup`.
+Authentication and rate-limit errors are returned directly, without switching
+providers or retrying anonymously. Fabric exposes only the MCP search tool,
+not fetch, research, or other server tools.
 
 ### Dry Run Mode
 
@@ -925,6 +943,12 @@ Now let's look at some things you can do with Fabric.
 
     ```bash
     fabric -u https://github.com/danielmiessler/fabric/ -p analyze_claims
+    ```
+
+6. Compress long input before you run a pattern, to use fewer tokens. See [Input Compression](./docs/Input-Compression.md).
+
+    ```bash
+    cat long_document.txt | compress "main ideas and claims" | fabric --pattern summarize
     ```
 
 ## Just use the Patterns

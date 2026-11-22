@@ -99,7 +99,7 @@ PC 端：
 手机端：
 
 - QQ 手机拼音
-- 百度手机拼音（文本词库和 bcd 格式）
+- 百度手机拼音（文本词库和 bcd 格式，支持导入导出）
 - 谷歌拼音输入法
 - [Gboard user_dict_3_3](https://github.com/studyzy/imewlconverter/wiki/GBoard_Binary)
 
@@ -152,6 +152,7 @@ imewlconverter -i <输入格式> -o <输出格式> -O <输出文件> <输入文�
 | `ggpy` | 谷歌拼音 | .txt | ✅ | ✅ |
 | `bdpy` | 百度拼音文本格式 | .txt | ✅ | ✅ |
 | `bdict` | 百度拼音二进制格式 | .bdict | ✅ | ❌ |
+| `bcd` | 百度手机 bcd 词库 | .bcd | ✅ | ✅ |
 | `rime` | Rime 输入法 | .yaml | ✅ | ✅ |
 | `qingjiantsv` | 青简 TSV | .tsv | ✅ | ✅ |
 | `qj` | 青简词库（.qj 二进制） | .qj | ✅ | ✅ |
@@ -160,6 +161,7 @@ imewlconverter -i <输入格式> -o <输出格式> -O <输出文件> <输入文�
 | `libpy` | libpinyin (Linux) | .txt | ✅ | ✅ |
 | `libimetxt` | Fcitx5 / libime 文本拼音词库 | .txt | ✅ | ✅ |
 | `libimebin` | Fcitx5 / libime 二进制拼音词库 | .dict | ✅ | ✅ |
+| `sspy` | 水杉输入法全拼词库（设置 → 词库 → 全拼 → 批量导入） | .txt | ✅ | ✅ |
 | `plist` | macOS 系统拼音 | .plist | ✅ | ✅ |
 | `fit` | FIT 输入法 (Mac) | .txt | ✅ | ✅ |
 | `gboardbin` | Gboard user_dict_3_3 | .dict | ✅ | ✅ |
@@ -186,6 +188,14 @@ dotnet ImeWlConverterCmd.dll -i scel -o ggpy -O output.txt input.scel
 ```bash
 dotnet ImeWlConverterCmd.dll -i scel -o rime -O output.yaml input.scel
 ```
+
+**搜狗拼音 txt 转百度手机 bcd 词库**：
+
+```bash
+dotnet ImeWlConverterCmd.dll -i sgpy -o bcd -O output.bcd input.txt
+```
+
+> bcd 导出目前写入常规词条区：缺少可映射拼音、含代理对汉字或无法编码符号的词条会被跳过。
 
 **多文件转换**：
 
@@ -216,7 +226,7 @@ dotnet ImeWlConverterCmd.dll -i scel -o scel \
   -O output.scel input.scel
 ```
 
-> 说明：这些选项仅影响内嵌元数据的格式（目前为搜狗 .scel）。未指定的字段使用默认值（名称：深蓝词库转换，类别：自定义，编号：随机生成）。
+> 说明：这些选项仅影响内嵌元数据的格式（目前为搜狗 .scel 与百度手机 .bcd，bcd 使用编号、名称和描述，类别字段暂不写入）。未指定的字段使用默认值（名称：深蓝词库转换，类别：自定义，编号：自动生成）。
 
 **查看帮助和格式列表**：
 

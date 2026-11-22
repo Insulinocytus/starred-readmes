@@ -10,13 +10,8 @@
   <p><sub>by <b>Boring Dystopia Development</b></sub></p>
   <p>
     <a href="https://boringdystopia.ai/"><img src="https://img.shields.io/badge/boringdystopia.ai-111111?style=for-the-badge&logo=vercel&logoColor=white" alt="boringdystopia.ai"></a>&nbsp;
-    <a href="https://x.com/alvinunreal"><img src="https://img.shields.io/badge/X-@alvinunreal-000000?style=for-the-badge&logo=x&logoColor=white" alt="X @alvinunreal"></a>&nbsp;
     <a href="https://t.me/boringdystopiadevelopment"><img src="https://img.shields.io/badge/Telegram-Join%20channel-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Join channel"></a>&nbsp;
-  </p>
-
-  <p>
-    <a href="https://svgdiagram.ai"><img src="img/svgdiagram-logo.svg" alt="svgdiagram.ai" width="40" height="28" align="absmiddle"></a>&nbsp;
-    <a href="https://svgdiagram.ai"><b>svgdiagram.ai</b></a> <sub>· Turn your notes into clean, editable SVG diagrams</sub>
+    <a href="https://ohmyopencodeslim.com/donate"><img src="https://img.shields.io/badge/Animal%20Welfare-Support-3F7D4E?style=for-the-badge" alt="Support animal welfare"></a>&nbsp;
   </p>
 
   <p>
@@ -26,6 +21,10 @@
   <p><sub>✦ ✦ ✦</sub></p>
 
 </div>
+
+> [!TIP]
+> **Slim is free.** If it's useful to you, consider supporting animal welfare.<br>
+> [Donate to a charity in your region](https://ohmyopencodeslim.com/donate) · [See all charities](https://ohmyopencodeslim.com/animals)
 
 ## What's This Plugin
 
@@ -48,9 +47,9 @@ The main idea is simple: instead of forcing one model to do everything, the plug
 - **Want to use Claude?** Check out [ACP support](docs/acp-agents.md): bring
   Claude Code in as a subagent the Orchestrator can delegate to.
 - **Make it yours.** oh-my-opencode-slim is built to be customized, globally
-  or [per project](docs/project-local-customization.md): add
+  or [per project](docs/configuration.md#config-files): add
   [new agents](docs/configuration.md#custom-agents), override prompts, and
-  [rewrite the delegation rules](docs/project-local-customization.md#custom-routing-guidance-orchestratorprompt)
+  [rewrite the delegation rules](docs/configuration.md#custom-routing-guidance-orchestratorprompt)
   so the Orchestrator routes work your way.
 - **Own your presets.** Model lineups change fast, so the
   [example presets](#preset-docs) go stale quickly. Use them for ideas, then
@@ -150,7 +149,7 @@ bun run build
 bun dist/cli/index.js install
 ```
 
-The installer adds the local repo path to the `plugin` array in
+The installer adds the local repo path to the `plugins` array in
 `~/.config/opencode/opencode.json`, so OpenCode loads the plugin from that
 folder. To update later:
 
@@ -161,13 +160,9 @@ bun install
 bun run build
 ```
 
-Upgrading from separate Librarian/Explorer agents? See the
-[configuration update guide](docs/configuration.md#updating-configurations-after-the-librarian-merge)
-for restored MCP defaults and custom model/skill precedence.
-
 ### Getting Started
 
-Slim requires OpenCode **2.3.0 or newer**. OpenCode delivers subagent completions to the parent. Slim removed its five-minute idle TODO reminder. See the [upgrade guide](docs/v2-native-upgrade.md) for the host update and configuration changes.
+Slim requires OpenCode **2.3.0 or newer**. OpenCode delivers subagent completions to the parent. Slim removed its five-minute idle TODO reminder. See the [upgrade guide](docs/installation.md#upgrading) for the host update and configuration changes.
 
 The installer generates both OpenAI and OpenCode Go presets, with OpenAI active by default.
 
@@ -187,7 +182,7 @@ Then:
 2. **Refresh and list the models OpenCode can see**:
 
    ```bash
-   opencode models --refresh
+   opencode models
    ```
    On OpenCode v2, use `opencode models` instead.
 3. **Open your plugin config** at `~/.config/opencode/oh-my-opencode-slim.json`
@@ -233,13 +228,17 @@ history. This is best-effort: a failed continuation can leave the native
 model changed without saving the new team snapshot. Main-session models,
 prompts, tools, skills and MCPs are not switched by the session action.
 The sidebar shows the current session's saved team models and variants;
-`/preset` marks its bound preset separately from the global default.
+`/preset` marks its bound preset separately from the global default. In Web
+and Desktop, bare `/preset` displays the session binding and configured defaults.
 V2 defaults to `backgroundJobs.mode: "native"`: OpenCode owns the child Job
 lifecycle, and Slim keeps exact-ID status, cancellation, permission reply, and
-queue-only progress reporting. V2 rejects the V1-only `"managed"` mode.
+child progress reporting. V2 applies the old `"managed"` mode as `"native"`
+with a warning.
 With `backgroundJobs.mode: "off"`, V2 delegation stays fully native: session
-bindings and all OMOS task tools are disabled, while the configured global
-preset still selects the agent settings registered at startup.
+bindings and all OMOS task tools are disabled by default, while the configured
+global preset still selects the agent settings registered at startup. Set
+`"sessionPresetRouting": true` to keep per-session bindings with task tools
+off.
 See
 [Preset Switching](docs/presets/preset-switching.md) for scope and timing, and
 [Configuration](docs/configuration.md#preset-inheritance) for the inheritance
@@ -651,7 +650,7 @@ activation, and update flow.
 > **Why a separate agent?** If your Orchestrator model is not multimodal, enable Observer to handle images, screenshots, and other visual files. Observer is disabled by default and gives the Orchestrator a dedicated multimodal reader without forcing you to change your main reasoning model. Set `disabled_agents: []` and an `observer` model in your configuration. The bundled `opencode-go` install preset does this automatically because its GLM Orchestrator is not multimodal. Omitting `image_routing` preserves existing conditional Observer behavior. `"auto"` is capability-aware: models that accept image input keep attachments inline for native vision; non-vision chains get attachments saved under `.opencode/images/<session>/` with a delegation nudge by path. `"direct"` always keeps image parts inline. Saved workspace images are not automatically deleted. Remove the whole `.opencode/images/` directory or a single session subdirectory manually when no longer needed (references in old conversations then stop resolving); images from session-less messages are saved at the top level.
 
 > [!TIP]
-> **Subagents reading images.** Advisory subagents (explorer, oracle, designer, councillors) can dispatch `@observer` themselves for image files on disk. On OpenCode v2 hosts this needs one extra hop of nesting, which the host denies by default — set `"experimental": { "subagent_depth": 2 }` in your opencode config to enable it. Fixer, observer itself, and the council synthesizer stay non-spawning by design.
+> **Subagents reading images.** Advisory subagents (explorer, oracle, designer, councillors) read visual files directly when they can and can delegate to `@observer` when they need help. On OpenCode v2 hosts this needs one extra hop of nesting, which the host denies by default — set `"experimental": { "subagent_depth": 2 }` in your opencode config to enable it. Fixer, observer itself, and the council synthesizer stay non-spawning by design.
 
 <table>
   <tr>
@@ -778,9 +777,9 @@ Use this section as a map: start with installation, then jump to features, confi
 | **[Custom Agents](docs/configuration.md#custom-agents)** | Define your own specialists with custom prompts, models, MCP access, and Orchestrator delegation rules |
 | **[ACP Agents](docs/acp-agents.md)** | Connect external ACP-compatible agents such as Claude Code ACP or Gemini ACP as delegatable subagents; tool and plan progress streams to the TUI while they work |
 | **[Multiplexer Integration](docs/multiplexer-integration.md)** | Watch agents work live in Tmux, Zellij, Herdr, cmux, kitty, WezTerm, or Orca panes |
-| **[Codemap](docs/codemap.md)** | Generate hierarchical codemaps to understand large codebases faster |
-| **[Clonedeps](docs/clonedeps.md)** | Clone selected dependency source into an ignored local workspace for inspection |
-| **[Worktrees](docs/worktrees.md)** | Use `.slim/worktrees/` lanes for isolated parallel or risky coding work |
+| **[Codemap](docs/skills.md#codemap)** | Generate hierarchical codemaps to understand large codebases faster |
+| **[Clonedeps](docs/skills.md#clonedeps)** | Clone selected dependency source into an ignored local workspace for inspection |
+| **[Worktrees](docs/skills.md#worktrees)** | Use `.slim/worktrees/` lanes for isolated parallel or risky coding work |
 | **[Preset Switching](docs/presets/preset-switching.md)** | Switch agent model presets at runtime with `/preset` |
 | **[Interview](docs/interview.md)** | Turn rough ideas into a structured markdown spec through a browser-based Q&A flow, then implement it with `/implement` |
 | **[Companion](docs/companion.md)** | Floating window companion for parsing, help, and types |
@@ -790,11 +789,11 @@ Use this section as a map: start with installation, then jump to features, confi
 | Doc | What it covers |
 |-----|----------------|
 | **[Installation Guide](docs/installation.md)** | Install the plugin, use CLI flags, reset config, and troubleshoot setup |
-| **[OpenCode v2 Compatibility](docs/opencode-v2-compatibility.md)** | Host contracts, feature matrix, entrypoints and package loading |
+| **[OpenCode 2 adapter](src/v2/codemap.md)** | Host contracts, request shaping, policy and verification |
 | **[Runtime Efficiency](docs/runtime-efficiency.md)** | Shared configuration reads, request-local facts, optional implementation loading and verification |
 | **[Configuration](docs/configuration.md)** | Config file locations, JSONC support, prompt overrides, and full option reference |
 | **[Marketplace](docs/marketplace.md)** | Install, inspect, activate, and update marketplace agent packages |
-| **[Project Customization](docs/project-local-customization.md)** | Repository-specific custom agents, prompt overrides, per-agent skills, and precedence |
+| **[Project Customization](docs/configuration.md)** | Repository-specific custom agents, prompt overrides, per-agent skills, and precedence |
 | **[Background Orchestration](docs/background-orchestration.md)** | Scheduler-first orchestrator model built around native background subagents |
 | **[Maintainer Guide](docs/maintainers.md)** | Issue triage rules, label meanings, support routing, and repo maintenance workflow |
 | **[Developer Evals](docs/evals.md)** | Source-checkout routing/reliability harness, offline scoring, and advisory model judging |
@@ -811,7 +810,7 @@ Use this section as a map: start with installation, then jump to features, confi
   <p><sub>Every merged contribution leaves a mark on the realm.</sub></p>
 
   <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-150-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-152-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </div>
 
@@ -1022,6 +1021,10 @@ Use this section as a map: start with installation, then jump to features, confi
       <td align="center" valign="top" width="16.66%"><a href="http://www.berthojoris.com/"><img src="https://avatars.githubusercontent.com/u/1352912?v=4?s=100" width="100px;" alt="Bertho Joris"/><br /><sub><b>Bertho Joris</b></sub></a><br /><a href="https://github.com/alvinunreal/oh-my-opencode-slim/commits?author=berthojoris" title="Code">💻</a></td>
       <td align="center" valign="top" width="16.66%"><a href="https://github.com/tanishqbaweja"><img src="https://avatars.githubusercontent.com/u/74068132?v=4?s=100" width="100px;" alt="Tanishq"/><br /><sub><b>Tanishq</b></sub></a><br /><a href="https://github.com/alvinunreal/oh-my-opencode-slim/commits?author=tanishqbaweja" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://x.com/surlymochan"><img src="https://avatars.githubusercontent.com/u/209239467?v=4?s=100" width="100px;" alt="Nick"/><br /><sub><b>Nick</b></sub></a><br /><a href="https://github.com/alvinunreal/oh-my-opencode-slim/commits?author=surlymochan" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://begenchgeldyev.com/"><img src="https://avatars.githubusercontent.com/u/83501597?v=4?s=100" width="100px;" alt="Begench"/><br /><sub><b>Begench</b></sub></a><br /><a href="https://github.com/alvinunreal/oh-my-opencode-slim/commits?author=begenchgeldyev" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 
@@ -1029,6 +1032,16 @@ Use this section as a map: start with installation, then jump to features, confi
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+---
+
+## Supporting Animal Welfare
+
+Slim is free and MIT licensed, and will remain so. In place of payment, we ask users who find it useful to support animal welfare. The recommended charities work to end the most painful practices animals face on farms and at slaughter: killing without proper stunning, surgery without pain relief, and close confinement. Donations go directly to them.
+
+- **[Donate](https://ohmyopencodeslim.com/donate)**: opens the donation page of a charity active in your region.
+- **[All charities](https://ohmyopencodeslim.com/animals)**: compare the options and see why they were selected.
+- **Commercial use**: the license carries no obligation. Companies that rely on Slim are asked to make an annual donation.
 
 ---
 

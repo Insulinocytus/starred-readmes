@@ -22,6 +22,8 @@
 [![Bilibili](https://img.shields.io/badge/dynamic/json?label=Bilibili&query=%24.data.follower&suffix=%E7%B2%89%E4%B8%9D&url=https%3A%2F%2Fapi.bilibili.com%2Fx%2Frelation%2Fstat%3Fvmid%3D242124650&logo=bilibili&color=00A1D6&labelColor=FE7398&logoColor=FFFFFF)](https://space.bilibili.com/242124650)
 [![AtomGit G-Star](https://img.shields.io/badge/AtomGit-G--Star-DA203E?style=flat)](https://atomgit.com/krillinai/OpenCreator)
 [![X](https://img.shields.io/badge/X-Follow-000000?logo=x&logoColor=white)](https://x.com/KrillinAIJunxi)
+[![QQ Group](https://img.shields.io/badge/QQ-Join%20Group-12B7F5?logo=qq&logoColor=white)](https://qm.qq.com/q/kc2cNpQ42A)
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/wnzKcJntQ)
 
 [Highlights](#project-highlights) · [Creator Tools](#creator-tools) · [Skills](#skills) · [Examples](#examples) · [Quick Start](#quick-start) · [Desktop](#desktop) · [Docs](#documentation) · [Community](#community)
 
@@ -29,7 +31,7 @@
 
 ![OpenCreator Agent workspace](./docs/images/opencreator-home-en.png)
 
-## Project Overview
+## Project Overview <a href="https://www.open-creator.ai/"><img src="https://img.shields.io/badge/Without%20A%20Key%3F-Try%20Our%20Models-EA580C?style=for-the-badge" height="28" alt="Without A Key? Try Our Models" /></a>
 
 OpenCreator is built for individuals and teams who want to keep creative and development work running locally. Instead of reimplementing an Agent loop, it uses Codex CLI as the execution engine and adds a stable local Runtime, a visual workspace, and a Desktop host around it.
 
@@ -347,6 +349,15 @@ pnpm web:dev
 
 Open `http://127.0.0.1:19861/`. The development server starts the local daemon on demand and injects a temporary Runtime token through a same-origin proxy, so no connection token needs to be copied manually.
 
+To connect the Web development server to a specific OpenCreator Gateway, run either command from the repository root or `apps/web`:
+
+```bash
+pnpm dev:test        # https://test.open-creator.ai
+pnpm dev:production  # https://open-creator.ai
+```
+
+Stop the current development server before switching modes, then start the other command. The modes use separate local OpenCreator homes, so their account sessions stay separate.
+
 On first launch, the Runtime prepares a default project and checks local Codex settings. Confirm an existing ChatGPT sign-in or API key to use local Codex, or select a provider and enter its model, endpoint, and API key. The composer is ready after setup. To work on the daemon only:
 
 ```bash
@@ -513,7 +524,7 @@ Most users do not need environment variables. Use these when you need isolated d
 | Environment variable | Default | Purpose |
 | --- | --- | --- |
 | `OPENCREATOR_DATA_DIR` | `.runtime` | OpenCreator database, Runs, attachments, and managed workspaces |
-| `OPENCREATOR_GATEWAY_ORIGIN` | `https://www.open-creator.ai` | Gateway for account sign-in, subscriptions, credits, and official model services; override for a local Gateway |
+| `OPENCREATOR_GATEWAY_ORIGIN` | `https://open-creator.ai` | Gateway for account sign-in, subscriptions, credits, and official model services; override for a local Gateway |
 | `OPENCREATOR_CODEX_BIN` | `codex` | Path to the Codex CLI executable |
 | `CODEX_HOME` | `~/.codex` | Source of truth for Codex sessions, configuration, Skills, MCP, and Profiles |
 | `OPENCREATOR_DEFAULT_CWD` | Current working directory | Default daemon working directory |
@@ -558,6 +569,8 @@ See the [user guide and troubleshooting reference](./docs/opencreator-user-guide
 | Command | Purpose |
 | --- | --- |
 | `pnpm web:dev` | Start Web and launch the local daemon on demand |
+| `pnpm dev:test` | Start Web with the test Gateway and an isolated local home |
+| `pnpm dev:production` | Start Web with the production Gateway |
 | `pnpm daemon:dev` | Start the daemon only |
 | `pnpm desktop:dev` | Build dependencies and start Electron in development mode |
 | `pnpm test` | Run workspace unit and integration tests |
@@ -590,23 +603,9 @@ The root `README.md` is the canonical English document. Maintained translations 
 
 ## Community
 
-<p>GitHub users from <strong>at least 107 countries and regions</strong> have starred OpenCreator.</p>
+<p>GitHub users from <strong>at least 108 countries and regions</strong> have starred OpenCreator.</p>
 
 <img src="./docs/images/star-coverage-map.svg" alt="World map highlighting countries and regions with OpenCreator GitHub Stars" width="760" />
-
-### The Crew
-
-Each crew member is responsible for their area, including its standards, contribution reviews and merges, and community support.
-
-<table border="1" cellpadding="12">
-  <tr>
-    <td align="center" valign="middle" width="160" height="160"><img src="./docs/images/contributors/wulien.svg" width="64" height="64" alt="wulien avatar" /><br /><a href="https://github.com/wulien">wulien</a><br />Code &amp; Bug Fixes</td>
-    <td align="center" valign="middle" width="160" height="160"><img src="./docs/images/contributors/dle-kb.svg" width="64" height="64" alt="DLe-kb avatar" /><br /><a href="https://github.com/DLe-kb">DLe-kb</a><br />Creation templates</td>
-    <td align="center" valign="middle" width="160" height="160"><img src="./docs/images/contributors/xiaheyuan.svg" width="64" height="64" alt="xiaheyuan avatar" /><br /><a href="https://github.com/xiaheyuan">xiaheyuan</a><br />Design &amp; assets</td>
-    <td align="center" valign="middle" width="160" height="160"><img src="./docs/images/contributors/krillinai.svg" width="64" height="64" alt="krillinai avatar" /><br /><a href="https://github.com/krillinai">krillinai</a><br />Skills &amp; Docs</td>
-    <td align="center" valign="middle" width="160" height="160"><img src="./docs/images/contributors/hbxugang.svg" width="64" height="64" alt="hbxugang avatar" /><br /><a href="https://github.com/hbxugang">hbxugang</a><br />Enterprise deployment</td>
-  </tr>
-</table>
 
 ### Contributors
 

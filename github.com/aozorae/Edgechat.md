@@ -185,6 +185,8 @@ GitHub Actions 会管理服务端加密 Worker Secrets。首次部署时，如�
 
 ## 部署
 
+文件默认使用原生 R2，配置步骤不变。特殊情况下可用单个可选 Secret 接入[自定义 S3 兼容存储](docs/s3-storage.md)，无需公开桶或配置 CORS。
+
 **首次登录：没有默认管理员密码，建表 SQL 不会创建账号，也不开放公开注册。** Actions 部署请配置 `EDGECHAT_ADMIN_USERNAME` / `EDGECHAT_ADMIN_PASSWORD` Repository Secrets；手动部署请生成并执行管理员初始化 SQL。完整命令及漏配处理见[首次管理员初始化](docs/admin-bootstrap.md)。管理员登录后可创建用户或注册邀请。
 
 ### GitHub Actions 自动部署
@@ -228,7 +230,7 @@ Docker 相关说明见 [DOCKER.md](DOCKER.md)。
 
 当前不包含 Room 离线数据库、WorkManager Outbox 或 FCM；应用停止接收消息时，不承诺后台即时通知。
 
-原生 `android/` Kotlin + Jetpack Compose 客户端暂时弃用，不再作为默认发行版。源码、API v1 契约与独立 CI 暂时保留。
+旧版 Jetpack Compose 客户端已退役。服务端继续提供 `/api/v1`。
 
 完整说明见 [Android 客户端文档](https://echat.azora.top/guide/android.html)。
 
@@ -303,7 +305,6 @@ Edgechat/
 │  ├─ migrations/        # 数据库迁移
 │  └─ src/               # API、认证与 Durable Objects
 ├─ capacitor/            # 基于 Web UI 的 Android 客户端
-├─ android/              # 暂时保留的原生 Android 客户端
 ├─ .github/workflows/    # 自动部署与 CI
 ├─ wrangler.toml
 ├─ wrangler.demo.toml

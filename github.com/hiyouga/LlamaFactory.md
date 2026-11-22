@@ -12,6 +12,7 @@
 [![Discord](assets/thirdparty/discord.svg)](https://discord.gg/rKfvV9r9FK)
 [![WeChat](https://img.shields.io/badge/WeChat-User%20Group-blue?logo=wechat)](https://github.com/hiyouga/llamafactory-community)
 [![Blog](https://img.shields.io/badge/Hugo-Official%20Blog-blue?logo=hugo)](https://blog.llamafactory.net/en/)
+[![GitCode](https://gitcode.com/hiyouga/LlamaFactory/star/badge.svg)](https://gitcode.com/hiyouga/LlamaFactory)
 
 [![Open in Colab](assets/thirdparty/colab.svg)](https://colab.research.google.com/drive/1eRTPn37ltBbYsISy9Aw2NuI2Aq5CQrD9?usp=sharing)
 [![Open in DSW](assets/thirdparty/dsw.svg)](https://gallery.pai-ml.com/#/preview/deepLearning/nlp/llama_factory)
@@ -300,9 +301,13 @@ Read technical notes:
 | [GPT-OSS](https://huggingface.co/openai)                          | 20B/120B                         | gpt_oss              |
 | [Granite 3-4](https://huggingface.co/ibm-granite)                 | 1B/2B/3B/7B/8B                   | granite3/granite4    |
 | [Hunyuan/Hunyuan1.5 (MT)](https://huggingface.co/tencent/)        | 0.5B/1.8B/4B/7B/13B              | hunyuan/hunyuan_small|
+| [InCoder-32B](https://huggingface.co/Multilingual-Multimodal-NLP/IndustrialCoder) | 32B                              | Tokenizer template (v1) |
+| [InCoder-32B-Thinking](https://huggingface.co/Multilingual-Multimodal-NLP/IndustrialCoder-Thinking) | 32B                              | Tokenizer template (v1) |
 | [InternLM 2-3](https://huggingface.co/internlm)                   | 7B/8B/20B                        | intern2              |
 | [InternVL 2.5-3.5](https://huggingface.co/OpenGVLab)              | 1B/2B/4B/8B/14B/30B/38B/78B/241B | intern_vl            |
 | [Intern-S1-mini](https://huggingface.co/internlm/)                | 8B                               | intern_s1            |
+| [IQuest-Coder (V1 Instruct/Thinking)](https://huggingface.co/collections/IQuestLab/iquest-coder) | 7B/14B/40B                       | Tokenizer template (v1) |
+| [IQuest-Q1](https://huggingface.co/IQuestLab/IQuest-Q1)           | 320B-A15B                        | [Upstream template](https://huggingface.co/IQuestLab/IQuest-Q1/blob/main/chat_template.jinja) (fine-tuning unverified) |
 | [Kimi-VL](https://huggingface.co/moonshotai)                      | 16B                              | kimi_vl              |
 | [Ling 2.0 (mini/flash)](https://huggingface.co/inclusionAI)       | 16B/100B                         | bailing_v2           |
 | [LFM 2.5 (VL)](https://huggingface.co/LiquidAI)                   | 1.2B/1.6B                        | lfm2/lfm2_vl         |
@@ -330,6 +335,7 @@ Read technical notes:
 | [Qwen3 (MoE/Instruct/Thinking/Next)](https://huggingface.co/Qwen) | 0.6B/1.7B/4B/8B/14B/32B/80B/235B | qwen3/qwen3_nothink  |
 | [Qwen3.5](https://huggingface.co/Qwen)                            | 0.8B/2B/4B/9B/27B/35B/122B/397B  | qwen3_5/qwen3_5_nothink              |
 | [Qwen3.6](https://huggingface.co/Qwen)                            | 27B/35B                          | qwen3_6              |
+| [Qwen3.8](https://huggingface.co/Qwen)                            | 27B/2.4T                         | qwen3_8              |
 | [Qwen2-Audio](https://huggingface.co/Qwen)                        | 7B                               | qwen2_audio          |
 | [Qwen2.5-Omni](https://huggingface.co/Qwen)                       | 3B/7B                            | qwen2_omni           |
 | [Qwen3-Omni](https://huggingface.co/Qwen)                         | 30B                              | qwen3_omni           |

@@ -13,6 +13,8 @@ To inform or tell (someone). To make one aware of something.
 * Supports the handling of images and attachments (_to the notification services that will accept them_).
 * It's incredibly lightweight.
 * Amazing response times because all messages sent asynchronously.
+* Group your services with tags, then notify only the ones that need to know.
+* Private by design: messages go straight from your machine to each service, with no third party in between.
 
 Developers who wish to provide a notification service no longer need to research each and every one out there. They no longer need to try to adapt to the new ones that comeout thereafter. They just need to include this one library and then they can immediately gain access to almost all of the notifications services available to us today.
 
@@ -33,7 +35,12 @@ Visit the [Official Documentation](https://appriseit.com/getting-started/) site 
 
 Apprise provides one consistent URL format and notification interface for your apps, automation, and infrastructure. Use the CLI or core library directly, or relay through Apprise API, to deliver notifications to a very [large amount of supported services](https://appriseit.com/services/).
 
-[![Apprise overview showing notification sources, entry points, and supported destinations](Apprise-overview.png)](Apprise-overview.png)
+<a href="https://appriseit.com/getting-started/#how-apprise-fits-together">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/caronc/apprise/master/Apprise-overview-dark.png">
+    <img alt="Apprise overview showing notification sources, entry points, and supported destinations" src="Apprise-overview.png">
+  </picture>
+</a>
 
 # Table of Contents
 <!--ts-->
@@ -63,7 +70,7 @@ The section identifies all of the services supported by this library. [Check out
 
 ## Productivity Based Notifications
 
-The table below identifies the services this tool supports and some example service URLs you need to use in order to take advantage of it. Click on any of the services listed below to get more details on how you can configure Apprise to access them. If you're having trouble constructing your own URL; try our [Apprise URL Builder](https://appriseit.com/tools/url-builder/) out.
+The table below identifies the services this tool supports and some example service URLs you need to use in order to take advantage of it. Click on any of the services listed below to get more details on how you can configure Apprise to access them. If you're having trouble constructing your own URL; try our [Apprise URL Builder](https://appriseit.com/url-builder/) out.
 
 | Notification Service | Service ID | Default Port | Example Syntax |
 | -------------------- | ---------- | ------------ | -------------- |
@@ -71,6 +78,8 @@ The table below identifies the services this tool supports and some example serv
 | [Apprise API](https://appriseit.com/services/apprise_api/)  | apprise:// or apprises:// | (TCP) 80 or 443 | apprise://hostname/Token<br/>apprise://:password@hostname/Token<br/>apprise://user:password@hostname/Token
 | [AWS End User Messaging Social (WhatsApp)](https://appriseit.com/services/awswhatsapp/) | awswhatsapp:// | (TCP) 443 | awswhatsapp://AccessKeyID/AccessSecretKey/RegionName/FromPhoneID/ToPhoneNo<br/>awswhatsapp://AccessKeyID/AccessSecretKey/RegionName/FromPhoneID/ToPhoneNo1/ToPhoneNo2/ToPhoneNoN
 | [AWS SES](https://appriseit.com/services/ses/)  | ses://   | (TCP) 443   | ses://user@domain/AccessKeyID/AccessSecretKey/RegionName<br/>ses://user@domain/AccessKeyID/AccessSecretKey/RegionName/email1/email2/emailN
+| [Azure Communication Services](https://appriseit.com/services/acs/) | acs:// | (TCP) 443 | acs://FromEmail/AccessKey/Endpoint<br />acs://FromEmail/AccessKey/Endpoint/ToEmail<br />acs://FromEmail/AccessKey/Endpoint/ToEmail1/ToEmail2/ToEmailN
+| [Bale](https://appriseit.com/services/bale/)  | bale://   | (TCP) 443   | bale://bottoken/ChatID<br />bale://bottoken/ChatID1/ChatID2/ChatIDN<br />bale://bottoken/@ChannelName
 | [Bark](https://appriseit.com/services/bark/)  | bark://   | (TCP) 80 or 443   | bark://hostname<br />bark://hostname/device_key<br />bark://hostname/device_key1/device_key2/device_keyN<br/>barks://hostname<br />barks://hostname/device_key<br />barks://hostname/device_key1/device_key2/device_keyN
 | [Better Stack](https://appriseit.com/services/betterstack/) | betterstack:// | (TCP) 443 | betterstack://token/email<br />betterstack://token/email/team<br />betterstack://token/email/team1/team2/teamN<br />betterstack://source_token@ingesting_host
 | [Blink(1)](https://appriseit.com/services/blink1/) | blink1:// | USB | blink1://<br />blink1://serial/
@@ -88,6 +97,7 @@ The table below identifies the services this tool supports and some example serv
 | [FireHydrant](https://appriseit.com/services/firehydrant/) | firehydrant://  | (TCP) 443 | firehydrant://token<br />firehydrant://token?priority=low&tags=service:api
 | [Flock](https://appriseit.com/services/flock/) | flock://    | (TCP) 443    | flock://token<br/>flock://botname@token<br/>flock://app_token/u:userid<br/>flock://app_token/g:channel_id<br/>flock://app_token/u:userid/g:channel_id
 | [Flowtriq](https://appriseit.com/services/flowtriq/) | flowtriq:// or flowtriqs://    | (TCP) 80 or 443    | flowtriq://apikey@hostname/webhook/path<br />flowtriqs://apikey@hostname/webhook/path
+| [Fluxer](https://appriseit.com/services/fluxer/) | fluxer:// or fluxers://    | (TCP) 80 or 443    | fluxer://webhook_id/webhook_token<br />fluxer://botname@webhook_id/webhook_token<br />fluxers://hostname/webhook_id/webhook_token
 | [GitHub](https://appriseit.com/services/github/) | github://    | (TCP) 443    | github://token@owner/repo<br />github://token@owner/repo/issues/42<br />github://token@owner/repo/pull/1807<br />github://token@owner/repo/discussions/7
 | [GoAlert](https://appriseit.com/services/goalert/) | goalert:// or goalerts://    | (TCP) 80 or 443    | goalert://hostname/integration_key<br />goalerts://hostname/integration_key1/integration_key2<br />goalerts://hostname/path/integration_key
 | [Google Chat](https://appriseit.com/services/googlechat/) | gchat://    | (TCP) 443    | gchat://workspace/key/token
@@ -103,6 +113,7 @@ The table below identifies the services this tool supports and some example serv
 | [IFTTT](https://appriseit.com/services/ifttt/) | ifttt://    | (TCP) 443    | ifttt://webhooksID/Event<br />ifttt://webhooksID/Event1/Event2/EventN<br/>ifttt://webhooksID/Event1/?+Key=Value<br/>ifttt://webhooksID/Event1/?-Key=value1
 | [ilert](https://appriseit.com/services/ilert/) | ilert://  | (TCP) 443 | ilert://IntegrationKey<br />ilert://IntegrationKey?priority=high<br />ilert://IntegrationKey?action=resolve&dedup=key
 | [incident.io](https://appriseit.com/services/incidentio/) | incidentio://  | (TCP) 443 | incidentio://source_id/token<br />incidentio://source_id/token?action=resolve&dedup=key
+| [Instagram](https://appriseit.com/services/instagram/) | instagram://  | (TCP) 443 | instagram://AccessToken/UserID<br />instagram://AccessToken/UserID1/UserID2/UserIDN
 | [IRC](https://appriseit.com/services/irc/) | irc:// or ircs://   | (TCP) 6667 or 6697 | ircs://user:pass@irc.server/@user<br /> ircs://user:pass@irc.server/#channel?join=true&mode=nickserv<br/>ircs://user:pass@znc.server/@user1/@user2/@user3/#channel1
 | [Jellyfin](https://appriseit.com/services/jellyfin/)  | jellyfin:// or jellyfins:// | (TCP) 8096 | jellyfin://user@hostname/<br />jellyfins://user:password@hostname
 | [Jira](https://appriseit.com/services/jira/) | jira:// | (TCP) 443 | jira://APIKey<br/>jira://APIKey/@UserID<br/>jira://APIKey/#Team<br/>jira://APIKey/\*Schedule<br/>jira://APIKey/^Escalation
@@ -130,12 +141,14 @@ The table below identifies the services this tool supports and some example serv
 | [Notica](https://appriseit.com/services/notica/) | notica://  | (TCP) 443   | notica://Token/
 | [Notifiarr](https://appriseit.com/services/notifiarr/) | notifiarr:// | (TCP) 443 | notifiarr://apikey/#channel<br />notifiarr://apikey/#channel1/#channel2/#channeln
 | [Notifico](https://appriseit.com/services/notifico/) | notifico:// or notificos://  | (TCP) 80 or 443   | notifico://ProjectID/MessageHook/<br />notifico://host/ProjectID/MessageHook/<br />notificos://host/ProjectID/MessageHook/
+| [Notify!](https://appriseit.com/services/notifyapp/) | notifyapp:// | (TCP) 443 | notifyapp://DeviceID/Token<br />notifyapp://GroupID/Token
 | [ntfy](https://appriseit.com/services/ntfy/) | ntfy://  | (TCP) 80 or 443   | ntfy://topic/<br/>ntfys://topic/
 | [Octopush](https://appriseit.com/services/octopush/) | octopush:// | (TCP) 443 | octopush://APILogin/APIKey/TargetPhoneNo<br />octopush://Sender:APILogin/APIKey/TargetPhoneNo<br />octopush://Sender:APILogin/APIKey/TargetPhoneNo1/TargetPhoneNo2/TargetPhoneNoN
 | [Office 365](https://appriseit.com/services/office365/) | o365://  | (TCP) 443   | o365://TenantID:AccountEmail/ClientID/ClientSecret<br />o365://TenantID:AccountEmail/ClientID/ClientSecret/TargetEmail<br />o365://TenantID:AccountEmail/ClientID/ClientSecret/TargetEmail1/TargetEmail2/TargetEmailN
 | [OneBot (QQ)](https://appriseit.com/services/onebot/) | onebot:// or onebots:// | (TCP) 80 or 443 | onebot://hostname:port/UserID<br/>onebot://token@hostname:port/@UserID/#GroupID<br/>onebots://token@hostname:port/@UserID1/@UserID2/#GroupID1/#GroupIDN
 | [OneSignal](https://appriseit.com/services/onesignal/) | onesignal:// | (TCP) 443 | onesignal://AppID@APIKey/PlayerID<br/>onesignal://TemplateID:AppID@APIKey/UserID<br/>onesignal://AppID@APIKey/#IncludeSegment<br/>onesignal://AppID@APIKey/Email
 | [Opsgenie](https://appriseit.com/services/opsgenie/) | opsgenie:// | (TCP) 443 | opsgenie://APIKey<br/>opsgenie://APIKey/UserID<br/>opsgenie://APIKey/#Team<br/>opsgenie://APIKey/\*Schedule<br/>opsgenie://APIKey/^Escalation
+| [OpsiMate](https://appriseit.com/services/opsimate/) | opsimate:// or opsimates:// | (TCP) 80 or 443 | opsimate://ApiToken@hostname<br/>opsimate://ApiToken@hostname:port<br/>opsimates://ApiToken@hostname/path<br/>opsimates://ApiToken@hostname:port?action=trigger
 | [PagerDuty](https://appriseit.com/services/pagerduty/) | pagerduty:// | (TCP) 443 | pagerduty://IntegrationKey@ApiKey<br/>pagerduty://IntegrationKey@ApiKey/Source/Component
 | [PagerTree](https://appriseit.com/services/pagertree/) | pagertree:// | (TCP) 443 | pagertree://integration_id
 | [ParsePlatform](https://appriseit.com/services/parseplatform/) | parsep:// or parseps:// | (TCP) 80 or 443 | parsep://AppID:MasterKey@Hostname<br/>parseps://AppID:MasterKey@Hostname
@@ -245,7 +258,7 @@ SMS Notifications for the most part do not have a both a `title` and `body`.  Th
 | [Telesign](https://appriseit.com/services/telesign/) | telesign://  | (TCP) 443   | telesign://CustomerID:ApiKey@ToPhoneNo<br/>telesign://CustomerID:ApiKey@ToPhoneNo1/ToPhoneNo2/ToPhoneNoN/
 | [Telnyx](https://appriseit.com/services/telnyx/) | telnyx://  | (TCP) 443   | telnyx://ApiKey@FromPhoneNo<br/>telnyx://ApiKey@FromPhoneNo/ToPhoneNo<br/>telnyx://ApiKey@FromPhoneNo/ToPhoneNo1/ToPhoneNo2/ToPhoneNoN/<br/>telnyx://ApiKey@FromPhoneNo/ToPhoneNo?profile=MessagingProfileID
 | [Threema Gateway](https://appriseit.com/services/threema/) | threema://  | (TCP) 443   | threema://GatewayID@secret/ToPhoneNo<br/>threema://GatewayID@secret/ToEmail<br/>threema://GatewayID@secret/ToThreemaID/<br/>threema://GatewayID@secret/ToEmail/ToThreemaID/ToPhoneNo/...
-| [Trigv](https://trigv.com/) | trigv:// or trigvs:// | (TCP) 80 or 443 | trigvs://APIKey<br/>trigvs://APIKey/channel<br/>trigv://APIKey@hostname/channel
+| [Trigv](https://appriseit.com/services/trigv/) | trigv:// or trigvs:// | (TCP) 80 or 443 | trigvs://APIKey<br/>trigvs://APIKey/channel<br/>trigv://APIKey@hostname/channel
 | [Notifyre](https://appriseit.com/services/notifyre/) | notifyre://  | (TCP) 443   | notifyre://ApiKey/ToPhoneNo<br/>notifyre://ApiKey/ToPhoneNo1/ToPhoneNo2/ToPhoneNoN<br/>notifyre://ApiKey/ToFaxNo?mode=fax<br/>notifyre://ApiKey/ToFaxNo?mode=fax&from=+FromNo
 | [Twilio](https://appriseit.com/services/twilio/) | twilio://  | (TCP) 443   | twilio://AccountSid:AuthToken@FromPhoneNo<br/>twilio://AccountSid:AuthToken@FromPhoneNo/ToPhoneNo<br/>twilio://AccountSid:AuthToken@FromPhoneNo/ToPhoneNo1/ToPhoneNo2/ToPhoneNoN/<br/>twilio://AccountSid:AuthToken@FromPhoneNo/ToPhoneNo?apikey=Key<br/>twilio://AccountSid:AuthToken@ShortCode/ToPhoneNo<br/>twilio://AccountSid:AuthToken@ShortCode/ToPhoneNo1/ToPhoneNo2/ToPhoneNoN/<br/>twilio://AccountSid:AuthToken@FromPhoneNo/ToPhoneNo?method=call<br/>twilio://AccountSid:AuthToken@FromPhoneNo/ToPhoneNo1/ToPhoneNo2/ToPhoneNoN?method=call
 | [Voipms](https://appriseit.com/services/voipms/) | voipms://  | (TCP) 443   | voipms://password:email/FromPhoneNo<br/>voipms://password:email/FromPhoneNo/ToPhoneNo<br/>voipms://password:email/FromPhoneNo/ToPhoneNo1/ToPhoneNo2/ToPhoneNoN/
@@ -328,7 +341,7 @@ uptime | apprise -vv \
 
 ## CLI Configuration Files
 
-No one wants to put their credentials out for everyone to see on the command line.  No problem, *apprise* also supports configuration files.  It can handle both a specific YAML format or a very simple TEXT format. You can also pull these configuration files via an HTTP query too! Read more about the expected structure of the configuration files [here](https://appriseit.com/config/).
+No one wants to put their credentials out for everyone to see on the command line.  No problem, *apprise* also supports configuration files.  It can handle both a specific YAML format or a very simple TEXT format. You can also pull these configuration files via an HTTP query too! Read more about the expected structure of the configuration files [here](https://appriseit.com/getting-started/configuration/).
 
 ```bash
 # By default if no url or configuration is specified apprise will attempt to load

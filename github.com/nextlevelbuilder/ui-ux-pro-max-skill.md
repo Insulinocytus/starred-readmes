@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/releases"><img src="https://img.shields.io/github/v/release/nextlevelbuilder/ui-ux-pro-max-skill?style=for-the-badge&color=blue" alt="GitHub Release"></a>
-  <img src="https://img.shields.io/badge/reasoning_rules-192-green?style=for-the-badge" alt="192 Reasoning Rules">
+  <img src="https://img.shields.io/badge/reasoning_rules-194-green?style=for-the-badge" alt="194 Reasoning Rules">
   <img src="https://img.shields.io/badge/UI_styles-80_searchable-purple?style=for-the-badge" alt="80 searchable UI styles">
   <img src="https://img.shields.io/badge/python-3.x-yellow?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.x">
   <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nextlevelbuilder/ui-ux-pro-max-skill?style=for-the-badge&color=green" alt="License"></a>
@@ -143,9 +143,9 @@ The flagship feature of v2.0 is the **Design System Generator** - an AI-powered 
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  2. MULTI-DOMAIN SEARCH (5 parallel searches)                   │
-│     • Product type matching (192 categories)                    │
+│     • Product type matching (194 categories)                    │
 │     • Style recommendations (80 searchable; 51 active)          │
-│     • Color palette selection (192 palettes)                    │
+│     • Color palette selection (194 palettes)                    │
 │     • Landing page patterns (34 patterns)                       │
 │     • Typography pairing (74 font combinations)                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -167,7 +167,7 @@ The flagship feature of v2.0 is the **Design System Generator** - an AI-powered 
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 192 Industry-Specific Reasoning Rules
+### 194 Industry-Specific Reasoning Rules
 
 The reasoning engine includes specialized rules for:
 
@@ -193,12 +193,12 @@ Each rule includes:
 ## Features
 
 - **80 Searchable UI Styles (51 active)** - Glassmorphism, Claymorphism, Minimalism, Brutalism, Neumorphism, Bento Grid, Dark Mode, AI-Native UI, and more
-- **192 Color Palettes** - Industry-specific palettes aligned 1:1 with the 192 product types
+- **194 Color Palettes** - Industry-specific palettes aligned 1:1 with the 194 product types
 - **74 Font Pairings** - Curated typography combinations with Google Fonts imports
 - **25 Chart Types** - Recommendations for dashboards and analytics
 - **22 Tech Stacks** - React, Next.js, Astro, Vue, Nuxt.js, Nuxt UI, Svelte, SwiftUI, React Native, Flutter, HTML+Tailwind, shadcn/ui, Jetpack Compose, Angular, Laravel, Three.js, JavaFX, WPF, WinUI 3, UWP, Avalonia, Uno Platform
-- **120 UX Guidelines** - Best practices, anti-patterns, accessibility rules, resilient text layout, compact labels, and cancellable interactions. See [IME-safe Enter shortcuts](docs/ime-composition.md).
-- **192 Reasoning Rules** - Industry-specific design system generation (NEW in v2.0)
+- **141 UX Guidelines** - Best practices, anti-patterns, accessibility rules, resilient text layout, compact labels, cancellable interactions, web maps (attribution, map accessibility, choropleths, popups, clustering), and form error handling (clearing fixed errors, keeping input, unsaved-change warnings, undo, dialog focus). See [IME-safe Enter shortcuts](docs/ime-composition.md).
+- **194 Reasoning Rules** - Industry-specific design system generation (NEW in v2.0)
 
 ### Resilient Text and Compact UI
 
@@ -239,7 +239,7 @@ Many users ask about the differences between the open-source and premium version
 
 ### 🟢 Basic Version (This Repository)
 * **Fully Open Source:** Perfect for individual developers, hobbyists, and standard projects.
-* **Core UI/UX Intelligence:** Full access to 80 searchable UI styles (51 active), 192 product types, color palettes, and curated font pairings.
+* **Core UI/UX Intelligence:** Full access to 80 searchable UI styles (51 active), 194 product types, color palettes, and curated font pairings.
 * **Smart Recommendations:** Built-in BM25 search engine for highly accurate design matching.
 * **Cross-Platform Support:** Stack-specific guidelines supporting 22 major frameworks (React, Vue, Tailwind, iOS, Android, etc.).
 * **Design System Generation:** Instantly generate tailored UI rules, patterns, and logic via CLI.
@@ -262,6 +262,8 @@ Install directly in Claude Code with two commands:
 /plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill
 /plugin install ui-ux-pro-max@ui-ux-pro-max-skill
 ```
+
+Agent-agnostic clients can use the same repo via `.agents/plugins/marketplace.json` (same `ui-ux-pro-max` plugin and source as the Claude marketplace).
 
 ### Using CLI (Recommended)
 
@@ -450,6 +452,10 @@ python3 .claude/skills/ui-ux-pro-max/scripts/search.py "beauty spa wellness" --d
 # Generate with Markdown output
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "fintech banking" --design-system -f markdown
 
+# Export design tokens (requires --design-system)
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "fintech dashboard" --design-system --tokens dtcg
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "fintech dashboard" --design-system --tokens css
+
 # Domain-specific search
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "glassmorphism" --domain style
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "elegant serif" --domain typography
@@ -514,7 +520,18 @@ python3 .claude/skills/ui-ux-pro-max/scripts/search.py "SaaS dashboard" --design
 
 # Also create a page-specific override file
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "SaaS dashboard" --design-system --persist -p "MyApp" --page "dashboard"
+
+# Also write a self-contained preview.html next to MASTER.md
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "SaaS dashboard" --design-system --persist --preview -p "MyApp"
+
+# Persist machine-readable tokens next to MASTER.md (tokens are master-level only)
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "SaaS dashboard" --design-system --persist --tokens dtcg -p "MyApp"
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "SaaS dashboard" --design-system --persist --tokens css -p "MyApp"
 ```
+
+`--preview` requires `--design-system`. With `--persist` it writes `preview.html` next to `MASTER.md`. Without `--persist`, pass `--output-dir` to write `preview.html` there, or omit it to get a temp file whose path is printed. Existing files are skipped unless you also pass `--force`.
+
+`--tokens dtcg` prints W3C Design Tokens JSON; `--tokens css` prints `:root` CSS variables named the same way as `cli/assets/skills/design-system/scripts/generate-tokens.cjs`. Both require `--design-system`. With `--persist`, `tokens.json` is written beside `MASTER.md` (and `tokens.css` when `--tokens css`). `--page` overrides do not emit token files.
 
 This creates a `design-system/` folder structure:
 
@@ -522,6 +539,9 @@ This creates a `design-system/` folder structure:
 design-system/
 └── myapp/                  # One folder per project (slug of -p "MyApp")
     ├── MASTER.md           # Global Source of Truth (colors, typography, spacing, components)
+    ├── preview.html        # Static preview of the generated palette, type, and components
+    ├── tokens.json         # W3C Design Tokens (when persisted with --tokens)
+    ├── tokens.css          # CSS variables (when persisted with --tokens css)
     └── pages/
         └── dashboard.md    # Page-specific overrides (only deviations from Master)
 ```
